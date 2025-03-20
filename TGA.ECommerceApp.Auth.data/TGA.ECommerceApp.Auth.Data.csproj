@@ -18,5 +18,9 @@
   <ItemGroup>
     <ProjectReference Include="..\TGA.ECommerceApp.Auth.Domain\TGA.ECommerceApp.Auth.Domain.csproj" />
   </ItemGroup>
+  
+  <ItemGroup>
+    <Folder Include="Migrations\" />
+  </ItemGroup>
 
 </Project>
