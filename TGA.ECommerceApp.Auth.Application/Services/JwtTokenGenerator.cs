@@ -21,9 +21,11 @@ namespace TGA.ECommerceApp.Auth.Application.Services
             var key = System.Text.Encoding.ASCII.GetBytes(jwtOptions.Secret);
             var claims = new List<Claim>
             {
+                new Claim("Id", applicationUser.Id),
                 new Claim(JwtRegisteredClaimNames.Email, applicationUser.Email),
-                new Claim(JwtRegisteredClaimNames.Sub, applicationUser.Id),
-                new Claim(JwtRegisteredClaimNames.Name, applicationUser.UserName)
+                new Claim(JwtRegisteredClaimNames.Sub, applicationUser.Email),
+                new Claim(JwtRegisteredClaimNames.Name, applicationUser.UserName),
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
             };
 
             claims.AddRange(roles.Select(role => new Claim(ClaimTypes.Role, role)));

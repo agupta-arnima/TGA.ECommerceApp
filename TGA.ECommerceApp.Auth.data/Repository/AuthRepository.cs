@@ -30,10 +30,10 @@ public class AuthRepository : IAuthRepository
         }
     }
 
-    public UserRefreshTokens GetSavedRefreshTokens(string username, string refreshtoken)
+    public UserRefreshTokens GetSavedRefreshTokens(string refreshtoken)
     {
 
-        return authDbContext.userRefreshToken.FirstOrDefault(x => x.UserName == username && x.RefreshToken == refreshtoken && x.IsActive);
+        return authDbContext.userRefreshToken.FirstOrDefault(x => x.RefreshToken == refreshtoken);
     }
 
     public async Task<ApplicationUser> GetUserIdentityByEmail(string email)
@@ -54,5 +54,27 @@ public class AuthRepository : IAuthRepository
             return true;
         else
             return false;
+    }
+
+    public bool UpdateUserRefreshTokens(UserRefreshTokens updatedToken)
+    {
+        var existingToken = authDbContext.userRefreshToken.Find(updatedToken.Id);
+        if (existingToken == null)
+        {
+            return false; // Record not found
+        }
+
+        // Update properties
+        existingToken.UserName = updatedToken.UserName;
+        existingToken.Token = updatedToken.Token;
+        existingToken.JwtId = updatedToken.JwtId;
+        existingToken.RefreshToken = updatedToken.RefreshToken;
+        existingToken.IsActive = updatedToken.IsActive;
+        existingToken.IsRevoked = updatedToken.IsRevoked;
+        existingToken.IsUsed = updatedToken.IsUsed;
+
+        // Save changes
+        authDbContext.SaveChanges();
+        return true; // Record updated successfully
     }
 }

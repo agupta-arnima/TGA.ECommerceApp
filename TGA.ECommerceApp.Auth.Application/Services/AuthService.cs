@@ -36,6 +36,20 @@ namespace TGA.ECommerceApp.Auth.Application.Services
             return false;
         }
 
+        public async Task<TokenRequestDto> GetToken(TokenRequestDto token)
+        {
+            var refreshToken = authRepository.GetSavedRefreshTokens(token.RefreshToken);
+            return new TokenRequestDto
+            {
+                UserName = refreshToken.UserName,
+                RefreshToken = refreshToken.RefreshToken,
+                Token = refreshToken.Token,
+                IsUsed = refreshToken.IsUsed,
+                IsRevoked = refreshToken.IsRevoked,
+                JwtId = token.JwtId
+            };
+        }
+
         public async Task<LoginResponseDto> Login(LoginRequestDto userDTO)
         {
             //var identityUser = await userManager.FindByNameAsync(userDTO.UserName);
@@ -101,6 +115,25 @@ namespace TGA.ECommerceApp.Auth.Application.Services
             {
                 throw;
             }
+        }
+
+        public Task<bool> UpdateUserRefreshTokens(TokenRequestDto updatedToken)
+        {
+            var existingToken = authRepository.GetSavedRefreshTokens(updatedToken.RefreshToken);
+            if (existingToken == null)
+            {
+                return Task.FromResult(false);
+            }
+            existingToken.UserName = updatedToken.UserName;
+            existingToken.JwtId = updatedToken.JwtId;
+            existingToken.RefreshToken = updatedToken.RefreshToken;
+            existingToken.Token = updatedToken.Token;
+            existingToken.IsActive = updatedToken.IsActive;
+            existingToken.IsRevoked = updatedToken.IsRevoked;
+            existingToken.IsUsed = updatedToken.IsUsed;
+
+            authRepository.UpdateUserRefreshTokens(existingToken);
+            return Task.FromResult(true);
         }
     }
 }

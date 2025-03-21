@@ -233,7 +233,21 @@ namespace TGA.ECommerceApp.Auth.Data.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("tinyint(1)");
 
+                    b.Property<bool>("IsRevoked")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<bool>("IsUsed")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<string>("JwtId")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
                     b.Property<string>("RefreshToken")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Token")
                         .IsRequired()
                         .HasColumnType("longtext");
 

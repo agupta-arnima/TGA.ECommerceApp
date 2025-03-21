@@ -12,8 +12,8 @@ using TGA.ECommerceApp.Product.Data.Context;
 namespace TGA.ECommerceApp.Auth.Data.Migrations
 {
     [DbContext(typeof(AuthDbContext))]
-    [Migration("20250320155749_AddUserRefreshToken")]
-    partial class AddUserRefreshToken
+    [Migration("20250321132853_AddIdentityTables")]
+    partial class AddIdentityTables
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -236,7 +236,17 @@ namespace TGA.ECommerceApp.Auth.Data.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("tinyint(1)");
 
+                    b.Property<bool>("IsRevoked")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<bool>("IsUsed")
+                        .HasColumnType("tinyint(1)");
+
                     b.Property<string>("RefreshToken")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Token")
                         .IsRequired()
                         .HasColumnType("longtext");
 

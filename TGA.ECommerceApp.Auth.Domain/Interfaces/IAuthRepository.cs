@@ -7,6 +7,7 @@ public interface IAuthRepository
     Task<ApplicationUser> GetUserIdentityByUserName(string userName);
     bool IsValidUserAsync(ApplicationUser users);
     UserRefreshTokens AddUserRefreshTokens(UserRefreshTokens user);
-    UserRefreshTokens GetSavedRefreshTokens(string username, string refreshtoken);
+    bool UpdateUserRefreshTokens(UserRefreshTokens user);
+    UserRefreshTokens GetSavedRefreshTokens(string refreshtoken);
     void DeleteUserRefreshTokens(string username, string refreshToken);
 }
