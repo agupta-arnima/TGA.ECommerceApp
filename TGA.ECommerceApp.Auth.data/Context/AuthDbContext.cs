@@ -11,5 +11,6 @@ namespace TGA.ECommerceApp.Product.Data.Context
         }
 
         public DbSet<ApplicationUser> applicationUsers { get; set; }
+        public DbSet<UserRefreshTokens> userRefreshToken { get; set; }
     }
 }

@@ -1,15 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TGA.ECommerceApp.Auth.Domain.Models;
+﻿using TGA.ECommerceApp.Auth.Domain.Models;
+namespace TGA.ECommerceApp.Auth.Domain.Interfaces;
 
-namespace TGA.ECommerceApp.Auth.Domain.Interfaces
+public interface IAuthRepository
 {
-    public interface IAuthRepository
-    {
-        Task<ApplicationUser> GetUserIdentityByEmail(string email);
-        Task<ApplicationUser> GetUserIdentityByUserName(string userName);
-    }
+    Task<ApplicationUser> GetUserIdentityByEmail(string email);
+    Task<ApplicationUser> GetUserIdentityByUserName(string userName);
+    bool IsValidUserAsync(ApplicationUser users);
+    UserRefreshTokens AddUserRefreshTokens(UserRefreshTokens user);
+    UserRefreshTokens GetSavedRefreshTokens(string username, string refreshtoken);
+    void DeleteUserRefreshTokens(string username, string refreshToken);
 }
