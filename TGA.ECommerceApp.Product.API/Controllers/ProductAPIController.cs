@@ -6,12 +6,12 @@ namespace TGA.ECommerceApp.Product.API.Controllers
 {
     [Route("api/product")]
     [ApiController]
-    public class ProductController : ControllerBase
+    public class ProductAPIController : ControllerBase
     {
         private readonly IProductService productService;
         private ResponseDto responseDto;
 
-        public ProductController(IProductService productService)
+        public ProductAPIController(IProductService productService)
         {
             this.productService = productService;
             responseDto = new ResponseDto();

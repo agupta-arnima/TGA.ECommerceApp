@@ -1,5 +1,6 @@
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using System;
 using TGA.ECommerceApp.Product.Application;
 using TGA.ECommerceApp.Product.Application.Interfaces;
 using TGA.ECommerceApp.Product.Application.Services;
@@ -44,4 +45,14 @@ app.UseAuthorization();
 
 app.MapControllers();
 
+ApplyMigration();
+
 app.Run();
+
+void ApplyMigration()
+{
+    using var scope = app.Services.CreateScope();
+    var _db = scope.ServiceProvider.GetRequiredService<ProductDbContext>();
+    if (_db.Database.GetPendingMigrations().Any())
+        _db.Database.Migrate();
+}

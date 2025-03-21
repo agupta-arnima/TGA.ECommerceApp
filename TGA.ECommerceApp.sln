@@ -61,13 +61,21 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TGA.ECommerceApp.Product.Ap
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TGA.ECommerceApp.Product.API", "TGA.ECommerceApp.Product.API\TGA.ECommerceApp.Product.API.csproj", "{F3E36201-C2CB-443D-8DB2-0DB8F3BE91C1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TGA.ECommerceApp.Auth.Domain", "TGA.ECommerceApp.Auth.Domain\TGA.ECommerceApp.Auth.Domain.csproj", "{1D0E6264-0A31-4499-97EA-00576DCF4571}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TGA.ECommerceApp.Auth.Domain", "TGA.ECommerceApp.Auth.Domain\TGA.ECommerceApp.Auth.Domain.csproj", "{1D0E6264-0A31-4499-97EA-00576DCF4571}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TGA.ECommerceApp.Auth.Data", "TGA.ECommerceApp.Auth.data\TGA.ECommerceApp.Auth.Data.csproj", "{E065AECC-65AF-4E1C-8A6A-5C2FC638E502}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TGA.ECommerceApp.Auth.Data", "TGA.ECommerceApp.Auth.data\TGA.ECommerceApp.Auth.Data.csproj", "{E065AECC-65AF-4E1C-8A6A-5C2FC638E502}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TGA.ECommerceApp.Auth.Application", "TGA.ECommerceApp.Auth.Application\TGA.ECommerceApp.Auth.Application.csproj", "{6D414BF3-488B-4128-ADA9-58B01EAF44A4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TGA.ECommerceApp.Auth.Application", "TGA.ECommerceApp.Auth.Application\TGA.ECommerceApp.Auth.Application.csproj", "{6D414BF3-488B-4128-ADA9-58B01EAF44A4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TGA.ECommerceApp.Auth.API", "TGA.ECommerceApp.Auth.API\TGA.ECommerceApp.Auth.API.csproj", "{667BB7A8-1BAD-45AE-A5B2-E7FB8D7DECEA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TGA.ECommerceApp.Auth.API", "TGA.ECommerceApp.Auth.API\TGA.ECommerceApp.Auth.API.csproj", "{667BB7A8-1BAD-45AE-A5B2-E7FB8D7DECEA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TGA.ECommerceApp.ShoppingCart.Domain", "TGA.ECommerceApp.ShoppingCart.Domain\TGA.ECommerceApp.ShoppingCart.Domain.csproj", "{6C1896B2-3C3E-4E6F-B48F-B465159CF5C0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TGA.ECommerceApp.ShoppingCart.Data", "TGA.ECommerceApp.ShoppingCart.Data\TGA.ECommerceApp.ShoppingCart.Data.csproj", "{27D4DF20-2583-4201-8908-EDF6C7E55380}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TGA.ECommerceApp.ShoppingCart.Application", "TGA.ECommerceApp.ShoppingCart.Application\TGA.ECommerceApp.ShoppingCart.Application.csproj", "{C535B026-601A-4E70-A8C2-EA2BE5F3D82E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TGA.ECommerceApp.ShoppingCart.API", "TGA.ECommerceApp.ShoppingCart.API\TGA.ECommerceApp.ShoppingCart.API.csproj", "{6117F511-BD4C-448B-9936-33202722DDDE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -107,6 +115,22 @@ Global
 		{667BB7A8-1BAD-45AE-A5B2-E7FB8D7DECEA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{667BB7A8-1BAD-45AE-A5B2-E7FB8D7DECEA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{667BB7A8-1BAD-45AE-A5B2-E7FB8D7DECEA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6C1896B2-3C3E-4E6F-B48F-B465159CF5C0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6C1896B2-3C3E-4E6F-B48F-B465159CF5C0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6C1896B2-3C3E-4E6F-B48F-B465159CF5C0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6C1896B2-3C3E-4E6F-B48F-B465159CF5C0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{27D4DF20-2583-4201-8908-EDF6C7E55380}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{27D4DF20-2583-4201-8908-EDF6C7E55380}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{27D4DF20-2583-4201-8908-EDF6C7E55380}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{27D4DF20-2583-4201-8908-EDF6C7E55380}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C535B026-601A-4E70-A8C2-EA2BE5F3D82E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C535B026-601A-4E70-A8C2-EA2BE5F3D82E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C535B026-601A-4E70-A8C2-EA2BE5F3D82E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C535B026-601A-4E70-A8C2-EA2BE5F3D82E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6117F511-BD4C-448B-9936-33202722DDDE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6117F511-BD4C-448B-9936-33202722DDDE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6117F511-BD4C-448B-9936-33202722DDDE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6117F511-BD4C-448B-9936-33202722DDDE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -141,6 +165,10 @@ Global
 		{E065AECC-65AF-4E1C-8A6A-5C2FC638E502} = {F5EFCB19-9B76-4DAB-8C70-F77F1D6C9752}
 		{6D414BF3-488B-4128-ADA9-58B01EAF44A4} = {9058324B-A7A8-48C6-8B05-7D5B976319AE}
 		{667BB7A8-1BAD-45AE-A5B2-E7FB8D7DECEA} = {9430368A-7A3D-490C-BC91-D361367F1338}
+		{6C1896B2-3C3E-4E6F-B48F-B465159CF5C0} = {36976BB8-71B0-4F41-9FC1-967B5BFECFE2}
+		{27D4DF20-2583-4201-8908-EDF6C7E55380} = {9BB2B1EA-4710-489F-BF3B-9FAEE2D00D55}
+		{C535B026-601A-4E70-A8C2-EA2BE5F3D82E} = {171AD321-AC99-4DEC-912B-069D33C09244}
+		{6117F511-BD4C-448B-9936-33202722DDDE} = {F2E2EBEF-E4C4-48D4-8217-96F3B6BAB53D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {C0F4B8B2-DB68-4F11-BB5D-382D3013F70C}
