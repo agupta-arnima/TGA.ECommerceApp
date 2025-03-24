@@ -12,7 +12,7 @@ using TGA.ECommerceApp.Product.Data.Context;
 namespace TGA.ECommerceApp.Auth.Data.Migrations
 {
     [DbContext(typeof(AuthDbContext))]
-    [Migration("20250321132853_AddIdentityTables")]
+    [Migration("20250322040633_AddIdentityTables")]
     partial class AddIdentityTables
     {
         /// <inheritdoc />
@@ -225,7 +225,7 @@ namespace TGA.ECommerceApp.Auth.Data.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
-            modelBuilder.Entity("TGA.ECommerceApp.Auth.Domain.Models.UserRefreshTokens", b =>
+            modelBuilder.Entity("TGA.ECommerceApp.Auth.Domain.Models.RefreshTokens", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -233,8 +233,11 @@ namespace TGA.ECommerceApp.Auth.Data.Migrations
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("tinyint(1)");
+                    b.Property<DateTime>("AddedDate")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<DateTime>("ExpiryDate")
+                        .HasColumnType("datetime(6)");
 
                     b.Property<bool>("IsRevoked")
                         .HasColumnType("tinyint(1)");
@@ -242,7 +245,7 @@ namespace TGA.ECommerceApp.Auth.Data.Migrations
                     b.Property<bool>("IsUsed")
                         .HasColumnType("tinyint(1)");
 
-                    b.Property<string>("RefreshToken")
+                    b.Property<string>("JwtId")
                         .IsRequired()
                         .HasColumnType("longtext");
 
@@ -250,13 +253,15 @@ namespace TGA.ECommerceApp.Auth.Data.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<string>("UserName")
+                    b.Property<string>("UserId")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("varchar(255)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("userRefreshToken");
+                    b.HasIndex("UserId");
+
+                    b.ToTable("RefreshToken");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -308,6 +313,17 @@ namespace TGA.ECommerceApp.Auth.Data.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("TGA.ECommerceApp.Auth.Domain.Models.RefreshTokens", b =>
+                {
+                    b.HasOne("TGA.ECommerceApp.Auth.Domain.Models.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
                 });
 #pragma warning restore 612, 618
         }

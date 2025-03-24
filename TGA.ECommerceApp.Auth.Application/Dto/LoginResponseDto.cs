@@ -1,14 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace TGA.ECommerceApp.Auth.Application.Dto;
 
-namespace TGA.ECommerceApp.Auth.Application.Dto
+public class LoginResponseDto
 {
-    public class LoginResponseDto
-    {
-        public UserDto User { get; set; }
-        public string Token { get; set; }
-    }
+    public UserDto User { get; set; }
+    public TokenRequest Token { get; set; }
 }

@@ -14,41 +14,48 @@ public class AuthRepository : IAuthRepository
         this.authDbContext = productDbContext;
     }
 
-    public UserRefreshTokens AddUserRefreshTokens(UserRefreshTokens user)
+    public RefreshTokens AddRefreshTokens(RefreshTokens user)
     {
-        authDbContext.userRefreshToken.Add(user);
+        authDbContext.RefreshToken.Add(user);
         authDbContext.SaveChanges();
         return user;
     }
 
-    public void DeleteUserRefreshTokens(string username, string refreshToken)
+    public bool DeleteRefreshTokens(string userId)
     {
-        var item = authDbContext.userRefreshToken.FirstOrDefault(x => x.UserName == username && x.RefreshToken == refreshToken);
-        if (item != null)
+        var refreshTokens = authDbContext.RefreshToken.Where(rt => rt.UserId == userId).ToList();
+        if (refreshTokens.Any())
         {
-            authDbContext.userRefreshToken.Remove(item);
+            authDbContext.RefreshToken.RemoveRange(refreshTokens);
+            authDbContext.SaveChanges();
         }
+        return true;
     }
 
-    public UserRefreshTokens GetSavedRefreshTokens(string refreshtoken)
-    {
 
-        return authDbContext.userRefreshToken.FirstOrDefault(x => x.RefreshToken == refreshtoken);
+    public RefreshTokens GetRefreshTokens(string refreshToken)
+    {
+        return authDbContext.RefreshToken.FirstOrDefault(rt => rt.Token == refreshToken);
+    }
+
+    public async Task<ApplicationUser> GetUserById(string userId)
+    {
+        return await authDbContext.ApplicationUsers.FirstAsync(u => u.Id == userId);
     }
 
     public async Task<ApplicationUser> GetUserIdentityByEmail(string email)
     {
-        return await authDbContext.applicationUsers.FirstAsync(u => u.Email == email);
+        return await authDbContext.ApplicationUsers.FirstAsync(u => u.Email == email);
     }
 
     public async Task<ApplicationUser> GetUserIdentityByUserName(string userName)
     {
-        return await authDbContext.applicationUsers.FirstOrDefaultAsync(u => u.UserName.ToLower() == userName.ToLower());
+        return await authDbContext.ApplicationUsers.FirstOrDefaultAsync(u => u.UserName.ToLower() == userName.ToLower());
     }
 
     public bool IsValidUserAsync(ApplicationUser users)
     {
-        var u = authDbContext.applicationUsers.FirstOrDefault(o => o.Email == users.Email);
+        var u = authDbContext.ApplicationUsers.FirstOrDefault(o => o.Email == users.Email);
 
         if (u != null)
             return true;
@@ -56,20 +63,17 @@ public class AuthRepository : IAuthRepository
             return false;
     }
 
-    public bool UpdateUserRefreshTokens(UserRefreshTokens updatedToken)
+    public bool UpdateUserRefreshTokens(RefreshTokens updatedToken)
     {
-        var existingToken = authDbContext.userRefreshToken.Find(updatedToken.Id);
+        var existingToken = authDbContext.RefreshToken.Find(updatedToken.Id);
         if (existingToken == null)
         {
             return false; // Record not found
         }
 
         // Update properties
-        existingToken.UserName = updatedToken.UserName;
         existingToken.Token = updatedToken.Token;
         existingToken.JwtId = updatedToken.JwtId;
-        existingToken.RefreshToken = updatedToken.RefreshToken;
-        existingToken.IsActive = updatedToken.IsActive;
         existingToken.IsRevoked = updatedToken.IsRevoked;
         existingToken.IsUsed = updatedToken.IsUsed;
 

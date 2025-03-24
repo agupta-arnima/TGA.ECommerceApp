@@ -4,13 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TGA.ECommerceApp.Auth.Application.Dto
+namespace TGA.ECommerceApp.Auth.Application.Dto;
+
+public class ResponseDto
 {
-    public class ResponseDto
-    {
-        public object? Result { get; set; }
-        public bool IsSuccess { get; set; } = true;
-        public List<string> Errors { get; set; }
-        public string Message { get; set; } = "";
-    }
+    public object? Result { get; set; }
+    public bool IsSuccess { get; set; } = true;
+    public List<string> Errors { get; set; }
+    public string Message { get; set; } = "";
 }

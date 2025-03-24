@@ -1,139 +1,165 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Options;
 using TGA.ECommerceApp.Auth.Application.Dto;
 using TGA.ECommerceApp.Auth.Application.Interfaces;
 using TGA.ECommerceApp.Auth.Domain.Interfaces;
 using TGA.ECommerceApp.Auth.Domain.Models;
 
-namespace TGA.ECommerceApp.Auth.Application.Services
+namespace TGA.ECommerceApp.Auth.Application.Services;
+
+public class AuthService : IAuthService
 {
-    public class AuthService : IAuthService
+    private readonly IAuthRepository _authRepository;
+    private readonly UserManager<ApplicationUser> _userManager;
+    private readonly RoleManager<IdentityRole> _roleManager;
+    private readonly IJwtTokenGenerator _jwtTokenGenerator;
+
+    public AuthService(IAuthRepository authRepository,
+                       UserManager<ApplicationUser> userManager,
+                       RoleManager<IdentityRole> roleManager,
+                       IJwtTokenGenerator jwtTokenGenerator,
+                       IOptions<JwtOptions> jwtOptions)
     {
-        private readonly IAuthRepository authRepository;
-        private readonly UserManager<ApplicationUser> userManager;
-        private readonly RoleManager<IdentityRole> roleManager;
-        private readonly IJwtTokenGenerator jwtTokenGenerator;
+        _authRepository = authRepository;
+        _userManager = userManager;
+        _roleManager = roleManager;
+        _jwtTokenGenerator = jwtTokenGenerator;
+    }
 
-        public AuthService(IAuthRepository authRepository, UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, IJwtTokenGenerator jwtTokenGenerator)
+    public async Task<bool> AssignRole(string email, string roleName)
+    {
+        var user = await _authRepository.GetUserIdentityByEmail(email);
+        if (user == null) return false;
+
+        if (!await _roleManager.RoleExistsAsync(roleName))
         {
-            this.authRepository = authRepository;
-            this.userManager = userManager;
-            this.roleManager = roleManager;
-            this.jwtTokenGenerator = jwtTokenGenerator;
+            await _roleManager.CreateAsync(new IdentityRole(roleName));
         }
 
-        public async Task<bool> AssignRole(string email, string roleName)
+        await _userManager.AddToRoleAsync(user, roleName);
+        return true;
+    }
+
+    public async Task<TokenRequestDto> GetToken(TokenRequest token)
+    {
+        var refreshToken = _authRepository.GetRefreshTokens(token.RefreshToken);
+        if (refreshToken == null) return null;
+
+        var user = await _authRepository.GetUserById(refreshToken.UserId);
+        if (user == null) return null;
+
+        return new TokenRequestDto
         {
-            var applicationUser = await authRepository.GetUserIdentityByEmail(email);
-            if (applicationUser != null)
-            {
-                if (!await roleManager.RoleExistsAsync(roleName))
-                {
-                    await roleManager.CreateAsync(new IdentityRole(roleName));
-                }
-                await userManager.AddToRoleAsync(applicationUser, roleName);
-                return true;
-            }
-            return false;
+            UserName = user.UserName,
+            RefreshToken = refreshToken.Token,
+            Token = refreshToken.Token,
+            IsUsed = refreshToken.IsUsed,
+            IsRevoked = refreshToken.IsRevoked,
+            JwtId = refreshToken.JwtId
+        };
+    }
+
+    public async Task<UserDto> GetUser(string userId)
+    {
+        var user = await _authRepository.GetUserIdentityByUserName(userId);
+        return user == null ? null : new UserDto
+        {
+            ID = user.Id,
+            Name = user.Name,
+            Email = user.Email,
+            PhoneNumber = user.PhoneNumber
+        };
+    }
+
+    public async Task<LoginResponseDto> Login(LoginRequestDto userDTO)
+    {
+        var user = await _authRepository.GetUserIdentityByUserName(userDTO.UserName);
+        if (user == null || !await _userManager.CheckPasswordAsync(user, userDTO.Password))
+        {
+            return new LoginResponseDto { User = null, Token = null };
         }
 
-        public async Task<TokenRequestDto> GetToken(TokenRequestDto token)
+        var roles = await _userManager.GetRolesAsync(user);
+        var userDto = new UserDto
         {
-            var refreshToken = authRepository.GetSavedRefreshTokens(token.RefreshToken);
-            return new TokenRequestDto
+            ID = user.Id,
+            Name = user.Name,
+            Email = user.Email,
+            PhoneNumber = user.PhoneNumber
+        };
+
+        var (token, jwtId) = await _jwtTokenGenerator.GenerateJwtToken(userDto, roles);
+        UpdateRefreshToken(userDto, token, jwtId);
+
+        return new LoginResponseDto { User = userDto, Token = token };
+    }
+
+    public bool UpdateRefreshToken(UserDto user, TokenRequest token, string jwtId)
+    {
+        if (_authRepository.DeleteRefreshTokens(user.ID))
+        {
+            _authRepository.AddRefreshTokens(new RefreshTokens
             {
-                UserName = refreshToken.UserName,
-                RefreshToken = refreshToken.RefreshToken,
-                Token = refreshToken.Token,
-                IsUsed = refreshToken.IsUsed,
-                IsRevoked = refreshToken.IsRevoked,
-                JwtId = token.JwtId
-            };
+                AddedDate = DateTime.UtcNow,
+                UserId = user.ID,
+                ExpiryDate = DateTime.UtcNow,
+                IsUsed = false,
+                IsRevoked = false,
+                Token = token.RefreshToken,
+                JwtId = jwtId
+            });
+        }
+        return true;
+    }
+
+    public async Task<UserDto> Register(RegistrationRequestDto registrationRequestDto)
+    {
+        var user = new ApplicationUser
+        {
+            Name = registrationRequestDto.Name,
+            Email = registrationRequestDto.Email,
+            NormalizedEmail = registrationRequestDto.Email.ToUpper(),
+            UserName = registrationRequestDto.Email,
+            PhoneNumber = registrationRequestDto.PhoneNumber
+        };
+
+        var result = await _userManager.CreateAsync(user, registrationRequestDto.Password);
+        if (!result.Succeeded) return null;
+
+        if (!string.IsNullOrEmpty(registrationRequestDto.Role))
+        {
+            await AssignRole(registrationRequestDto.Email, registrationRequestDto.Role);
         }
 
-        public async Task<LoginResponseDto> Login(LoginRequestDto userDTO)
+        var registeredUser = await _authRepository.GetUserIdentityByEmail(user.Email);
+        return new UserDto
         {
-            //var identityUser = await userManager.FindByNameAsync(userDTO.UserName);
-            var applicationUser = await authRepository.GetUserIdentityByUserName(userDTO.UserName);
+            ID = registeredUser.Id,
+            Name = registeredUser.Name,
+            Email = registeredUser.Email,
+            PhoneNumber = registeredUser.PhoneNumber
+        };
+    }
 
-            var isValid = await userManager.CheckPasswordAsync(applicationUser, userDTO.Password);
+    public async Task<bool> UpdateUserRefreshTokens(TokenRequestDto updatedToken)
+    {
+        var existingToken = _authRepository.GetRefreshTokens(updatedToken.RefreshToken);
+        if (existingToken == null) return false;
 
-            if (applicationUser == null || !isValid)
-            {
-                return new LoginResponseDto
-                {
-                    User = null,
-                    Token = ""
-                };
-            }
-            //If user is found then generate the Jwt token
-            var roles = await userManager.GetRolesAsync(applicationUser);
+        existingToken.JwtId = updatedToken.JwtId;
+        existingToken.Token = updatedToken.Token;
+        existingToken.IsRevoked = updatedToken.IsRevoked;
+        existingToken.IsUsed = updatedToken.IsUsed;
+        existingToken.AddedDate = DateTime.UtcNow;
 
-            return new LoginResponseDto
-            {
-                User = new UserDto
-                {
-                    ID = applicationUser.Id,
-                    Name = applicationUser.Name,
-                    Email = applicationUser.Email,
-                    PhoneNumber = applicationUser.PhoneNumber
-                },
-                Token = jwtTokenGenerator.GenerateToken(applicationUser, roles)
-            };
-        }
+        _authRepository.UpdateUserRefreshTokens(existingToken);
+        return true;
+    }
 
-        public async Task<string> Register(RegistrationRequestDto registrationRequestDto)
-        {
-            ApplicationUser applicationUser = new()
-            {
-                Name = registrationRequestDto.Name,
-                Email = registrationRequestDto.Email,
-                NormalizedEmail = registrationRequestDto.Email.ToUpper(),
-                UserName = registrationRequestDto.Email,
-                PhoneNumber = registrationRequestDto.PhoneNumber
-            };
-            try
-            {
-                var result = await userManager.CreateAsync(applicationUser, registrationRequestDto.Password);
-                if (result.Succeeded)
-                {
-                    var userToReturn = await authRepository.GetUserIdentityByEmail(applicationUser.Email);
-                    UserDto userDTO = new()
-                    {
-                        ID = userToReturn.Id,
-                        Name = userToReturn.Name,
-                        Email = userToReturn.Email,
-                        PhoneNumber = userToReturn.PhoneNumber
-                    };
-                    return ""; //No error
-                }
-                else
-                {
-                    return result.Errors.FirstOrDefault().Description;
-                }
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
-        }
-
-        public Task<bool> UpdateUserRefreshTokens(TokenRequestDto updatedToken)
-        {
-            var existingToken = authRepository.GetSavedRefreshTokens(updatedToken.RefreshToken);
-            if (existingToken == null)
-            {
-                return Task.FromResult(false);
-            }
-            existingToken.UserName = updatedToken.UserName;
-            existingToken.JwtId = updatedToken.JwtId;
-            existingToken.RefreshToken = updatedToken.RefreshToken;
-            existingToken.Token = updatedToken.Token;
-            existingToken.IsActive = updatedToken.IsActive;
-            existingToken.IsRevoked = updatedToken.IsRevoked;
-            existingToken.IsUsed = updatedToken.IsUsed;
-
-            authRepository.UpdateUserRefreshTokens(existingToken);
-            return Task.FromResult(true);
-        }
+    public TokenRequest GenerateJwtToken(UserDto user)
+    {
+        var (token, jwtId) = _jwtTokenGenerator.GenerateJwtToken(user, null).Result;
+        UpdateRefreshToken(user, token, jwtId);
+        return token;
     }
 }

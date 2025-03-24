@@ -10,7 +10,7 @@ namespace TGA.ECommerceApp.Product.Data.Context
         {
         }
 
-        public DbSet<ApplicationUser> applicationUsers { get; set; }
-        public DbSet<UserRefreshTokens> userRefreshToken { get; set; }
+        public DbSet<ApplicationUser> ApplicationUsers { get; set; }
+        public DbSet<RefreshTokens> RefreshToken { get; set; }
     }
 }
