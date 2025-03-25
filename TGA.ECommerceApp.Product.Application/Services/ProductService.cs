@@ -25,5 +25,14 @@ namespace TGA.ECommerceApp.Product.Application.Services
         {
             return mapper.Map<ProductDto>(productRepository.GetProductById(id));
         }
+
+        public bool DeleteProduct(int id) { 
+           return productRepository.DeleteProduct(id);
+        }
+
+        public ProductDto AddProduct(ProductDto product)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -30,7 +30,10 @@ public class JwtTokenGenerator : IJwtTokenGenerator
         {
             Subject = new ClaimsIdentity(claims),
             Expires = DateTime.UtcNow.AddSeconds(300), // Adjust expiration as needed
-            SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+            Issuer = _jwtOptions.Issuer, // Ensure issuer is set
+            Audience = _jwtOptions.Audience, // Ensure audience is set
+            SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key),
+            SecurityAlgorithms.HmacSha256Signature)
         };
 
         var token = jwtTokenHandler.CreateToken(tokenDescriptor);

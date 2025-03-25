@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TGA.ECommerceApp.Product.Application.Dto;
+﻿using TGA.ECommerceApp.Product.Application.Dto;
 
 namespace TGA.ECommerceApp.Product.Application.Interfaces
 {
@@ -11,5 +6,7 @@ namespace TGA.ECommerceApp.Product.Application.Interfaces
     {
         IEnumerable<ProductDto> GetProducts();
         ProductDto GetProductById(int id);
+        bool DeleteProduct(int id);
+        ProductDto AddProduct(ProductDto product);
     }
 }

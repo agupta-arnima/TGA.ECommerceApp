@@ -1,10 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Principal;
-using System.Text;
-using System.Threading.Tasks;
 using TGA.ECommerceApp.Product.Data.Context;
 using TGA.ECommerceApp.Product.Domain.Interfaces;
 using TGA.ECommerceApp.Product.Domain.Models;
@@ -22,12 +16,22 @@ namespace TGA.ECommerceApp.Product.Data.Repository
 
         public IEnumerable<ProductInfo> GetProducts()
         {
-            return productDbContext.Products.ToList();
+            return productDbContext.Products
+                .Include(p=>p.Category)
+                .ToList();
         }
 
         public ProductInfo GetProductById(int id)
         {
-            return productDbContext.Products.FirstOrDefault(c => c.ProductId == id);
+            return productDbContext.Products
+                .Include(p=>p.Category)
+                .FirstOrDefault(c => c.ProductId == id);
+        }
+
+        public bool DeleteProduct(int id) { 
+            productDbContext.Products.Remove(GetProductById(id));
+            productDbContext.SaveChanges();
+            return true;
         }
     }
 }

@@ -1,9 +1,4 @@
 ﻿using AutoMapper;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using TGA.ECommerceApp.Product.Application.Dto;
 using TGA.ECommerceApp.Product.Domain.Models;
 
@@ -13,9 +8,11 @@ namespace TGA.ECommerceApp.Product.Application
     {
         public static MapperConfiguration RegisterMaps()
         {
-            MapperConfiguration config = new MapperConfiguration(cfg =>
+            var config = new MapperConfiguration(cfg =>
             {
-                cfg.CreateMap<ProductDto, ProductInfo>().ReverseMap();
+                cfg.CreateMap<ProductInfo, ProductDto>()
+                    .ForMember(dest => dest.ProductId, opt => opt.MapFrom(src => src.ProductId))
+                    .ForMember(dest => dest.CategoryName, opt => opt.MapFrom(src => src.Category.Name));
             });
             return config;
         }
