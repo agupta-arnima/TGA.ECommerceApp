@@ -85,6 +85,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TGA.ECommerceApp.Order.Data
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TGA.ECommerceApp.Order.API", "TGA.ECommerceApp.Order.API\TGA.ECommerceApp.Order.API.csproj", "{8AB15334-614E-494E-A0DA-0ED1BD2A5D90}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TGA.ECommerceApp.OcelotApiGateway", "TGA.ECommerceApp.OcelotApiGateway\TGA.ECommerceApp.OcelotApiGateway.csproj", "{6AB75D04-18A5-408A-8F40-0FBB699D5F63}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -155,6 +157,10 @@ Global
 		{8AB15334-614E-494E-A0DA-0ED1BD2A5D90}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8AB15334-614E-494E-A0DA-0ED1BD2A5D90}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8AB15334-614E-494E-A0DA-0ED1BD2A5D90}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6AB75D04-18A5-408A-8F40-0FBB699D5F63}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6AB75D04-18A5-408A-8F40-0FBB699D5F63}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6AB75D04-18A5-408A-8F40-0FBB699D5F63}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6AB75D04-18A5-408A-8F40-0FBB699D5F63}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -197,6 +203,7 @@ Global
 		{2B00AC2B-8233-454B-8153-D2DE1215FD10} = {0534387F-4CD2-47FE-9318-591291A3CEFE}
 		{0CBDC068-9C0F-4AB6-B836-7FCA872F689D} = {13F5C2D5-24AE-44EB-B118-E6815B9C5D58}
 		{8AB15334-614E-494E-A0DA-0ED1BD2A5D90} = {4E621BE5-FBAC-4925-83B5-192918937B3E}
+		{6AB75D04-18A5-408A-8F40-0FBB699D5F63} = {5B823B11-521A-4EFD-A095-59C0481F6D71}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {C0F4B8B2-DB68-4F11-BB5D-382D3013F70C}
