@@ -1,18 +1,49 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Server.Kestrel.Https;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using OpenTelemetry;
+using OpenTelemetry.Metrics;
+using OpenTelemetry.Trace;
+using System.Diagnostics;
+using System.Diagnostics.Metrics;
 using System.Security.Claims;
+using System.Security.Cryptography.X509Certificates;
+using Microsoft.AspNetCore.Authentication.Certificate;
 using System.Text;
-using TGA.ECommerceApp.Auth.Application.Dto;
 using TGA.ECommerceApp.Auth.Application.Interfaces;
 using TGA.ECommerceApp.Auth.Application.Services;
 using TGA.ECommerceApp.Auth.Data.Repository;
 using TGA.ECommerceApp.Auth.Domain.Interfaces;
 using TGA.ECommerceApp.Auth.Domain.Models;
 using TGA.ECommerceApp.Product.Data.Context;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+
+
+// Variable for Aspire DashBoard
+var registrationMeterCounter = new Meter("OTel.Tempest", "1.0.0");
+var registrationCounter = registrationMeterCounter.CreateCounter<int>("registrations.count", description: "Counts the number of registrations");
+// Custom ActivitySource for the application
+var checkoutActivitySource = new ActivitySource("OTel.Example");
+
 
 var builder = WebApplication.CreateBuilder(args);
+
+//Certificate
+var rootCert = new X509Certificate2(@"C:\Users\sackumar6\source\repos\agupta-arnima\TGA.ECommerceApp\TGA.ECommerceApp.Auth.API\Certs\server.pfx", "1234"); // Adjust path and password
+
+builder.WebHost.UseKestrel(options =>
+{
+    options.ListenAnyIP(5001, listenOptions =>
+    {
+        listenOptions.UseHttps(httpsOptions =>
+        {
+            httpsOptions.ClientCertificateMode = ClientCertificateMode.RequireCertificate;
+            httpsOptions.CheckCertificateRevocation = false;
+            httpsOptions.ServerCertificate = rootCert; // Use the loaded certificate
+        });
+    });
+});
 
 var authDbConnectionStr = builder.Configuration.GetConnectionString("AuthDbConnection");
 builder.Services.AddDbContextPool<AuthDbContext>(options =>
@@ -28,7 +59,40 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IAuthRepository, AuthRepository>();
 builder.Services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
 
+builder.Services.AddSingleton(registrationMeterCounter);
+
 builder.Services.AddControllers();
+
+//Added mTLS auth configuration
+builder.Services.AddAuthentication(CertificateAuthenticationDefaults.AuthenticationScheme)
+    .AddCertificate(options =>
+    {
+        options.AllowedCertificateTypes = CertificateTypes.All;
+        options.ChainTrustValidationMode = X509ChainTrustMode.System;
+        options.RevocationMode = X509RevocationMode.NoCheck;
+        options.Events = new CertificateAuthenticationEvents
+        {
+            OnCertificateValidated = context =>
+            {
+                if (context.ClientCertificate != null)
+                {
+                    context.Success();
+                }
+                else
+                {
+                    context.Fail("Invalid certificate");
+                }
+
+                return Task.CompletedTask;
+            },
+            OnAuthenticationFailed = context =>
+            {
+                context.Fail("Invalid certificate");
+                return Task.CompletedTask;
+            }
+        };
+    });
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -98,8 +162,69 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
+//Otel config
+// Setup logging to be exported via OpenTelemetry
+builder.Logging.AddOpenTelemetry(logging =>
+{
+    logging.IncludeFormattedMessage = true;
+    logging.IncludeScopes = true;
+});
+
+var otel = builder.Services.AddOpenTelemetry();
+
+// Add Metrics for ASP.NET Core and our custom metrics and export via OTLP
+otel.WithMetrics(metrics =>
+{
+    // Metrics provider from OpenTelemetry
+    metrics.AddAspNetCoreInstrumentation();
+    //Our custom metrics
+    metrics.AddMeter(registrationMeterCounter.Name);
+    // Metrics provides by ASP.NET Core in .NET 8
+    metrics.AddMeter("Microsoft.AspNetCore.Hosting");
+    metrics.AddMeter("Microsoft.AspNetCore.Server.Kestrel");
+});
+
+// Add Tracing for ASP.NET Core and our custom ActivitySource and export via OTLP
+otel.WithTracing(tracing =>
+{
+    tracing.AddAspNetCoreInstrumentation();
+    tracing.AddHttpClientInstrumentation();
+    //tracing.AddGrpcCoreInstrumentation();
+    tracing.AddSource(checkoutActivitySource.Name);
+});
+
+// Export OpenTelemetry data via OTLP, using env vars for the configuration
+var OtlpEndpoint = builder.Configuration["OTEL_EXPORTER_OTLP_ENDPOINT"];
+if (OtlpEndpoint != null)
+{
+    otel.UseOtlpExporter();
+}
+
+//end of otel config
+
 var app = builder.Build();
 
+/*
+app.MapGet("/", SimulatedCheckout);
+async Task<string> SimulatedCheckout(ILogger<Program> logger)
+{
+    // Create a new Activity scoped to the method
+    using var activity = checkoutActivitySource.StartActivity("CheckoutActivity");
+
+    // Log a message
+    logger.LogInformation("Sending checkout");
+
+    // Increment the custom counter
+    countCheckouts.Add(1);
+
+    // Add a tag to the Activity
+    activity?.SetTag("checkout", "Hello World!");
+    activity?.SetTag("userID", "123");
+    activity?.SetTag("cartID", "ABC");
+
+    return "Hello World!";
+}
+*/
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
+using System.Diagnostics.Metrics;
 using System.IdentityModel.Tokens.Jwt;
 using TGA.ECommerceApp.Auth.Application.Dto;
 using TGA.ECommerceApp.Auth.Application.Interfaces;
@@ -14,14 +15,19 @@ public class AuthAPIController : ControllerBase
     protected ResponseDto response;
     private readonly IConfiguration _configuration;
     private readonly TokenValidationParameters _tokenValidationParams;
+
+    private readonly Counter<int> registrationCounter; // Counter for token generation
     public AuthAPIController(IAuthService authService,
         IConfiguration configuration,
-        TokenValidationParameters tokenValidationParams)
+        TokenValidationParameters tokenValidationParams,
+        Meter registrationMeterCounter)
     {
         this.authService = authService;
         this._configuration = configuration;
         this.response = new();
         _tokenValidationParams = tokenValidationParams;
+        registrationCounter = registrationMeterCounter.CreateCounter<int>("registrations.count",
+            description: "Counts the number of registrations");
     }
 
     [HttpPost("register")]
@@ -30,6 +36,7 @@ public class AuthAPIController : ControllerBase
         var result = await authService.Register(userDTO);
         if (result != null)
         {
+            registrationCounter.Add(1); // Increment the counter
             return Ok(result);
         }
         else
@@ -41,6 +48,7 @@ public class AuthAPIController : ControllerBase
     }
 
     [HttpPost("login")]
+    [RequireCertificate]
     public async Task<IActionResult> Login(LoginRequestDto userDTO)
     {
         var result = await authService.Login(userDTO);
@@ -62,6 +70,7 @@ public class AuthAPIController : ControllerBase
 
     [HttpPost]
     [Route("RefreshToken")]
+    [RequireCertificate]
     public async Task<AuthResult> RefreshToken([FromBody] TokenRequest tokenRequest)
     {
         var jwtTokenHandler = new JwtSecurityTokenHandler();
