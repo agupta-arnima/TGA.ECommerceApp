@@ -17,21 +17,73 @@ namespace TGA.ECommerceApp.Product.Data.Repository
         public IEnumerable<ProductInfo> GetProducts()
         {
             return productDbContext.Products
-                .Include(p=>p.Category)
+                .Include(p => p.Category)
                 .ToList();
         }
 
         public ProductInfo GetProductById(int id)
         {
             return productDbContext.Products
-                .Include(p=>p.Category)
+                .Include(p => p.Category)
                 .FirstOrDefault(c => c.ProductId == id);
         }
 
-        public bool DeleteProduct(int id) { 
+        public bool DeleteProduct(int id)
+        {
             productDbContext.Products.Remove(GetProductById(id));
             productDbContext.SaveChanges();
             return true;
+        }
+
+        public Category GetCategoryById(int id)
+        {
+            return productDbContext.Categories.FirstOrDefault(p => p.Id == id);
+        }
+
+        public Category CreateCategory(Category category)
+        {
+            productDbContext.Categories.Add(category);
+            productDbContext.SaveChanges();
+            return category;
+        }
+
+        public Category UpdateCategory(Category category)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Category DeleteCategory(int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Supplier GetSupplierById(int id)
+        {
+            return productDbContext.Suppliers.FirstOrDefault(p => p.Id == id);
+        }
+
+        public Supplier CreateSupplier(Supplier supplier)
+        {
+            productDbContext.Suppliers.Add(supplier);
+            productDbContext.SaveChanges();
+            return supplier;
+        }
+
+        public Supplier UpdateSupplier(Supplier supplier)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Supplier DeleteSupplier(int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public ProductInfo CreateProduct(ProductInfo productInfo)
+        {
+            var product = productDbContext.Products.Add(productInfo);
+            productDbContext.SaveChanges();
+            return product.Entity;
         }
     }
 }

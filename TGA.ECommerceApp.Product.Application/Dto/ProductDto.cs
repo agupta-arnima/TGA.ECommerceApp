@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace TGA.ECommerceApp.Product.Application.Dto
+﻿namespace TGA.ECommerceApp.Product.Application.Dto
 {
     public class ProductDto
     {
@@ -14,5 +8,8 @@ namespace TGA.ECommerceApp.Product.Application.Dto
         public string Description { get; set; }
         public string CategoryName { get; set; }
         public string ImageUrl { get; set; }
+        public int SupplierId { get; set; }
+        public int CategotyId { get; set; }
+        public int Stock { get; set; }
     }
 }
