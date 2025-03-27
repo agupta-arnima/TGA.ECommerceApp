@@ -11,6 +11,7 @@ using TGA.ECommerceApp.Order.API.Utility;
 using TGA.ECommerceApp.Order.API.Extensions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.OpenApi.Models;
+using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -41,6 +42,9 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {
+    options.SwaggerDoc("v1", new OpenApiInfo { Title = "Order API", Version = "v1" });
+    options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, $"{Assembly.GetExecutingAssembly().GetName().Name}.xml"));
+    
     options.AddSecurityDefinition(name: "Bearer", securityScheme: new OpenApiSecurityScheme
     {
         Name = "Authorization",
@@ -74,7 +78,10 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "Order API v1");
+    });
 }
 
 app.UseHttpsRedirection();

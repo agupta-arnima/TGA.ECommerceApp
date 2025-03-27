@@ -1,1 +1,10 @@
-﻿
+﻿mport the Certificate into the Windows Certificate Store: Use PowerShell to import the certificate into the Windows Certificate Store.
+
+Thumbprint: B404C48E0254DCA183079A0C5EC8E58BF8B11015
+Subject: CN=localhost
+
+$certPassword = ConvertTo-SecureString -String "1234" -Force -AsPlainText
+Import-PfxCertificate -FilePath "C:\Users\sackumar6\source\repos\agupta-arnima\TGA.ECommerceApp\TGA.ECommerceApp.Auth.API\Certs\server.pfx" -CertStoreLocation Cert:\LocalMachine\My -Password $certPassword
+
+
+$env:CERT_THUMBPRINT="your_certificate_thumbprint"

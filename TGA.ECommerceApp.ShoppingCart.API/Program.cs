@@ -1,6 +1,9 @@
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
+using Microsoft.OpenApi.Models;
 using Polly;
+using System.Reflection;
 using TGA.ECommerceApp.ShoppingCart.API.Extensions;
 using TGA.ECommerceApp.ShoppingCart.API.Utility;
 using TGA.ECommerceApp.ShoppingCart.Application;
@@ -38,7 +41,11 @@ builder.Services.AddHttpClient("Product", c => c.BaseAddress = new Uri(builder.C
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "Cart API", Version = "v1" });
+    c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, $"{Assembly.GetExecutingAssembly().GetName().Name}.xml"));
+});
 
 builder.AddAppAuthentication();
 
@@ -48,7 +55,10 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "Cart API v1");
+    });
 }
 
 app.UseHttpsRedirection();

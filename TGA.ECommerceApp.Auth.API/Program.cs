@@ -18,6 +18,7 @@ using TGA.ECommerceApp.Auth.Data.Repository;
 using TGA.ECommerceApp.Auth.Domain.Interfaces;
 using TGA.ECommerceApp.Auth.Domain.Models;
 using TGA.ECommerceApp.Product.Data.Context;
+using System.Security.Cryptography.X509Certificates;
 
 
 // Variable for Aspire DashBoard
@@ -29,8 +30,8 @@ var checkoutActivitySource = new ActivitySource("OTel.Example");
 
 var builder = WebApplication.CreateBuilder(args);
 
-//Certificate
-var rootCert = new X509Certificate2(@"C:\Users\sackumar6\source\repos\agupta-arnima\TGA.ECommerceApp\TGA.ECommerceApp.Auth.API\Certs\server.pfx", "1234"); // Adjust path and password
+//Load the certificate
+var rootCert = GetCertificate(Environment.GetEnvironmentVariable("CERT_THUMBPRINT"));
 
 builder.WebHost.UseKestrel(options =>
 {
@@ -248,4 +249,35 @@ void ApplyMigration()
     var _db = scope.ServiceProvider.GetRequiredService<AuthDbContext>();
     if (_db.Database.GetPendingMigrations().Any())
         _db.Database.Migrate();
+}
+
+static X509Certificate2? GetCertificate(string certThumbprint)
+{
+    if (string.IsNullOrEmpty(certThumbprint))
+    {
+        Console.WriteLine("Certificate thumbprint is not set.");
+        return null;
+    }
+
+    try
+    {
+        var store = new X509Store(StoreName.My, StoreLocation.LocalMachine);
+        store.Open(OpenFlags.ReadOnly);
+        var certs = store.Certificates.Find(X509FindType.FindByThumbprint, certThumbprint, false);
+        store.Close();
+
+        if (certs.Count == 0)
+        {
+            Console.WriteLine("Certificate not found in the store.");
+            return null;
+        }
+
+        Console.WriteLine("Certificate found and loaded.");
+        return certs[0];
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"Error loading certificate: {ex.Message}");
+        return null;
+    }
 }

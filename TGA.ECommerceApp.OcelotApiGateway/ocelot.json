@@ -1,5 +1,17 @@
 {
   "Routes": [
+    {
+      "DownstreamPathTemplate": "/",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7000
+        }
+      ],
+      "UpstreamPathTemplate": "/",
+      "UpstreamHttpMethod": [ "GET" ]
+    },
     //Product API
     {
       "DownstreamPathTemplate": "/api/product/",
@@ -243,6 +255,52 @@
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Bearer"
       }
+    }
+  ],
+  "SwaggerEndPoints": [
+    {
+      "Key": "product",
+      "TransformByOcelotConfig": false,
+      "Config": [
+        {
+          "Name": "Product API",
+          "Version": "v1",
+          "Url": "https://localhost:7000/swagger/v1/swagger.json"
+        }
+      ]
+    },
+    {
+      "Key": "cart",
+      "TransformByOcelotConfig": false,
+      "Config": [
+        {
+          "Name": "Cart API",
+          "Version": "v1",
+          "Url": "https://localhost:7003/swagger/v1/swagger.json"
+        }
+      ]
+    },
+    {
+      "Key": "order",
+      "TransformByOcelotConfig": false,
+      "Config": [
+        {
+          "Name": "Order API",
+          "Version": "v1",
+          "Url": "https://localhost:7004/swagger/v1/swagger.json"
+        }
+      ]
+    },
+    {
+      "Key": "inventory",
+      "TransformByOcelotConfig": false,
+      "Config": [
+        {
+          "Name": "Inventory API",
+          "Version": "v1",
+          "Url": "https://localhost:7000/swagger/v1/swagger.json"
+        }
+      ]
     }
   ],
   "GlobalConfiguration": {

@@ -3,8 +3,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using Swashbuckle.Swagger;
-using System;
+using System.Reflection;
 using System.Text;
 using TGA.ECommerceApp.Product.Application;
 using TGA.ECommerceApp.Product.Application.Interfaces;
@@ -53,6 +52,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     builder.Services.AddSwaggerGen(c =>
     {
         c.SwaggerDoc("v1", new OpenApiInfo { Title = "Inventory API", Version = "v1" });
+        c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, $"{Assembly.GetExecutingAssembly().GetName().Name}.xml"));
         c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
         {
             Name = "Authorization",
@@ -84,7 +84,10 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "Product API v1");
+    });
 }
 
 app.UseHttpsRedirection();
