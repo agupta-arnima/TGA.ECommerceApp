@@ -33,11 +33,12 @@ var checkoutActivitySource = new ActivitySource("OTel.Example");
 var builder = WebApplication.CreateBuilder(args);
 
 //Load the certificate
+//var rootCert = new X509Certificate2(@"C:\Users\sackumar6\source\repos\TGA_Training_Code_samples-mTLS\TGA_Training_Code_samples-mTLS\Certs\server.pfx", "1234"); // Adjust path and password
 var rootCert = GetCertificate(Environment.GetEnvironmentVariable("CERT_THUMBPRINT"));
 
 builder.WebHost.UseKestrel(options =>
 {
-    options.ListenAnyIP(5001, listenOptions =>
+    options.ListenAnyIP(7002, listenOptions =>
     {
         listenOptions.UseHttps(httpsOptions =>
         {
