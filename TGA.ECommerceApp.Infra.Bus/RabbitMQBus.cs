@@ -25,7 +25,7 @@ namespace TGA.ECommerceApp.Infra.Bus
             using (var connection = await factory.CreateConnectionAsync())  //Open the connection
             using (var channel = await connection.CreateChannelAsync())     //Open the channel
             {
-                await channel.QueueDeclareAsync(queue: queueName, durable: false, exclusive: false, autoDelete: false, arguments: null); //Queue name and Routing key both are eventname
+                await channel.QueueDeclareAsync(queue: queueName, durable: true, exclusive: false, autoDelete: false, arguments: null); //Queue name and Routing key both are eventname
                 var messageJson = System.Text.Json.JsonSerializer.Serialize(@event);
                 var body = System.Text.Encoding.UTF8.GetBytes(messageJson);
                 await channel.BasicPublishAsync(exchange: "", routingKey: queueName, body: body);

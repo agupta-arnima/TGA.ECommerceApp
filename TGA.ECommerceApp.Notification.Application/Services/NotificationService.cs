@@ -16,10 +16,10 @@ namespace TGA.ECommerceApp.Notification.Application.Services
         public async Task RegisterUserEmailAndLog(string userEmail)
         {
             string message = "New user has registered with email address: " + userEmail;
-            await LogAndEmail(message, "dotnetmastery@gmail.com");
+            await LogAndEmail(message, "TGA-admin@gmail.com");
         }
 
-        private async Task<bool> LogAndEmail(string message, string email) //message to be sent and send to email
+        private async Task<bool> LogAndEmail(string message, string email) //message to be sent and send from email
         {
             try
             {
