@@ -1,0 +1,47 @@
+version: '3.8'
+
+services:
+  authapi:
+    build:
+      context: .
+      dockerfile: AuthAPI/Dockerfile
+    ports:
+      - "5001:80"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+
+  productapi:
+    build:
+      context: .
+      dockerfile: ProductAPI/Dockerfile
+    ports:
+      - "7000:80"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+
+  orderapi:
+    build:
+      context: .
+      dockerfile: OrderAPI/Dockerfile
+    ports:
+      - "7004:80"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+
+  shippingapi:
+    build:
+      context: .
+      dockerfile: ShippingAPI/Dockerfile
+    ports:
+      - "7003:80"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+
+  ocelot:
+    build:
+      context: .
+      dockerfile: Ocelot/Dockerfile
+    ports:
+      - "7777:80"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
