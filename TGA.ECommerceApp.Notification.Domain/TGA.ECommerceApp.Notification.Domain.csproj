@@ -6,4 +6,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\TGA.ECommerceApp.Domain.Core\TGA.ECommerceApp.Domain.Core.csproj" />
+  </ItemGroup>
+
 </Project>
