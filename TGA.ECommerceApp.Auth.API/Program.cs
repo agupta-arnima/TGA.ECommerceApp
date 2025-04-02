@@ -19,7 +19,9 @@ using TGA.ECommerceApp.Auth.Domain.Interfaces;
 using TGA.ECommerceApp.Auth.Domain.Models;
 using TGA.ECommerceApp.Product.Data.Context;
 using System.Security.Cryptography.X509Certificates;
-
+using Microsoft.Extensions.Configuration;
+using TGA.ECommerceApp.Infra.Bus;
+using TGA.ECommerceApp.Domain.Core.Bus;
 
 // Variable for Aspire DashBoard
 var registrationMeterCounter = new Meter("OTel.Tempest", "1.0.0");
@@ -61,6 +63,10 @@ builder.Services.AddScoped<IAuthRepository, AuthRepository>();
 builder.Services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
 
 builder.Services.AddSingleton(registrationMeterCounter);
+
+//Rabbit MQ
+builder.Services.Configure<RabbitMQSetting>(builder.Configuration.GetSection("ApiSettings:RabbitMQ"));
+builder.Services.AddScoped(typeof(IEventBus), typeof(RabbitMQBus));
 
 builder.Services.AddControllers();
 

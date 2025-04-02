@@ -25,6 +25,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\TGA.ECommerceApp.Auth.Application\TGA.ECommerceApp.Auth.Application.csproj" />
+    <ProjectReference Include="..\TGA.ECommerceApp.Infra.Bus\TGA.ECommerceApp.Infra.Bus.csproj" />
   </ItemGroup>
 
 </Project>
