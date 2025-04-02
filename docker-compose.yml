@@ -1,47 +1,89 @@
 version: '3.8'
 
 services:
-  authapi:
-    build:
-      context: .
-      dockerfile: AuthAPI/Dockerfile
+  test-mysql:
+    image: mysql:latest
+    container_name: test-mysql
+    environment:
+        MYSQL_ROOT_PASSWORD: password
     ports:
-      - "5001:80"
+      - "3306:3306" 
+    healthcheck:
+       test : ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+       interval: 10s
+       timeout: 5s
+       retries: 5
+  tga.ecommerceapp.authapi:
+    build:
+      context: ./TGA.ECommerceApp.Auth.API
+      dockerfile: Dockerfile
+    ports:
+     - "7002:7002"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
+      - CERT_THUMBPRINT=B404C48E0254DCA183079A0C5EC8E58BF8B11015
+      - CERT_SUBJECT=CN=localhost
+      - ASPNETCORE_HTTPS_PORTS=8081
+      - ASPNETCORE_HTTP_PORTS=8080
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://localhost:4317
+      - OTEL_SERVICE_NAME=Auth-Services
+      - ConnectionStrings__AuthDbConnection=Server=test-mysql;port=3306;Database=TGA_Auth;User=root;Password=password;
+      - ApiSettings__JwtOptions__Secret=This is used to Sign and verify JWT tokens, Replace it with your own secret
+      - ApiSettings__JwtOptions__Issuer=TGA-Auth-API
+      - ApiSettings__JwtOptions__Audience=TGA-Client
+      - ApiSettings__JwtOptions__ExpiryInHours=7
 
-  productapi:
+  tga.ecommerceapp.productapi:
     build:
-      context: .
-      dockerfile: ProductAPI/Dockerfile
+      context: ./TGA.ECommerceApp.Product.API
+      dockerfile: Dockerfile
     ports:
       - "7000:80"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__ProductDbConnection=Server=test-mysql;port=3306;Database=TGA_Product;User=root;Password=password;
+      - ApiSettings__JwtOptions__Secret=This is used to Sign and verify JWT tokens, Replace it with your own secret
+      - ApiSettings__JwtOptions__Issuer=TGA-Auth-API
+      - ApiSettings__JwtOptions__Audience=TGA-Client
+      - ApiSettings__JwtOptions__ExpiryInHours=7
 
-  orderapi:
+  tga.ecommerceapp.orderapi:
     build:
-      context: .
-      dockerfile: OrderAPI/Dockerfile
+      context: ./TGA.ECommerceApp.Order.API
+      dockerfile: Dockerfile
     ports:
       - "7004:80"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__OrderDbConnection=Server=test-mysql;port=3306;Database=TGA_Order;User=root;Password=password;
+      - ApiSettings__Secret=This is used to Sign and verify JWT tokens, Replace it with your own secret
+      - ApiSettings__Issuer=mango-auth-api
+      - ApiSettings__Audience=mango-client
+      - ServiceUrls__ProductAPI=https://localhost:7000/
+      - Stripe__SecretKey=sk_test_51QiGz5CQ7mJfnXMskjXynI3SYDC8L68EXwvj6mkKy3tXKBYCpxFfEJvjOTfJKxCx7XuhKKEpYyqP0Qj4hc7MFFSV00SRq4yB7H
 
-  shippingapi:
+  tga.ecommerceapp.shoppingcartapi:
     build:
-      context: .
-      dockerfile: ShippingAPI/Dockerfile
+      context: ./TGA.ECommerceApp.ShoppingCart.API
+      dockerfile: Dockerfile
     ports:
       - "7003:80"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__CartDbConnection=Server=test-mysql;port=3306;Database=TGA_ShoppingCart;User=root;Password=password;
+      - ApiSettings__Secret=This is used to Sign and verify JWT tokens, Replace it with your own secret
+      - ApiSettings__Issuer=TGA-Auth-API
+      - ApiSettings__Audience=TGA-Client
+      - ServiceUrls__ProductAPI=https://localhost:7000/
 
-  ocelot:
+  tga.ecommerceapp.ocelotapigateway:
     build:
-      context: .
-      dockerfile: Ocelot/Dockerfile
+      context: ./TGA.ECommerceApp.OcelotApiGateway
+      dockerfile: Dockerfile
     ports:
-      - "7777:80"
+      - "7777:8080"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
+      - ApiSettings__Secret=This is used to Sign and verify JWT tokens, Replace it with your own secret
+      - ApiSettings__Issuer=TGA-Auth-API
+      - ApiSettings__Audience=TGA-Client
