@@ -4,6 +4,8 @@ using System.Diagnostics.Metrics;
 using System.IdentityModel.Tokens.Jwt;
 using TGA.ECommerceApp.Auth.Application.Dto;
 using TGA.ECommerceApp.Auth.Application.Interfaces;
+using TGA.ECommerceApp.Auth.Domain.Events;
+using TGA.ECommerceApp.Domain.Core.Bus;
 
 namespace TGA.ECommerceApp.Auth.API.Controllers;
 
@@ -13,19 +15,22 @@ public class AuthAPIController : ControllerBase
 {
     private readonly IAuthService authService;
     protected ResponseDto response;
-    private readonly IConfiguration _configuration;
-    private readonly TokenValidationParameters _tokenValidationParams;
+    private readonly IConfiguration configuration;
+    private readonly TokenValidationParameters tokenValidationParams;
+    private readonly IEventBus messageBus;
 
     private readonly Counter<int> registrationCounter; // Counter for token generation
     public AuthAPIController(IAuthService authService,
         IConfiguration configuration,
         TokenValidationParameters tokenValidationParams,
+        IEventBus messageBus,
         Meter registrationMeterCounter)
     {
         this.authService = authService;
-        this._configuration = configuration;
+        this.configuration = configuration;
         this.response = new();
-        _tokenValidationParams = tokenValidationParams;
+        this.tokenValidationParams = tokenValidationParams;
+        this.messageBus = messageBus;
         registrationCounter = registrationMeterCounter.CreateCounter<int>("registrations.count",
             description: "Counts the number of registrations");
     }
@@ -36,6 +41,8 @@ public class AuthAPIController : ControllerBase
         var result = await authService.Register(userDTO);
         if (result != null)
         {
+            //
+            await messageBus.PublishMessageAsync(new UserRegistrationEvent(userDTO.Email), configuration.GetValue<string>("ApiSettings:RabbitMQ:TopicAndQueueNames:UserRegistrationQueue"));
             registrationCounter.Add(1); // Increment the counter
             return Ok(result);
         }
@@ -76,7 +83,7 @@ public class AuthAPIController : ControllerBase
         var jwtTokenHandler = new JwtSecurityTokenHandler();
 
         // Validation 1 - Validation JWT token format
-        var tokenInVerification = jwtTokenHandler.ValidateToken(tokenRequest.Token, _tokenValidationParams, out var validatedToken);
+        var tokenInVerification = jwtTokenHandler.ValidateToken(tokenRequest.Token, tokenValidationParams, out var validatedToken);
 
         // Validation 2 - Validate encryption alg
         if (validatedToken is JwtSecurityToken jwtSecurityToken)
