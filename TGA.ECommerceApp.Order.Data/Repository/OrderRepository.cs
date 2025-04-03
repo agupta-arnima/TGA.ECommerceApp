@@ -30,5 +30,18 @@ namespace TGA.ECommerceApp.Order.Data.Repository
             orderFromDb.StripeSessionId = stripeSessionId;
             orderDbContext.SaveChanges();
         }
+
+        public async Task<bool> CancelOrder(OrderHeader orderHeader)
+        {
+            OrderHeader order = await orderDbContext.OrderHeaders.FirstAsync(u=> u.OrderHeaderId == orderHeader.OrderHeaderId);
+            order.Status = orderHeader.Status;
+            orderDbContext.SaveChanges();
+            return true;
+        }
+
+        public Task<OrderHeader> UpdateOrder(OrderHeader orderHeader)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -7,6 +7,7 @@ public interface IProductRepository
     IEnumerable<ProductInfo> GetProducts();
     ProductInfo GetProductById(int id);
     ProductInfo CreateProduct(ProductInfo productInfo);
+    Task UpdateProduct(ProductInfo product);
     bool DeleteProduct(int id);
     Category GetCategoryById(int id);
     Category CreateCategory(Category category);

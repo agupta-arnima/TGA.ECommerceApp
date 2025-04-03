@@ -42,7 +42,8 @@ public class AuthAPIController : ControllerBase
         if (result != null)
         {
             //
-            await messageBus.PublishMessageAsync(new UserRegistrationEvent(userDTO.Email), configuration.GetValue<string>("ApiSettings:RabbitMQ:TopicAndQueueNames:UserRegistrationQueue"));
+            await messageBus.PublishMessageAsync(new UserRegistrationEvent(userDTO.Email), 
+                configuration.GetValue<string>("ApiSettings:RabbitMQ:TopicAndQueueNames:UserRegistrationQueue"));
             registrationCounter.Add(1); // Increment the counter
             return Ok(result);
         }

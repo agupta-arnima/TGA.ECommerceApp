@@ -14,23 +14,21 @@ namespace TGA.ECommerceApp.Order.API.Extensions
             var issuer = settingSections.GetValue<string>("Issuer");
             var audience = settingSections.GetValue<string>("Audience");
 
-            var key = Encoding.ASCII.GetBytes(secret);
-            builder.Services.AddAuthentication(x =>
-            {
-                x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            }).AddJwtBearer(x =>
-            {
-                x.TokenValidationParameters = new TokenValidationParameters
-                {
-                    ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(key),
-                    ValidateIssuer = true,
-                    ValidateAudience = true,
-                    ValidIssuer = issuer,
-                    ValidAudience = audience
-                };
-            });
+            var key = Encoding.UTF8.GetBytes(secret);
+            builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(x =>
+                    {
+                        x.TokenValidationParameters = new TokenValidationParameters
+                        {
+                            ValidateIssuer = true,
+                            ValidateAudience = true,
+                            ValidateLifetime = true,
+                            ValidateIssuerSigningKey = true,
+                            ValidIssuer = issuer,
+                            ValidAudience = audience,
+                            IssuerSigningKey = new SymmetricSecurityKey(key)
+                        };
+                    });
 
             return builder;
         }

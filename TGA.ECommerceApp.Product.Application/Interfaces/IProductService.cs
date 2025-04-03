@@ -17,5 +17,9 @@ namespace TGA.ECommerceApp.Product.Application.Interfaces
         CategoryDto AddCategory(CategoryDto category);
         CategoryDto UpdateCategory(CategoryDto category);
 
+        Task<bool> ReserveInventory(OrderHeaderDto order);
+        Task<bool> ReleaseInventory(OrderHeaderDto order);
+
+
     }
 }

@@ -6,5 +6,6 @@ namespace TGA.ECommerceApp.Order.Application.Interfaces
     {
         Task<OrderHeaderDto> CreateOrder(CartDto cartDto);
         Task<StripeRequestDto> CreateStripeSession(StripeRequestDto stripeRequestDto);
+        Task<bool> CancelOrder(OrderHeaderDto cartDto);
     }
 }

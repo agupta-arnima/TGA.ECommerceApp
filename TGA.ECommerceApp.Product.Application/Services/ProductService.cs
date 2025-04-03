@@ -102,5 +102,35 @@ namespace TGA.ECommerceApp.Product.Application.Services
         {
             throw new NotImplementedException();
         }
+
+        public async Task<bool> ReleaseInventory(OrderHeaderDto order)
+        {
+            foreach (var item in order.OrderDetails)
+            {
+                var product = productRepository.GetProductById(item.ProductId);
+                if (product == null || product.Stock < item.Count)
+                {
+                    return false; // Not enough stock
+                }
+                product.Stock += item.Count;
+                await productRepository.UpdateProduct(product);
+            }
+            return true;
+        }
+
+        public async Task<bool> ReserveInventory(OrderHeaderDto order)
+        {
+            foreach (var item in order.OrderDetails)
+            {
+                var product = productRepository.GetProductById(item.ProductId);
+                if (product == null || product.Stock < item.Count)
+                {
+                    return false; // Not enough stock
+                }
+                product.Stock -= item.Count;
+                await productRepository.UpdateProduct(product);
+            }
+            return true;
+        }
     }
 }

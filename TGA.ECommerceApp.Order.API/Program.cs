@@ -1,17 +1,19 @@
-using System;
-using TGA.ECommerceApp.Order.Data.Context;
-using Microsoft.EntityFrameworkCore;
 using AutoMapper;
-using TGA.ECommerceApp.Order.Application;
-using TGA.ECommerceApp.Order.Domain.Interfaces;
-using TGA.ECommerceApp.Order.Application.Interfaces;
-using TGA.ECommerceApp.Order.Application.Services;
-using TGA.ECommerceApp.Order.Data.Repository;
-using TGA.ECommerceApp.Order.API.Utility;
-using TGA.ECommerceApp.Order.API.Extensions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using System.Reflection;
+using TGA.ECommerceApp.Domain.Core.Bus;
+using TGA.ECommerceApp.Infra.Bus;
+using TGA.ECommerceApp.Order.API.Extensions;
+using TGA.ECommerceApp.Order.API.Messaging;
+using TGA.ECommerceApp.Order.API.Utility;
+using TGA.ECommerceApp.Order.Application;
+using TGA.ECommerceApp.Order.Application.Interfaces;
+using TGA.ECommerceApp.Order.Application.Services;
+using TGA.ECommerceApp.Order.Data.Context;
+using TGA.ECommerceApp.Order.Data.Repository;
+using TGA.ECommerceApp.Order.Domain.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -36,10 +38,19 @@ builder.Services.AddScoped<BackendApiAuthenticationHttpClientHandler>();
 builder.Services.AddHttpClient("Product", c => c.BaseAddress = new Uri(builder.Configuration["ServiceUrls:ProductAPI"]))
     .AddHttpMessageHandler<BackendApiAuthenticationHttpClientHandler>();
 
+//Rabbit MQ
+
+builder.Services.Configure<RabbitMQSetting>(builder.Configuration.GetSection("ApiSettings:RabbitMQ"));
+builder.Services.AddScoped(typeof(IEventBus), typeof(RabbitMQBus));
+// Register the consumer service as a hosted service only
+builder.Services.AddHostedService<OrderSagaOrchestrator>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
+
+builder.AddAppAuthentication();
+
 builder.Services.AddSwaggerGen(options =>
 {
     options.SwaggerDoc("v1", new OpenApiInfo { Title = "Order API", Version = "v1" });
@@ -48,10 +59,11 @@ builder.Services.AddSwaggerGen(options =>
     options.AddSecurityDefinition(name: "Bearer", securityScheme: new OpenApiSecurityScheme
     {
         Name = "Authorization",
-        Description = "Enter the Bearer Authorization string as following: `Bearer Generated-JWT-Token`",
+        Type = SecuritySchemeType.Http,
+        Scheme = "Bearer",
+        BearerFormat = "JWT",
         In = ParameterLocation.Header,
-        Type = SecuritySchemeType.ApiKey,
-        Scheme = "Bearer" //JwtBearerDefaults.AuthenticationScheme
+        Description = "JWT Authorization header using the Bearer scheme."
     });
 
     options.AddSecurityRequirement(new OpenApiSecurityRequirement
@@ -62,7 +74,7 @@ builder.Services.AddSwaggerGen(options =>
                 Reference = new OpenApiReference
                 {
                     Type = ReferenceType.SecurityScheme,
-                    Id = JwtBearerDefaults.AuthenticationScheme
+                    Id = "Bearer"
                 }
             },
             new string[]{}
@@ -70,7 +82,6 @@ builder.Services.AddSwaggerGen(options =>
     });
 });
 
-builder.AddAppAuthentication();
 
 var app = builder.Build();
 
