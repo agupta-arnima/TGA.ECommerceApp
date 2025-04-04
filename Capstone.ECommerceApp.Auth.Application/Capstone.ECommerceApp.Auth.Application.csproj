@@ -1,0 +1,18 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.5.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Capstone.ECommerceApp.Auth.data\Capstone.ECommerceApp.Auth.Data.csproj" />
+    <ProjectReference Include="..\Capstone.ECommerceApp.Auth.Domain\Capstone.ECommerceApp.Auth.Domain.csproj" />
+  </ItemGroup>
+
+</Project>

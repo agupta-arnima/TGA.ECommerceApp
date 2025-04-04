@@ -15,7 +15,7 @@ services:
        retries: 5
   tga.ecommerceapp.authapi:
     build:
-      context: ./TGA.ECommerceApp.Auth.API
+      context: ./Capstone.ECommerceApp.Auth.API
       dockerfile: Dockerfile
     ports:
      - "7002:7002"
@@ -35,7 +35,7 @@ services:
 
   tga.ecommerceapp.productapi:
     build:
-      context: ./TGA.ECommerceApp.Product.API
+      context: ./Capstone.ECommerceApp.Product.API
       dockerfile: Dockerfile
     ports:
       - "7000:80"
@@ -49,7 +49,7 @@ services:
 
   tga.ecommerceapp.orderapi:
     build:
-      context: ./TGA.ECommerceApp.Order.API
+      context: ./Capstone.ECommerceApp.Order.API
       dockerfile: Dockerfile
     ports:
       - "7004:80"
@@ -64,7 +64,7 @@ services:
 
   tga.ecommerceapp.shoppingcartapi:
     build:
-      context: ./TGA.ECommerceApp.ShoppingCart.API
+      context: ./Capstone.ECommerceApp.ShoppingCart.API
       dockerfile: Dockerfile
     ports:
       - "7003:80"
@@ -78,7 +78,7 @@ services:
 
   tga.ecommerceapp.ocelotapigateway:
     build:
-      context: ./TGA.ECommerceApp.OcelotApiGateway
+      context: ./Capstone.ECommerceApp.OcelotApiGateway
       dockerfile: Dockerfile
     ports:
       - "7777:8080"

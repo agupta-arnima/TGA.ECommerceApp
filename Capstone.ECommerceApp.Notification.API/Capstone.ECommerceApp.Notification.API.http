@@ -1,0 +1,6 @@
+@Capstone.ECommerceApp.Notification.API_HostAddress = http://localhost:5246
+
+GET {{Capstone.ECommerceApp.Notification.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
