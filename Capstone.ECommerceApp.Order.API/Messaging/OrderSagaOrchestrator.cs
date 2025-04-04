@@ -31,7 +31,7 @@ public class OrderSagaOrchestrator : BackgroundService
         _configuration = configuration;
         _serviceProvider = serviceProvider;
         _orderProcessingService = orderProcessingService;
-       
+
         var factory = new ConnectionFactory
         {
             HostName = _rabbitMqSetting.HostName,
@@ -64,8 +64,15 @@ public class OrderSagaOrchestrator : BackgroundService
                 var orderDeatils = JsonConvert.DeserializeObject<OrderHeaderDto>(message);
                 //Extract Token
 
-                var token = ea.BasicProperties.Headers.ContainsKey("Authorization")
-                                ? ea.BasicProperties.Headers["Authorization"].ToString().Replace("Bearer ", "") : string.Empty;
+                var token = string.Empty;
+                if (ea.BasicProperties.Headers.ContainsKey("Authorization"))
+                {
+                    var tokenBytes = ea.BasicProperties.Headers["Authorization"] as byte[];
+                    if (tokenBytes != null)
+                    {
+                        token = Encoding.UTF8.GetString(tokenBytes).Replace("Bearer ", "");
+                    }
+                }
                 //TODO
                 processedSuccessfully = true;
                 await _orderProcessingService.ProcessOrder(orderDeatils, token);
