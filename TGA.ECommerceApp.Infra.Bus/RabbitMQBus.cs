@@ -14,7 +14,7 @@ namespace TGA.ECommerceApp.Infra.Bus
         {
             _rabbitMqSetting = rabbitMqSetting.Value;
         }
-        public async Task PublishMessageAsync<T>(T @event, string queueName) where T : Event
+        public async Task PublishMessageAsync<T>(T @event, string queueName, string token = "") where T : Event
         {
             var factory = new ConnectionFactory
             {
@@ -28,7 +28,12 @@ namespace TGA.ECommerceApp.Infra.Bus
                 await channel.QueueDeclareAsync(queue: queueName, durable: true, exclusive: false, autoDelete: false, arguments: null); //Queue name and Routing key both are eventname
                 var messageJson = System.Text.Json.JsonSerializer.Serialize(@event);
                 var body = System.Text.Encoding.UTF8.GetBytes(messageJson);
-                await channel.BasicPublishAsync(exchange: "", routingKey: queueName, body: body);
+
+                var properties = new BasicProperties
+                {
+                    Headers = new Dictionary<string, object> {{ "Authorization", $"Bearer {token}"  } }
+                };
+                await channel.BasicPublishAsync(exchange: "", routingKey: queueName,true,basicProperties: properties, body: body);
                 //In the case of Default Exchange, the binding key will be the same as the name of the queue.
                 //So, the messages will also have the same routing-key as the Queue name.
             }

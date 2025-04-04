@@ -1,9 +1,12 @@
 ﻿
 using Microsoft.Extensions.Options;
+using Newtonsoft.Json;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using System.Text;
 using TGA.ECommerceApp.Infra.Bus;
+using TGA.ECommerceApp.Order.Application.Dto;
+using TGA.ECommerceApp.Order.Application.Interfaces;
 
 namespace TGA.ECommerceApp.Order.API.Messaging
 {
@@ -15,16 +18,19 @@ namespace TGA.ECommerceApp.Order.API.Messaging
         private IChannel _channel;
         private IConfiguration _configuration;
         private readonly IServiceProvider _serviceProvider;
+        private IOrderProcessingService _orderProcessingService;
 
         public OrderSagaOrchestrator(ILogger<OrderSagaOrchestrator> logger,
                                         IOptions<RabbitMQSetting> rabbitMqSetting,
                                         IConfiguration configuration,
-                                        IServiceProvider serviceProvider)
+                                        IServiceProvider serviceProvider,
+                                        IOrderProcessingService orderProcessingService)
         {
             _logger = logger;
             _rabbitMqSetting = rabbitMqSetting.Value;
             _configuration = configuration;
             _serviceProvider = serviceProvider;
+            _orderProcessingService = orderProcessingService;
            
             var factory = new ConnectionFactory
             {
@@ -55,7 +61,14 @@ namespace TGA.ECommerceApp.Order.API.Messaging
                 bool processedSuccessfully = false;
                 try
                 {
-                    //processedSuccessfully = await OnUserRegistrationReceived(message);
+                    var orderDeatils = JsonConvert.DeserializeObject<OrderHeaderDto>(message);
+                    //Extract Token
+
+                    var token = ea.BasicProperties.Headers.ContainsKey("Authorization")
+                                    ? ea.BasicProperties.Headers["Authorization"].ToString().Replace("Bearer ", "") : string.Empty;
+                    //TODO
+                    processedSuccessfully = true;
+                    await _orderProcessingService.ProcessOrder(orderDeatils, token);
                 }
                 catch (Exception ex)
                 {

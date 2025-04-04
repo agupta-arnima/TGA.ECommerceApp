@@ -24,7 +24,7 @@ namespace TGA.ECommerceApp.Order.API.Controllers
             this.configuration = configuration;
         }
 
-        //[Authorize]
+        [Authorize]
         [HttpPost("CreateOrder")]
         public async Task<IActionResult> CreateOrder(CartDto cartDto)
         {
@@ -35,8 +35,13 @@ namespace TGA.ECommerceApp.Order.API.Controllers
                 response.Message = "Order was created successfully";
                 if (response.Result != null)
                 {
+                    string token = "";
+                    if (HttpContext.Request.Headers.ContainsKey("Authorization"))
+                    {
+                        token = HttpContext.Request.Headers["Authorization"].ToString().Replace("Bearer", "").Trim();
+                    }
                     await messageBus.PublishMessageAsync(new OrderCreatedEvent<OrderHeaderDto>(orderHeaderDto),
-                        configuration.GetValue<string>("ApiSettings:RabbitMQ:TopicAndQueueNames:OrderQueue"));
+                        configuration.GetValue<string>("ApiSettings:RabbitMQ:TopicAndQueueNames:OrderQueue"), token);
                 }
                 return Ok(response);
             }
@@ -55,7 +60,7 @@ namespace TGA.ECommerceApp.Order.API.Controllers
             try
             {
                 var orderDto = await orderService.CancelOrder(cartDto);
-                if(orderDto)
+                if (orderDto)
                 {
                     response.Result = orderDto;
                     response.Message = "Order has been cancelled.";
