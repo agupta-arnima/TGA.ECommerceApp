@@ -17,6 +17,16 @@ namespace TGA.ECommerceApp.Order.Application.Services
             this.mapper = mapper;
         }
 
+        public async Task<bool> CancelOrder(OrderHeaderDto cartDto)
+        {
+            var orderHeaderDto = mapper.Map<OrderHeaderDto>(cartDto);//mapping from CartHeaderDto to OrderHeaderDto
+            orderHeaderDto.Status = SD.Status_Canceled;
+            orderHeaderDto.OrderDetails = mapper.Map<IEnumerable<OrderDetailsDto>>(cartDto);//mapping from CartDetailsDto to OrderDetailsDto
+
+            var orderCancel = await orderRepository.CancelOrder(mapper.Map<OrderHeader>(orderHeaderDto));
+            return orderCancel;
+        }
+
         public async Task<OrderHeaderDto> CreateOrder(CartDto cartDto)
         {
             var orderHeaderDto = mapper.Map<OrderHeaderDto>(cartDto.CartHeader);//mapping from CartHeaderDto to OrderHeaderDto

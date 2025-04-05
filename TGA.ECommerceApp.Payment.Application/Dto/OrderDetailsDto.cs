@@ -1,4 +1,4 @@
-﻿namespace TGA.ECommerceApp.Order.Application.Dto;
+﻿namespace TGA.ECommerceApp.Payment.Application.Dto;
 
 public class OrderDetailsDto
 {

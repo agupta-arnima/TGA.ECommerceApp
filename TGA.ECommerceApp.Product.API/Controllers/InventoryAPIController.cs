@@ -20,6 +20,41 @@ namespace TGA.ECommerceApp.Product.API.Controllers
             responseDto = new ResponseDto();
         }
 
+        [HttpPost("releaseinventory")]
+        public IActionResult ReleaseInventory([FromBody] OrderHeaderDto order)
+        {
+            try
+            {
+                var releseInventory = _productService.ReleaseInventory(order);
+                responseDto.Result = true;
+                responseDto.Result = releseInventory;
+                responseDto.Message = $"Order has been released Successfullty";
+            }
+            catch (Exception ex)
+            {
+                responseDto.IsSuccess = false;
+                responseDto.Message = ex.Message;
+            }
+            return Ok(responseDto);
+        }
+        [HttpPost("reserveinventory")]
+        public IActionResult ReserveInventory([FromBody] OrderHeaderDto order)
+        {
+            try
+            {
+                var reserveInventory = _productService.ReserveInventory(order);
+                responseDto.Result = true;
+                responseDto.Result = reserveInventory;
+                responseDto.Message = $"Order has been reserved Successfullty";
+            }
+            catch (Exception ex)
+            {
+                responseDto.IsSuccess = false;
+                responseDto.Message = ex.Message;
+            }
+            return Ok(responseDto);
+        }
+
         [HttpPost("product")]
         public IActionResult CreateProduct([FromBody] ProductDto productDto)
         {

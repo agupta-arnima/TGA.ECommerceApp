@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using TGA.ECommerceApp.Domain.Core.Bus;
 using TGA.ECommerceApp.Order.Application.Dto;
 using TGA.ECommerceApp.Order.Application.Interfaces;
+using TGA.ECommerceApp.Order.Domain.Events;
 
 namespace TGA.ECommerceApp.Order.API.Controllers
 {
@@ -11,11 +13,15 @@ namespace TGA.ECommerceApp.Order.API.Controllers
     {
         private readonly IOrderService orderService;
         private ResponseDto response;
+        private readonly IEventBus messageBus;
+        private readonly IConfiguration configuration;
 
-        public OrderAPIController(IOrderService orderService)
+        public OrderAPIController(IOrderService orderService, IEventBus messageBus, IConfiguration configuration)
         {
             this.orderService = orderService;
             this.response = new ResponseDto();
+            this.messageBus = messageBus;
+            this.configuration = configuration;
         }
 
         [Authorize]
@@ -27,6 +33,16 @@ namespace TGA.ECommerceApp.Order.API.Controllers
                 var orderHeaderDto = await orderService.CreateOrder(cartDto);
                 response.Result = orderHeaderDto;
                 response.Message = "Order was created successfully";
+                if (response.Result != null)
+                {
+                    string token = "";
+                    if (HttpContext.Request.Headers.ContainsKey("Authorization"))
+                    {
+                        token = HttpContext.Request.Headers["Authorization"].ToString().Replace("Bearer", "").Trim();
+                    }
+                    await messageBus.PublishMessageAsync(new OrderCreatedEvent<OrderHeaderDto>(orderHeaderDto),
+                        configuration.GetValue<string>("ApiSettings:RabbitMQ:TopicAndQueueNames:OrderQueue"), token);
+                }
                 return Ok(response);
             }
             catch (Exception e)
@@ -36,6 +52,35 @@ namespace TGA.ECommerceApp.Order.API.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, response);
             }
         }
+
+        [Authorize]
+        [HttpDelete("CancelOrder")]
+        public async Task<IActionResult> CancelOrder(OrderHeaderDto cartDto)
+        {
+            try
+            {
+                var orderDto = await orderService.CancelOrder(cartDto);
+                if (orderDto)
+                {
+                    response.Result = orderDto;
+                    response.Message = "Order has been cancelled.";
+                    return Ok(response);
+                }
+                else
+                {
+                    response.Result = false;
+                    response.Message = "Please check the order details.";
+                    return BadRequest(response);
+                }
+            }
+            catch (Exception e)
+            {
+                response.Result = false;
+                response.Message = $"Order has been not cancelled, Error: {e.Message}";
+                return StatusCode(StatusCodes.Status417ExpectationFailed, response);
+            }
+        }
+
 
         [Authorize]
         [HttpPost("CreateStripeSession")]

@@ -85,5 +85,23 @@ namespace TGA.ECommerceApp.Product.Data.Repository
             productDbContext.SaveChanges();
             return product.Entity;
         }
+
+        public async Task UpdateProduct(ProductInfo product)
+        {
+            var existingProduct = await productDbContext.Products.FindAsync(product.ProductId);
+            if (existingProduct != null)
+            {
+                existingProduct.Name = product.Name;
+                existingProduct.Price = product.Price;
+                existingProduct.Description = product.Description;
+                existingProduct.CategoryId = product.CategoryId;
+                existingProduct.SupplierId = product.SupplierId;
+                existingProduct.Stock = product.Stock;
+                existingProduct.ImageUrl = product.ImageUrl;
+
+                productDbContext.Products.Update(existingProduct);
+                await productDbContext.SaveChangesAsync();
+            }
+        }
     }
 }
