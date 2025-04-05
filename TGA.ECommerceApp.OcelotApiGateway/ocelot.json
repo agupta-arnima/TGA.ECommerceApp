@@ -15,11 +15,11 @@
     //Product API
     {
       "DownstreamPathTemplate": "/api/product/",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 7000
+          "Host": "tga.ecommerceapp.productapi",
+          "Port": 8080
         }
       ],
       "UpstreamPathTemplate": "/api/product",
@@ -45,7 +45,7 @@
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
+          "Host": "tga.ecommerceapp.productapi",
           "Port": 7000
         }
       ],
