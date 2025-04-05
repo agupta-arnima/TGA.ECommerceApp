@@ -53,4 +53,4 @@ services:
     links:
       - tga.ecommerceapp.productapi      
     depends_on:
-      - tga.ecommerceapp.productapi 
+      - tga.ecommerceapp.productapi
