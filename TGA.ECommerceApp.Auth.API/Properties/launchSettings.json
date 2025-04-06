@@ -6,7 +6,7 @@
       "launchUrl": "swagger",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
-        "CERT_THUMBPRINT": "B404C48E0254DCA183079A0C5EC8E58BF8B11015",
+        "CERT_THUMBPRINT": "b404c48e0254dca183079a0c5ec8e58bf8b11015",
         "CERT_SUBJECT": "CN=localhost"
       },
       "dotnetRunMessages": true,
@@ -18,7 +18,7 @@
       "launchUrl": "swagger",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
-        "CERT_THUMBPRINT": "B404C48E0254DCA183079A0C5EC8E58BF8B11015",
+        "CERT_THUMBPRINT": "b404c48e0254dca183079a0c5ec8e58bf8b11015",
         "CERT_SUBJECT": "CN=localhost"
       },
       "dotnetRunMessages": true,
@@ -30,7 +30,7 @@
       "launchUrl": "swagger",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
-        "CERT_THUMBPRINT": "B404C48E0254DCA183079A0C5EC8E58BF8B11015",
+        "CERT_THUMBPRINT": "b404c48e0254dca183079a0c5ec8e58bf8b11015",
         "CERT_SUBJECT": "CN=localhost"
       }
     },

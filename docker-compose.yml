@@ -28,6 +28,25 @@ services:
     - "5672:5672"
     - "15672:15672"
 
+  tga.ecommerceapp.authapi:
+    build:
+      context: .
+      dockerfile: TGA.ECommerceApp.Auth.API/Dockerfile
+    ports:
+     - "7002:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - CERT_THUMBPRINT=b404c48e0254dca183079a0c5ec8e58bf8b11015
+      - CERT_SUBJECT=CN=localhost
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://localhost:4317
+      - OTEL_SERVICE_NAME=Auth-Services
+      - ConnectionStrings__AuthDbConnection=Server=tga.mysql;port=3306;Database=TGA_Auth;User=root;Password=password;
+      - ApiSettings__JwtOptions__Secret=This is used to Sign and verify JWT tokens, Replace it with your own secret
+      - ApiSettings__JwtOptions__Issuer=TGA-Auth-API
+      - ApiSettings__JwtOptions__Audience=TGA-Client
+      - ApiSettings__JwtOptions__ExpiryInHours=7
+
+
   tga.ecommerceapp.productapi:
     image: ${DOCKER_REGISTRY-}productapi
     container_name: productapi
@@ -62,8 +81,8 @@ services:
       - ASPNETCORE_ENVIRONMENT=Development
       - ConnectionStrings__OrderDbConnection=Server=tga.mysql;port=3306;Database=TGA_Order;User=root;Password=password;
       - ApiSettings__Secret=This is used to Sign and verify JWT tokens, Replace it with your own secret
-      - ApiSettings__Issuer=mango-auth-api
-      - ApiSettings__Audience=mango-client
+      - ApiSettings__Issuer=TGA-Auth-API
+      - ApiSettings__Audience=TGA-Client
       - ServiceUrls__ProductAPI=https://tga.ecommerceapp.productapi:7000/
       - Stripe__SecretKey=sk_test_51QiGz5CQ7mJfnXMskjXynI3SYDC8L68EXwvj6mkKy3tXKBYCpxFfEJvjOTfJKxCx7XuhKKEpYyqP0Qj4hc7MFFSV00SRq4yB7H
 
