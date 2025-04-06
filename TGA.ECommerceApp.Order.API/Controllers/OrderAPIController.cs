@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using TGA.ECommerceApp.Domain.Core.Bus;
 using TGA.ECommerceApp.Order.Application.Dto;
 using TGA.ECommerceApp.Order.Application.Interfaces;
-using TGA.ECommerceApp.Order.Domain.Events;
+using TGA.ECommerceApp.Order.Application.Events;
 
 namespace TGA.ECommerceApp.Order.API.Controllers
 {
@@ -40,7 +40,7 @@ namespace TGA.ECommerceApp.Order.API.Controllers
                     {
                         token = HttpContext.Request.Headers["Authorization"].ToString().Replace("Bearer", "").Trim();
                     }
-                    await messageBus.PublishMessageAsync(new OrderCreatedEvent<OrderHeaderDto>(orderHeaderDto),
+                    await messageBus.PublishMessageAsync(new OrderCreatedEvent(orderHeaderDto),
                         configuration.GetValue<string>("ApiSettings:RabbitMQ:TopicAndQueueNames:OrderQueue"), token);
                 }
                 return Ok(response);

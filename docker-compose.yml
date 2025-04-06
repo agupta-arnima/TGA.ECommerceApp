@@ -36,7 +36,43 @@ services:
       - ApiSettings__JwtOptions__Issuer=TGA-Auth-API
       - ApiSettings__JwtOptions__Audience=TGA-Client
       - ApiSettings__JwtOptions__ExpiryInHours=7
+  
+  tga.ecommerceapp.orderapi:
+    image: ${DOCKER_REGISTRY-}orderapi
+    container_name: orderapi
+    build:
+      context: .
+      dockerfile: TGA.ECommerceApp.Order.API/Dockerfile
+    #This Service Depends on the database service specifed above
+    depends_on: 
+      - tga.mysql
+    ports:
+      - "7004:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__OrderDbConnection=Server=tga.mysql;port=3306;Database=TGA_Order;User=root;Password=password;
+      - ApiSettings__Secret=This is used to Sign and verify JWT tokens, Replace it with your own secret
+      - ApiSettings__Issuer=mango-auth-api
+      - ApiSettings__Audience=mango-client
+      - ServiceUrls__ProductAPI=https://tga.ecommerceapp.productapi:7000/
+      - Stripe__SecretKey=sk_test_51QiGz5CQ7mJfnXMskjXynI3SYDC8L68EXwvj6mkKy3tXKBYCpxFfEJvjOTfJKxCx7XuhKKEpYyqP0Qj4hc7MFFSV00SRq4yB7H
 
+  tga.ecommerceapp.shoppingcartapi:
+    image: ${DOCKER_REGISTRY-}shoppingcartapi
+    container_name: shoppingcartapi
+    build:
+      context: .
+      dockerfile: TGA.ECommerceApp.ShoppingCart.API/Dockerfile
+    ports:
+      - "7003:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__CartDbConnection=Server=tga.mysql;port=3306;Database=TGA_ShoppingCart;User=root;Password=password;
+      - ApiSettings__Secret=This is used to Sign and verify JWT tokens, Replace it with your own secret
+      - ApiSettings__Issuer=TGA-Auth-API
+      - ApiSettings__Audience=TGA-Client
+      - ServiceUrls__ProductAPI=https://tga.ecommerceapp.productapi:7000/
+       
   tga.ecommerceapp.ocelotapigateway:
     image: ${DOCKER_REGISTRY-}ocelotapigateway
     container_name: ocelotapigateway
