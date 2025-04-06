@@ -1,89 +1,121 @@
-version: '3.8'
+volumes:
+  datafiles:
 
 services:
-  test-mysql:
+  tga.mysql:
     image: mysql:latest
-    container_name: test-mysql
+    container_name: tga.mysql
     environment:
         MYSQL_ROOT_PASSWORD: password
     ports:
-      - "3306:3306" 
+      - "3306:3306"
+    #Specify where the persisted Data should be stored
+    volumes:
+      - datafiles:/var/lib/mysql
     healthcheck:
        test : ["CMD", "mysqladmin", "ping", "-h", "localhost"]
        interval: 10s
        timeout: 5s
        retries: 5
-  tga.ecommerceapp.authapi:
-    build:
-      context: ./Capstone.ECommerceApp.Auth.API
-      dockerfile: Dockerfile
+  
+  rabbitmq: # login guest:guest
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    hostname: "rabbitmq"
+    labels:
+      NAME: "rabbitmq"
     ports:
-     - "7002:7002"
+    - "5672:5672"
+    - "15672:15672"
+
+  capstone.ecommerceapp.authapi:
+    build:
+      context: .
+      dockerfile: Capstone.ECommerceApp.Auth.API/Dockerfile
+    ports:
+     - "7002:8080"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - CERT_THUMBPRINT=B404C48E0254DCA183079A0C5EC8E58BF8B11015
+      - CERT_THUMBPRINT=b404c48e0254dca183079a0c5ec8e58bf8b11015
       - CERT_SUBJECT=CN=localhost
-      - ASPNETCORE_HTTPS_PORTS=8081
-      - ASPNETCORE_HTTP_PORTS=8080
       - OTEL_EXPORTER_OTLP_ENDPOINT=http://localhost:4317
       - OTEL_SERVICE_NAME=Auth-Services
-      - ConnectionStrings__AuthDbConnection=Server=test-mysql;port=3306;Database=TGA_Auth;User=root;Password=password;
+      - ConnectionStrings__AuthDbConnection=Server=tga.mysql;port=3306;Database=TGA_Auth;User=root;Password=password;
       - ApiSettings__JwtOptions__Secret=This is used to Sign and verify JWT tokens, Replace it with your own secret
       - ApiSettings__JwtOptions__Issuer=TGA-Auth-API
       - ApiSettings__JwtOptions__Audience=TGA-Client
       - ApiSettings__JwtOptions__ExpiryInHours=7
 
-  tga.ecommerceapp.productapi:
+
+  capstone.ecommerceapp.productapi:
+    image: ${DOCKER_REGISTRY-}productapi
+    container_name: productapi
     build:
-      context: ./Capstone.ECommerceApp.Product.API
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: Capstone.ECommerceApp.Product.API/Dockerfile
+    #This Service Depends on the database service specifed above
+    depends_on: 
+      - tga.mysql
     ports:
-      - "7000:80"
+      - "7000:8080"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - ConnectionStrings__ProductDbConnection=Server=test-mysql;port=3306;Database=TGA_Product;User=root;Password=password;
+      - ConnectionStrings__ProductDbConnection=Server=tga.mysql;port=3306;Database=TGA_Product;User=root;Password=password;
       - ApiSettings__JwtOptions__Secret=This is used to Sign and verify JWT tokens, Replace it with your own secret
       - ApiSettings__JwtOptions__Issuer=TGA-Auth-API
       - ApiSettings__JwtOptions__Audience=TGA-Client
       - ApiSettings__JwtOptions__ExpiryInHours=7
-
-  tga.ecommerceapp.orderapi:
+  
+  capstone.ecommerceapp.orderapi:
+    image: ${DOCKER_REGISTRY-}orderapi
+    container_name: orderapi
     build:
-      context: ./Capstone.ECommerceApp.Order.API
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: Capstone.ECommerceApp.Order.API/Dockerfile
+    #This Service Depends on the database service specifed above
+    depends_on: 
+      - tga.mysql
     ports:
-      - "7004:80"
+      - "7004:8080"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - ConnectionStrings__OrderDbConnection=Server=test-mysql;port=3306;Database=TGA_Order;User=root;Password=password;
+      - ConnectionStrings__OrderDbConnection=Server=tga.mysql;port=3306;Database=TGA_Order;User=root;Password=password;
       - ApiSettings__Secret=This is used to Sign and verify JWT tokens, Replace it with your own secret
-      - ApiSettings__Issuer=mango-auth-api
-      - ApiSettings__Audience=mango-client
-      - ServiceUrls__ProductAPI=https://localhost:7000/
+      - ApiSettings__Issuer=TGA-Auth-API
+      - ApiSettings__Audience=TGA-Client
+      - ServiceUrls__ProductAPI=https://tga.ecommerceapp.productapi:7000/
       - Stripe__SecretKey=sk_test_51QiGz5CQ7mJfnXMskjXynI3SYDC8L68EXwvj6mkKy3tXKBYCpxFfEJvjOTfJKxCx7XuhKKEpYyqP0Qj4hc7MFFSV00SRq4yB7H
 
-  tga.ecommerceapp.shoppingcartapi:
+  capstone.ecommerceapp.shoppingcartapi:
+    image: ${DOCKER_REGISTRY-}shoppingcartapi
+    container_name: shoppingcartapi
     build:
-      context: ./Capstone.ECommerceApp.ShoppingCart.API
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: Capstone.ECommerceApp.ShoppingCart.API/Dockerfile
     ports:
-      - "7003:80"
+      - "7003:8080"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - ConnectionStrings__CartDbConnection=Server=test-mysql;port=3306;Database=TGA_ShoppingCart;User=root;Password=password;
+      - ConnectionStrings__CartDbConnection=Server=tga.mysql;port=3306;Database=TGA_ShoppingCart;User=root;Password=password;
       - ApiSettings__Secret=This is used to Sign and verify JWT tokens, Replace it with your own secret
       - ApiSettings__Issuer=TGA-Auth-API
       - ApiSettings__Audience=TGA-Client
-      - ServiceUrls__ProductAPI=https://localhost:7000/
-
-  tga.ecommerceapp.ocelotapigateway:
+      - ServiceUrls__ProductAPI=https://tga.ecommerceapp.productapi:7000/
+       
+  capstone.ecommerceapp.ocelotapigateway:
+    image: ${DOCKER_REGISTRY-}ocelotapigateway
+    container_name: ocelotapigateway
     build:
-      context: ./Capstone.ECommerceApp.OcelotApiGateway
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: Capstone.ECommerceApp.OcelotApiGateway/Dockerfile
     ports:
-      - "7777:8080"
+      - "7777:443"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ApiSettings__Secret=This is used to Sign and verify JWT tokens, Replace it with your own secret
       - ApiSettings__Issuer=TGA-Auth-API
       - ApiSettings__Audience=TGA-Client
+    links:
+      - capstone.ecommerceapp.productapi      
+    depends_on:
+      - capstone.ecommerceapp.productapi

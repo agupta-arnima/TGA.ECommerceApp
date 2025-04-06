@@ -32,6 +32,8 @@ var checkoutActivitySource = new ActivitySource("OTel.Example");
 
 var builder = WebApplication.CreateBuilder(args);
 
+//TODO mTLS implementation for Auth API only certified application can able to use it
+/* 
 //Load the certificate
 //var rootCert = new X509Certificate2(@"C:\Users\sackumar6\source\repos\TGA_Training_Code_samples-mTLS\TGA_Training_Code_samples-mTLS\Certs\server.pfx", "1234"); // Adjust path and password
 var rootCert = GetCertificate(Environment.GetEnvironmentVariable("CERT_THUMBPRINT"));
@@ -48,6 +50,7 @@ builder.WebHost.UseKestrel(options =>
         });
     });
 });
+*/
 
 var authDbConnectionStr = builder.Configuration.GetConnectionString("AuthDbConnection");
 builder.Services.AddDbContextPool<AuthDbContext>(options =>
@@ -72,34 +75,34 @@ builder.Services.AddScoped(typeof(IEventBus), typeof(RabbitMQBus));
 builder.Services.AddControllers();
 
 //Added mTLS auth configuration
-builder.Services.AddAuthentication(CertificateAuthenticationDefaults.AuthenticationScheme)
-    .AddCertificate(options =>
-    {
-        options.AllowedCertificateTypes = CertificateTypes.All;
-        options.ChainTrustValidationMode = X509ChainTrustMode.System;
-        options.RevocationMode = X509RevocationMode.NoCheck;
-        options.Events = new CertificateAuthenticationEvents
-        {
-            OnCertificateValidated = context =>
-            {
-                if (context.ClientCertificate != null)
-                {
-                    context.Success();
-                }
-                else
-                {
-                    context.Fail("Invalid certificate");
-                }
+//builder.Services.AddAuthentication(CertificateAuthenticationDefaults.AuthenticationScheme)
+//    .AddCertificate(options =>
+//    {
+//        options.AllowedCertificateTypes = CertificateTypes.All;
+//        options.ChainTrustValidationMode = X509ChainTrustMode.System;
+//        options.RevocationMode = X509RevocationMode.NoCheck;
+//        options.Events = new CertificateAuthenticationEvents
+//        {
+//            OnCertificateValidated = context =>
+//            {
+//                if (context.ClientCertificate != null)
+//                {
+//                    context.Success();
+//                }
+//                else
+//                {
+//                    context.Fail("Invalid certificate");
+//                }
 
-                return Task.CompletedTask;
-            },
-            OnAuthenticationFailed = context =>
-            {
-                context.Fail("Invalid certificate");
-                return Task.CompletedTask;
-            }
-        };
-    });
+//                return Task.CompletedTask;
+//            },
+//            OnAuthenticationFailed = context =>
+//            {
+//                context.Fail("Invalid certificate");
+//                return Task.CompletedTask;
+//            }
+//        };
+//    });
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
