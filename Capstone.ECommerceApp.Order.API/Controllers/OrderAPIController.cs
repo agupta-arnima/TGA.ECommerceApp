@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Capstone.ECommerceApp.Order.API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/order")]
     [ApiController]
     public class OrderAPIController : ControllerBase
     {

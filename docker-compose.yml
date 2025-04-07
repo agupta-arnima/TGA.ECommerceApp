@@ -12,6 +12,7 @@ services:
     #Specify where the persisted Data should be stored
     volumes:
       - datafiles:/var/lib/mysql
+      - ./my.cnf:/etc/mysql/my.cnf
     healthcheck:
        test : ["CMD", "mysqladmin", "ping", "-h", "localhost"]
        interval: 10s
@@ -29,13 +30,23 @@ services:
     ports:
      - "5672:5672"
      - "15672:15672"
+    healthcheck:
+      test: ["CMD", "rabbitmqctl", "status"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
     networks:
-     - ecommnetwork
+      - ecommnetwork
 
   capstone.ecommerceapp.authapi:
+    image: ${DOCKER_REGISTRY-}authapi
+    container_name: authapi
     build:
       context: .
       dockerfile: Capstone.ECommerceApp.Auth.API/Dockerfile
+    depends_on:
+      tga.mysql:
+        condition: service_healthy
     ports:
       - "7002:443" 
     environment:
@@ -49,6 +60,10 @@ services:
       - ApiSettings__JwtOptions__Issuer=TGA-Auth-API
       - ApiSettings__JwtOptions__Audience=TGA-Client
       - ApiSettings__JwtOptions__ExpiryInHours=7
+      - ApiSettings__RabbitMQ__HostName=rabbitmq
+      - ApiSettings__RabbitMQ__UserName=guest
+      - ApiSettings__RabbitMQ__Password=guest
+      - ApiSettings__RabbitMQ__TopicAndQueueNames__OrderQueue=userregistration
     networks:
       - ecommnetwork
 
@@ -59,8 +74,9 @@ services:
       context: .
       dockerfile: Capstone.ECommerceApp.Product.API/Dockerfile
     #This Service Depends on the database service specifed above
-    depends_on: 
-      - tga.mysql
+    depends_on:
+      tga.mysql:
+        condition: service_healthy
     ports:
       - "7000:8080"
     environment:
@@ -80,8 +96,11 @@ services:
       context: .
       dockerfile: Capstone.ECommerceApp.Order.API/Dockerfile
     #This Service Depends on the database service specifed above
-    depends_on: 
-      - tga.mysql
+    depends_on:
+      tga.mysql:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
     ports:
       - "7004:8080"
     environment:
@@ -101,6 +120,9 @@ services:
     build:
       context: .
       dockerfile: Capstone.ECommerceApp.ShoppingCart.API/Dockerfile
+    depends_on: 
+      tga.mysql: 
+          condition: service_healthy
     ports:
       - "7003:8080"
     environment:
@@ -113,6 +135,30 @@ services:
     networks:
       - ecommnetwork
   
+  capstone.ecommerceapp.notificationapi:
+    image: ${DOCKER_REGISTRY-}notificationapi
+    container_name: notificationapi
+    build:
+      context: .
+      dockerfile: Capstone.ECommerceApp.Notification.API/Dockerfile
+    #This Service Depends on the database service specifed above
+    depends_on: 
+      tga.mysql: 
+          condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    ports:
+      - "7005:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__NotificationDbConnection=Server=tga.mysql;port=3306;Database=TGA_Notification;User=root;Password=password;
+      - ApiSettings__RabbitMQ__HostName=rabbitmq
+      - ApiSettings__RabbitMQ__UserName=guest
+      - ApiSettings__RabbitMQ__Password=guest
+      - ApiSettings__RabbitMQ__TopicAndQueueNames__OrderQueue=userregistration
+    networks:
+      - ecommnetwork 
+
   capstone.ecommerceapp.ocelotapigateway:
     image: ${DOCKER_REGISTRY-}ocelotapigateway
     container_name: ocelotapigateway
