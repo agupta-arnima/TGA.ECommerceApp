@@ -16,7 +16,7 @@ services:
     healthcheck:
        test : ["CMD", "mysqladmin", "ping", "-h", "localhost"]
        interval: 10s
-       timeout: 5s
+       timeout: 10s
        retries: 5
     networks:
       - ecommnetwork     
@@ -30,9 +30,14 @@ services:
     ports:
     - "5672:5672"
     - "15672:15672"
+    healthcheck:
+      test: ["CMD", "rabbitmqctl", "status"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
     networks:
-      - ecommnetwork    
-  
+      - ecommnetwork
+       
   tga.ecommerceapp.authapi:
     image: ${DOCKER_REGISTRY-}authapi
     container_name: authapi

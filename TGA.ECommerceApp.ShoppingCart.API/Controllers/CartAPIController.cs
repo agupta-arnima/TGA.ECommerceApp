@@ -5,7 +5,7 @@ using TGA.ECommerceApp.ShoppingCart.Application.Interfaces;
 
 namespace TGA.ECommerceApp.ShoppingCart.API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/cart")]
     [ApiController]
     public class CartAPIController : ControllerBase
     {

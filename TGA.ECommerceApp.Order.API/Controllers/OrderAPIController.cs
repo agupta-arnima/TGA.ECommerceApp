@@ -7,7 +7,7 @@ using TGA.ECommerceApp.Order.Application.Events;
 
 namespace TGA.ECommerceApp.Order.API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/order")]
     [ApiController]
     public class OrderAPIController : ControllerBase
     {
