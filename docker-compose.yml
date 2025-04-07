@@ -49,6 +49,10 @@ services:
       - ApiSettings__JwtOptions__Issuer=TGA-Auth-API
       - ApiSettings__JwtOptions__Audience=TGA-Client
       - ApiSettings__JwtOptions__ExpiryInHours=7
+      - ApiSettings__RabbitMQ__HostName=rabbitmq
+      - ApiSettings__RabbitMQ__UserName=guest
+      - ApiSettings__RabbitMQ__Password=guest
+      - ApiSettings__RabbitMQ__TopicAndQueueNames__OrderQueue=order       
     networks:
       - ecommnetwork    
 
@@ -92,6 +96,10 @@ services:
       - ApiSettings__Audience=TGA-Client
       - ServiceUrls__ProductAPI=https://tga.ecommerceapp.productapi:7000/
       - Stripe__SecretKey=sk_test_51QiGz5CQ7mJfnXMskjXynI3SYDC8L68EXwvj6mkKy3tXKBYCpxFfEJvjOTfJKxCx7XuhKKEpYyqP0Qj4hc7MFFSV00SRq4yB7H
+      - ApiSettings__RabbitMQ__HostName=rabbitmq
+      - ApiSettings__RabbitMQ__UserName=guest
+      - ApiSettings__RabbitMQ__Password=guest
+      - ApiSettings__RabbitMQ__TopicAndQueueNames__OrderQueue=order
     networks:
       - ecommnetwork    
 
@@ -111,7 +119,25 @@ services:
       - ApiSettings__Audience=TGA-Client
       - ServiceUrls__ProductAPI=https://tga.ecommerceapp.productapi:7000/
     networks:
-      - ecommnetwork      
+      - ecommnetwork
+      
+  tga.ecommerceapp.notificationapi:
+    image: ${DOCKER_REGISTRY-}notificationapi
+    container_name: notificationapi
+    build:
+      context: .
+      dockerfile: TGA.ECommerceApp.Notification.API/Dockerfile
+    ports:
+      - "7005:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__CartDbConnection=Server=tga.mysql;port=3306;Database=TGA_Notification;User=root;Password=password;
+      - ApiSettings__RabbitMQ__HostName=rabbitmq
+      - ApiSettings__RabbitMQ__UserName=guest
+      - ApiSettings__RabbitMQ__Password=guest
+      - ApiSettings__RabbitMQ__TopicAndQueueNames__OrderQueue=userregistration
+    networks:
+      - ecommnetwork 
   
   tga.ecommerceapp.ocelotapigateway:
     image: ${DOCKER_REGISTRY-}ocelotapigateway

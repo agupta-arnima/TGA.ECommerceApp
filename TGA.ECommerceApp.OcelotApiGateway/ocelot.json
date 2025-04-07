@@ -18,7 +18,7 @@
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
-          "Host": "capstone.ecommerceapp.authapi",
+          "Host": "tga.ecommerceapp.authapi",
           "Port": 443
         }
       ],
@@ -32,7 +32,7 @@
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
-          "Host": "capstone.ecommerceapp.authapi",
+          "Host": "tga.ecommerceapp.authapi",
           "Port": 443
         }
       ],
@@ -46,7 +46,7 @@
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
-          "Host": "capstone.ecommerceapp.authapi",
+          "Host": "tga.ecommerceapp.authapi",
           "Port": 443
         }
       ],
