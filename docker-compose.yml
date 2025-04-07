@@ -163,7 +163,7 @@ services:
       - ApiSettings__RabbitMQ__HostName=rabbitmq
       - ApiSettings__RabbitMQ__UserName=guest
       - ApiSettings__RabbitMQ__Password=guest
-      - ApiSettings__RabbitMQ__TopicAndQueueNames__OrderQueue=userregistration
+      - ApiSettings__RabbitMQ__TopicAndQueueNames__UserRegistrationQueue=userregistration
     networks:
       - ecommnetwork 
   
