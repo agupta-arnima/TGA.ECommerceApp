@@ -1,4 +1,5 @@
 ﻿
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using RabbitMQ.Client;
@@ -7,6 +8,7 @@ using System.Text;
 using TGA.ECommerceApp.Infra.Bus;
 using TGA.ECommerceApp.Order.Application.Dto;
 using TGA.ECommerceApp.Order.Application.Interfaces;
+using TGA.ECommerceApp.Order.Application.Services;
 
 namespace TGA.ECommerceApp.Order.API.Messaging
 {
@@ -18,19 +20,16 @@ namespace TGA.ECommerceApp.Order.API.Messaging
         private IChannel _channel;
         private IConfiguration _configuration;
         private readonly IServiceProvider _serviceProvider;
-        private IOrderProcessingService _orderProcessingService;
 
         public OrderSagaOrchestrator(ILogger<OrderSagaOrchestrator> logger,
                                         IOptions<RabbitMQSetting> rabbitMqSetting,
                                         IConfiguration configuration,
-                                        IServiceProvider serviceProvider,
-                                        IOrderProcessingService orderProcessingService)
+                                        IServiceProvider serviceProvider)
         {
             _logger = logger;
             _rabbitMqSetting = rabbitMqSetting.Value;
             _configuration = configuration;
             _serviceProvider = serviceProvider;
-            _orderProcessingService = orderProcessingService;
            
             var factory = new ConnectionFactory
             {
@@ -61,14 +60,18 @@ namespace TGA.ECommerceApp.Order.API.Messaging
                 bool processedSuccessfully = false;
                 try
                 {
-                    var orderDeatils = JsonConvert.DeserializeObject<OrderHeaderDto>(message);
-                    //Extract Token
-
-                    var token = ea.BasicProperties.Headers.ContainsKey("Authorization")
-                                    ? ea.BasicProperties.Headers["Authorization"].ToString().Replace("Bearer ", "") : string.Empty;
-                    //TODO
-                    processedSuccessfully = true;
-                    await _orderProcessingService.ProcessOrder(orderDeatils, token);
+                    using (var scope = _serviceProvider.CreateScope())
+                    {
+                        var orderDeatils = JsonConvert.DeserializeObject<OrderHeaderDto>(message);
+                        
+                        //Extract Token
+                        var token = ea.BasicProperties.Headers.ContainsKey("Authorization")
+                                        ? ea.BasicProperties.Headers["Authorization"].ToString().Replace("Bearer ", "") : string.Empty;
+                        //TODO
+                        processedSuccessfully = true;
+                        var _orderProcessingService = scope.ServiceProvider.GetRequiredService<IOrderProcessingService>();
+                        await _orderProcessingService.ProcessOrder(orderDeatils, token);
+                    }
                 }
                 catch (Exception ex)
                 {

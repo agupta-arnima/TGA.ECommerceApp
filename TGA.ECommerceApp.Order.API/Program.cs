@@ -32,7 +32,7 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
-builder.Services.AddSingleton<IOrderProcessingService, OrderProcessingService>();
+builder.Services.AddScoped<IOrderProcessingService, OrderProcessingService>();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<BackendApiAuthenticationHttpClientHandler>();
 
@@ -40,9 +40,9 @@ builder.Services.AddHttpClient("Product", c => c.BaseAddress = new Uri(builder.C
     .AddHttpMessageHandler<BackendApiAuthenticationHttpClientHandler>();
 
 //Rabbit MQ
-
 builder.Services.Configure<RabbitMQSetting>(builder.Configuration.GetSection("ApiSettings:RabbitMQ"));
 builder.Services.AddScoped(typeof(IEventBus), typeof(RabbitMQBus));
+
 // Register the consumer service as a hosted service only
 builder.Services.AddHostedService<OrderSagaOrchestrator>();
 
