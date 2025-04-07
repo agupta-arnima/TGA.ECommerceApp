@@ -69,11 +69,11 @@
     },
     {
       "DownstreamPathTemplate": "/api/product/{id}",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 7000
+          "Host": "tga.ecommerceapp.productapi",
+          "Port": 8080
         }
       ],
       "UpstreamPathTemplate": "/api/product/{id}",
@@ -84,11 +84,11 @@
     },
     {
       "DownstreamPathTemplate": "/api/product",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
           "Host": "tga.ecommerceapp.productapi",
-          "Port": 7000
+          "Port": 8080
         }
       ],
       "UpstreamPathTemplate": "/api/product",
@@ -100,11 +100,11 @@
     //Shopping cart API
     {
       "DownstreamPathTemplate": "/api/cart/GetCart/{id}",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 7003
+          "Host": "tga.ecommerceapp.shoppingcartapi",
+          "Port": 8080
         }
       ],
       "UpstreamPathTemplate": "/api/cart/GetCart/{id}",
@@ -115,11 +115,11 @@
     },
     {
       "DownstreamPathTemplate": "/api/cart/ApplyCoupon",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 7003
+          "Host": "tga.ecommerceapp.shoppingcartapi",
+          "Port": 8080
         }
       ],
       "UpstreamPathTemplate": "/api/cart/ApplyCoupon",
@@ -130,11 +130,11 @@
     },
     {
       "DownstreamPathTemplate": "/api/cart/EmailCartRequest",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 7003
+          "Host": "tga.ecommerceapp.shoppingcartapi",
+          "Port": 8080
         }
       ],
       "UpstreamPathTemplate": "/api/cart/EmailCartRequest",
@@ -145,11 +145,11 @@
     },
     {
       "DownstreamPathTemplate": "/api/cart/RemoveCart",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 7003
+          "Host": "tga.ecommerceapp.shoppingcartapi",
+          "Port": 8080
         }
       ],
       "UpstreamPathTemplate": "/api/cart/RemoveCart",
@@ -160,11 +160,11 @@
     },
     {
       "DownstreamPathTemplate": "/api/cart/CartUpsert",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 7003
+          "Host": "tga.ecommerceapp.shoppingcartapi",
+          "Port": 8080
         }
       ],
       "UpstreamPathTemplate": "/api/cart/CartUpsert",
@@ -176,11 +176,11 @@
     //Order API
     {
       "DownstreamPathTemplate": "/api/order/CreateOrder",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 7004
+          "Host": "tga.ecommerceapp.orderapi",
+          "Port": 8080
         }
       ],
       "UpstreamPathTemplate": "/api/order/CreateOrder",
@@ -191,11 +191,11 @@
     },
     {
       "DownstreamPathTemplate": "/api/order/CreateStripeSession",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 7004
+          "Host": "tga.ecommerceapp.orderapi",
+          "Port": 8080
         }
       ],
       "UpstreamPathTemplate": "/api/order/CreateStripeSession",
@@ -209,8 +209,8 @@
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 7000
+          "Host": "tga.ecommerceapp.productapi",
+          "Port": 8080
         }
       ],
       "UpstreamPathTemplate": "/api/inventory/product",
@@ -221,11 +221,11 @@
     },
     {
       "DownstreamPathTemplate": "/api/inventory/product/{id}",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 7000
+          "Host": "tga.ecommerceapp.productapi",
+          "Port": 8080
         }
       ],
       "UpstreamPathTemplate": "/api/inventory/product/{id}",
@@ -238,11 +238,11 @@
     // Inventory API - Supplier Endpoints
     {
       "DownstreamPathTemplate": "/api/inventory/supplier",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 7000
+          "Host": "tga.ecommerceapp.productapi",
+          "Port": 8080
         }
       ],
       "UpstreamPathTemplate": "/api/inventory/supplier",
@@ -253,11 +253,11 @@
     },
     {
       "DownstreamPathTemplate": "/api/inventory/supplier/{id}",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 7000
+          "Host": "tga.ecommerceapp.productapi",
+          "Port": 8080
         }
       ],
       "UpstreamPathTemplate": "/api/inventory/supplier/{id}",
@@ -270,11 +270,11 @@
     // Inventory API - Category Endpoints
     {
       "DownstreamPathTemplate": "/api/inventory/category",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 7000
+          "Host": "tga.ecommerceapp.productapi",
+          "Port": 8080
         }
       ],
       "UpstreamPathTemplate": "/api/inventory/category",
@@ -285,11 +285,11 @@
     },
     {
       "DownstreamPathTemplate": "/api/inventory/category/{id}",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 7000
+          "Host": "tga.ecommerceapp.productapi",
+          "Port": 8080
         }
       ],
       "UpstreamPathTemplate": "/api/inventory/category/{id}",

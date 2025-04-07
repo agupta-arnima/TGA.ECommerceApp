@@ -12,6 +12,7 @@ services:
     #Specify where the persisted Data should be stored
     volumes:
       - datafiles:/var/lib/mysql
+      - ./my.cnf:/etc/mysql/my.cnf
     healthcheck:
        test : ["CMD", "mysqladmin", "ping", "-h", "localhost"]
        interval: 10s
@@ -40,7 +41,10 @@ services:
       dockerfile: TGA.ECommerceApp.Auth.API/Dockerfile
     #This Service Depends on the database service specifed above
     depends_on: 
-      - tga.mysql
+      tga.mysql: 
+          condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
     ports:
       - "7002:443"
     environment:
@@ -69,7 +73,8 @@ services:
       dockerfile: TGA.ECommerceApp.Product.API/Dockerfile
     #This Service Depends on the database service specifed above
     depends_on: 
-      - tga.mysql
+      tga.mysql: 
+          condition: service_healthy
     ports:
       - "7000:8080"
     environment:
@@ -90,7 +95,10 @@ services:
       dockerfile: TGA.ECommerceApp.Order.API/Dockerfile
     #This Service Depends on the database service specifed above
     depends_on: 
-      - tga.mysql
+      tga.mysql: 
+          condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
     ports:
       - "7004:8080"
     environment:
@@ -116,7 +124,8 @@ services:
       dockerfile: TGA.ECommerceApp.ShoppingCart.API/Dockerfile
     #This Service Depends on the database service specifed above
     depends_on: 
-      - tga.mysql
+      tga.mysql: 
+          condition: service_healthy
     ports:
       - "7003:8080"
     environment:
@@ -137,7 +146,10 @@ services:
       dockerfile: TGA.ECommerceApp.Notification.API/Dockerfile
     #This Service Depends on the database service specifed above
     depends_on: 
-      - tga.mysql
+      tga.mysql: 
+          condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
     ports:
       - "7005:8080"
     environment:
