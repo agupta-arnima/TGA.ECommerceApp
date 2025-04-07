@@ -4,6 +4,7 @@ using Capstone.ECommerceApp.Auth.Application.Dto;
 using Capstone.ECommerceApp.Auth.Application.Interfaces;
 using Capstone.ECommerceApp.Auth.Domain.Interfaces;
 using Capstone.ECommerceApp.Auth.Domain.Models;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Capstone.ECommerceApp.Auth.Application.Services;
 
@@ -112,7 +113,7 @@ public class AuthService : IAuthService
         return true;
     }
 
-    public async Task<UserDto> Register(RegistrationRequestDto registrationRequestDto)
+    public async Task<ResponseDto> Register(RegistrationRequestDto registrationRequestDto)
     {
         var user = new ApplicationUser
         {
@@ -124,7 +125,15 @@ public class AuthService : IAuthService
         };
 
         var result = await _userManager.CreateAsync(user, registrationRequestDto.Password);
-        if (!result.Succeeded) return null;
+        if (!result.Succeeded)
+        {
+            return new ResponseDto
+            {
+                Result = result,
+                IsSuccess = false,
+                Errors = result.Errors.Select(e => e.Description).ToList()
+            };
+        }
 
         if (!string.IsNullOrEmpty(registrationRequestDto.Role))
         {
@@ -132,13 +141,14 @@ public class AuthService : IAuthService
         }
 
         var registeredUser = await _authRepository.GetUserIdentityByEmail(user.Email);
-        return new UserDto
+        var usrtDTo = new UserDto
         {
             ID = registeredUser.Id,
             Name = registeredUser.Name,
             Email = registeredUser.Email,
             PhoneNumber = registeredUser.PhoneNumber
         };
+        return new ResponseDto { Result = usrtDTo };
     }
 
     public async Task<bool> UpdateUserRefreshTokens(TokenRequestDto updatedToken)

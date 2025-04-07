@@ -4,7 +4,7 @@ namespace Capstone.ECommerceApp.Auth.Application.Interfaces;
 
 public interface IAuthService
 {
-    Task<UserDto> Register(RegistrationRequestDto userDTO);
+    Task<ResponseDto> Register(RegistrationRequestDto userDTO);
     Task<LoginResponseDto> Login(LoginRequestDto userDTO);
     Task<bool> AssignRole(string email, string roleName);
     Task<TokenRequestDto> GetToken(TokenRequest token);

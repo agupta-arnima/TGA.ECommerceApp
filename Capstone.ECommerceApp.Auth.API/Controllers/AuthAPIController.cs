@@ -39,7 +39,7 @@ public class AuthAPIController : ControllerBase
     public async Task<IActionResult> Register([FromBody] RegistrationRequestDto userDTO)
     {
         var result = await authService.Register(userDTO);
-        if (result != null)
+        if (result != null && result.IsSuccess)
         {
             //
             await messageBus.PublishMessageAsync(new UserRegistrationEvent(userDTO.Email), 
@@ -50,6 +50,7 @@ public class AuthAPIController : ControllerBase
         else
         {
             response.Message = "Registration Failed.";
+            response.Errors = result.Errors ?? new List<string>();
             response.IsSuccess = false;
             return BadRequest(response);
         };
