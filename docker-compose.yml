@@ -33,11 +33,16 @@ services:
       - ecommnetwork    
   
   tga.ecommerceapp.authapi:
+    image: ${DOCKER_REGISTRY-}authapi
+    container_name: authapi
     build:
       context: .
       dockerfile: TGA.ECommerceApp.Auth.API/Dockerfile
+    #This Service Depends on the database service specifed above
+    depends_on: 
+      - tga.mysql
     ports:
-     - "7002:443"
+      - "7002:443"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - CERT_THUMBPRINT=b404c48e0254dca183079a0c5ec8e58bf8b11015
@@ -109,6 +114,9 @@ services:
     build:
       context: .
       dockerfile: TGA.ECommerceApp.ShoppingCart.API/Dockerfile
+    #This Service Depends on the database service specifed above
+    depends_on: 
+      - tga.mysql
     ports:
       - "7003:8080"
     environment:
@@ -127,11 +135,14 @@ services:
     build:
       context: .
       dockerfile: TGA.ECommerceApp.Notification.API/Dockerfile
+    #This Service Depends on the database service specifed above
+    depends_on: 
+      - tga.mysql
     ports:
       - "7005:8080"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - ConnectionStrings__CartDbConnection=Server=tga.mysql;port=3306;Database=TGA_Notification;User=root;Password=password;
+      - ConnectionStrings__NotificationDbConnection=Server=tga.mysql;port=3306;Database=TGA_Notification;User=root;Password=password;
       - ApiSettings__RabbitMQ__HostName=rabbitmq
       - ApiSettings__RabbitMQ__UserName=guest
       - ApiSettings__RabbitMQ__Password=guest
