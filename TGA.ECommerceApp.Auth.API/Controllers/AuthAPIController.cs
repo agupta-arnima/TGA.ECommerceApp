@@ -67,10 +67,6 @@ public class AuthAPIController : ControllerBase
             response.Message = "Login Failed";
             return BadRequest(response);
         }
-        else
-        {
-
-        }
         response.IsSuccess = true;
         response.Message = "Login Successful";
         response.Result = result;
