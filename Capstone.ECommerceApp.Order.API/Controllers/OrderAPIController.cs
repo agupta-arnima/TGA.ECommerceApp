@@ -25,7 +25,7 @@ namespace Capstone.ECommerceApp.Order.API.Controllers
         }
 
         [Authorize]
-        [HttpPost("CreateOrder")]
+        [HttpPost("createOrder")]
         public async Task<IActionResult> CreateOrder(CartDto cartDto)
         {
             try
@@ -54,7 +54,7 @@ namespace Capstone.ECommerceApp.Order.API.Controllers
         }
 
         [Authorize]
-        [HttpDelete("CancelOrder")]
+        [HttpDelete("cancelOrder")]
         public async Task<IActionResult> CancelOrder(OrderHeaderDto cartDto)
         {
             try
@@ -83,7 +83,7 @@ namespace Capstone.ECommerceApp.Order.API.Controllers
 
 
         [Authorize]
-        [HttpPost("CreateStripeSession")]
+        [HttpPost("createStripeSession")]
         public async Task<IActionResult> CreateStripeSession([FromBody] StripeRequestDto stripeRequestDto)
         {
             try

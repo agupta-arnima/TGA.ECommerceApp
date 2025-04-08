@@ -48,22 +48,9 @@ services:
       tga.mysql:
         condition: service_healthy
     ports:
-      - "7002:443" 
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-      - CERT_THUMBPRINT=b404c48e0254dca183079a0c5ec8e58bf8b11015
-      - CERT_SUBJECT=CN=localhost
-      - OTEL_EXPORTER_OTLP_ENDPOINT=http://localhost:4317
-      - OTEL_SERVICE_NAME=Auth-Services
-      - ConnectionStrings__AuthDbConnection=Server=tga.mysql;port=3306;Database=TGA_Auth;User=root;Password=password;
-      - ApiSettings__JwtOptions__Secret=This is used to Sign and verify JWT tokens, Replace it with your own secret
-      - ApiSettings__JwtOptions__Issuer=TGA-Auth-API
-      - ApiSettings__JwtOptions__Audience=TGA-Client
-      - ApiSettings__JwtOptions__ExpiryInHours=7
-      - ApiSettings__RabbitMQ__HostName=rabbitmq
-      - ApiSettings__RabbitMQ__UserName=guest
-      - ApiSettings__RabbitMQ__Password=guest
-      - ApiSettings__RabbitMQ__TopicAndQueueNames__OrderQueue=userregistration
+      - "7002:443"
+    env_file:
+      - .env
     networks:
       - ecommnetwork
 

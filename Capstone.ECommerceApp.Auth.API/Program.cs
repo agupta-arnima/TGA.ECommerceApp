@@ -33,10 +33,14 @@ var checkoutActivitySource = new ActivitySource("OTel.Example");
 var builder = WebApplication.CreateBuilder(args);
 
 //TODO mTLS implementation for Auth API only certified application can able to use it
-/* 
+ 
 //Load the certificate
-//var rootCert = new X509Certificate2(@"C:\Users\sackumar6\source\repos\TGA_Training_Code_samples-mTLS\TGA_Training_Code_samples-mTLS\Certs\server.pfx", "1234"); // Adjust path and password
-var rootCert = GetCertificate(Environment.GetEnvironmentVariable("CERT_THUMBPRINT"));
+//Windows or Debug
+//var rootCert = GetCertificateByThumbPrint(Environment.GetEnvironmentVariable("CERT_THUMBPRINT"));
+//Linux or Docker
+var certPath = Environment.GetEnvironmentVariable("CERT_PATH");
+var certPassword = Environment.GetEnvironmentVariable("CERT_PASSWORD");
+var rootCert = GetCertificate(certPath, certPassword);
 
 builder.WebHost.UseKestrel(options =>
 {
@@ -50,7 +54,7 @@ builder.WebHost.UseKestrel(options =>
         });
     });
 });
-*/
+
 
 var authDbConnectionStr = builder.Configuration.GetConnectionString("AuthDbConnection");
 builder.Services.AddDbContextPool<AuthDbContext>(options =>
@@ -75,34 +79,34 @@ builder.Services.AddScoped(typeof(IEventBus), typeof(RabbitMQBus));
 builder.Services.AddControllers();
 
 //Added mTLS auth configuration
-//builder.Services.AddAuthentication(CertificateAuthenticationDefaults.AuthenticationScheme)
-//    .AddCertificate(options =>
-//    {
-//        options.AllowedCertificateTypes = CertificateTypes.All;
-//        options.ChainTrustValidationMode = X509ChainTrustMode.System;
-//        options.RevocationMode = X509RevocationMode.NoCheck;
-//        options.Events = new CertificateAuthenticationEvents
-//        {
-//            OnCertificateValidated = context =>
-//            {
-//                if (context.ClientCertificate != null)
-//                {
-//                    context.Success();
-//                }
-//                else
-//                {
-//                    context.Fail("Invalid certificate");
-//                }
+builder.Services.AddAuthentication(CertificateAuthenticationDefaults.AuthenticationScheme)
+    .AddCertificate(options =>
+    {
+        options.AllowedCertificateTypes = CertificateTypes.All;
+        options.ChainTrustValidationMode = X509ChainTrustMode.System;
+        options.RevocationMode = X509RevocationMode.NoCheck;
+        options.Events = new CertificateAuthenticationEvents
+        {
+            OnCertificateValidated = context =>
+            {
+                if (context.ClientCertificate != null)
+                {
+                    context.Success();
+                }
+                else
+                {
+                    context.Fail("Invalid certificate");
+                }
 
-//                return Task.CompletedTask;
-//            },
-//            OnAuthenticationFailed = context =>
-//            {
-//                context.Fail("Invalid certificate");
-//                return Task.CompletedTask;
-//            }
-//        };
-//    });
+                return Task.CompletedTask;
+            },
+            OnAuthenticationFailed = context =>
+            {
+                context.Fail("Invalid certificate");
+                return Task.CompletedTask;
+            }
+        };
+    });
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -215,27 +219,6 @@ if (OtlpEndpoint != null)
 
 var app = builder.Build();
 
-/*
-app.MapGet("/", SimulatedCheckout);
-async Task<string> SimulatedCheckout(ILogger<Program> logger)
-{
-    // Create a new Activity scoped to the method
-    using var activity = checkoutActivitySource.StartActivity("CheckoutActivity");
-
-    // Log a message
-    logger.LogInformation("Sending checkout");
-
-    // Increment the custom counter
-    countCheckouts.Add(1);
-
-    // Add a tag to the Activity
-    activity?.SetTag("checkout", "Hello World!");
-    activity?.SetTag("userID", "123");
-    activity?.SetTag("cartID", "ABC");
-
-    return "Hello World!";
-}
-*/
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -261,7 +244,28 @@ void ApplyMigration()
         _db.Database.Migrate();
 }
 
-static X509Certificate2? GetCertificate(string certThumbprint)
+static X509Certificate2? GetCertificate(string certPath, string certPassword)
+{
+    if (string.IsNullOrEmpty(certPath))
+    {
+        Console.WriteLine("Certificate path is not set.");
+        return null;
+    }
+
+    try
+    {
+        var certificate = new X509Certificate2(certPath, certPassword);
+        Console.WriteLine("Certificate found and loaded.");
+        return certificate;
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"Error loading certificate: {ex.Message}");
+        return null;
+    }
+}
+
+static X509Certificate2? GetCertificateByThumbPrint(string certThumbprint)
 {
     if (string.IsNullOrEmpty(certThumbprint))
     {
