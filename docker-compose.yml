@@ -118,7 +118,7 @@ services:
       - ApiSettings__Secret=This is used to Sign and verify JWT tokens, Replace it with your own secret
       - ApiSettings__Issuer=TGA-Auth-API
       - ApiSettings__Audience=TGA-Client
-      - ServiceUrls__ProductAPI=https://tga.ecommerceapp.productapi:7000/
+      - ServiceUrls__ProductAPI=https://capstone.ecommerceapp.productapi:7000/
     networks:
       - ecommnetwork
   

@@ -14,7 +14,7 @@ public static class WebApplicationBuilderExtensions
         var issuer = settingSections.GetValue<string>("Issuer");
         var audience = settingSections.GetValue<string>("Audience");
 
-        var key = Encoding.UTF8.GetBytes(secret);
+        var key = Encoding.ASCII.GetBytes(secret);
         builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(x =>
                 {

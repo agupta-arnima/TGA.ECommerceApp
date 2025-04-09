@@ -5,7 +5,7 @@ using MMLib.SwaggerForOcelot.Middleware;
 using Capstone.ECommerceApp.OcelotApiGateway.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
-
+builder.Services.AddControllers();
 builder.AddAppAuthentication();
 
 builder.Configuration.AddJsonFile("ocelot.json", optional: false, reloadOnChange: true); // Add Ocelot configuration file
@@ -24,4 +24,6 @@ var app = builder.Build();
 //});
 
 app.UseOcelot().GetAwaiter().GetResult(); // Add Ocelot to the pipeline
+app.UseHttpsRedirection();
+app.MapControllers();
 app.Run();
