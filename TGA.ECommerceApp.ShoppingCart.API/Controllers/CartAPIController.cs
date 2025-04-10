@@ -50,13 +50,14 @@ namespace TGA.ECommerceApp.ShoppingCart.API.Controllers
             return responseDto;
         }
 
-        [HttpPost("RemoveCart")]
-        public async Task<ResponseDto> RemoveCart([FromBody] int cartDetailId)
+        [HttpPost("RemoveCart/{userId}")]
+        public async Task<ResponseDto> RemoveCart(string userId)
         {
             try
             {
-                await cartService.RemoveCart(cartDetailId);
-                responseDto.Result = true;
+                var isDeleted = await cartService.ClearCart(userId);
+                responseDto.Result = isDeleted;
+                responseDto.Message = "Key deleted";
             }
             catch (Exception ex)
             {

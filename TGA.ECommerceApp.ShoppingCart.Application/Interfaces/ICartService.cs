@@ -6,6 +6,6 @@ namespace TGA.ECommerceApp.ShoppingCart.Application.Interfaces
     {
         Task CartUpsert(CartDto cartDto);
         Task<CartDto> GetCart(string userId);
-        Task RemoveCart(int cartDetailId);
+        Task<bool> ClearCart(string userId);
     }
 }
