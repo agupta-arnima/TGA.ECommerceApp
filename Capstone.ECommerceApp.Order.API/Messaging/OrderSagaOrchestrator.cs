@@ -61,7 +61,7 @@ public class OrderSagaOrchestrator : BackgroundService
             bool processedSuccessfully = false;
             try
             {
-                var orderDeatils = JsonConvert.DeserializeObject<OrderHeaderDto>(message);
+                var orderDeatils = JsonConvert.DeserializeObject<RabbitMqOrderMessage>(message);
                 //Extract Token
 
                 var token = string.Empty;
@@ -75,7 +75,7 @@ public class OrderSagaOrchestrator : BackgroundService
                 }
                 //TODO
                 processedSuccessfully = true;
-                await _orderProcessingService.ProcessOrder(orderDeatils, token);
+                await _orderProcessingService.ProcessOrder(orderDeatils.order, token);
             }
             catch (Exception ex)
             {
@@ -99,5 +99,11 @@ public class OrderSagaOrchestrator : BackgroundService
         await _channel.CloseAsync();
         await _connection.CloseAsync();
         base.Dispose();
+    }
+
+    public class RabbitMqOrderMessage
+    {
+        public OrderHeaderDto? order { get; set; }
+        public DateTime Timestamp { get; set; }
     }
 }

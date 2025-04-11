@@ -1,5 +1,6 @@
 volumes:
   datafiles:
+  redis-data:
 
 services:
   tga.mysql:
@@ -37,6 +38,23 @@ services:
       retries: 5
     networks:
       - ecommnetwork
+  
+  tga.redis:
+    image: redis:latest
+    container_name: tga.redis
+    ports:
+       - "6379:6379"
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli ping | grep PONG"]
+      interval: 1s
+      timeout: 3s
+      retries: 5
+    command: ["redis-server"]
+    volumes:
+       - redis-data:/data  
+    networks:
+       - ecommnetwork
+
 
   capstone.ecommerceapp.authapi:
     image: ${DOCKER_REGISTRY-}authapi
@@ -48,9 +66,22 @@ services:
       tga.mysql:
         condition: service_healthy
     ports:
-      - "7002:443"
-    env_file:
-      - .env
+      - "7002:443" 
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - CERT_THUMBPRINT=b404c48e0254dca183079a0c5ec8e58bf8b11015
+      - CERT_SUBJECT=CN=localhost
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://localhost:4317
+      - OTEL_SERVICE_NAME=Auth-Services
+      - ConnectionStrings__AuthDbConnection=Server=tga.mysql;port=3306;Database=TGA_Auth;User=root;Password=password;
+      - ApiSettings__JwtOptions__Secret=This is used to Sign and verify JWT tokens, Replace it with your own secret
+      - ApiSettings__JwtOptions__Issuer=TGA-Auth-API
+      - ApiSettings__JwtOptions__Audience=TGA-Client
+      - ApiSettings__JwtOptions__ExpiryInHours=7
+      - ApiSettings__RabbitMQ__HostName=rabbitmq
+      - ApiSettings__RabbitMQ__UserName=guest
+      - ApiSettings__RabbitMQ__Password=guest
+      - ApiSettings__RabbitMQ__TopicAndQueueNames__OrderQueue=userregistration
     networks:
       - ecommnetwork
 
@@ -73,6 +104,7 @@ services:
       - ApiSettings__JwtOptions__Issuer=TGA-Auth-API
       - ApiSettings__JwtOptions__Audience=TGA-Client
       - ApiSettings__JwtOptions__ExpiryInHours=7
+      - CORS_ALLOWED_ORIGINS=http://localhost:7004;http://localhost:7003
     networks:
       - ecommnetwork
   
@@ -96,20 +128,21 @@ services:
       - ApiSettings__Secret=This is used to Sign and verify JWT tokens, Replace it with your own secret
       - ApiSettings__Issuer=TGA-Auth-API
       - ApiSettings__Audience=TGA-Client
-      - ServiceUrls__ProductAPI=https://capstone.ecommerceapp.productapi:7000/
+      - ServiceUrls__ProductAPI=http://capstone.ecommerceapp.productapi:8080/
+      - ServiceUrls__InventoryAPI=http://capstone.ecommerceapp.productapi:8080/
       - Stripe__SecretKey=sk_test_51QiGz5CQ7mJfnXMskjXynI3SYDC8L68EXwvj6mkKy3tXKBYCpxFfEJvjOTfJKxCx7XuhKKEpYyqP0Qj4hc7MFFSV00SRq4yB7H
     networks:
       - ecommnetwork
   
   capstone.ecommerceapp.shoppingcartapi:
+    depends_on:
+      tga.redis:
+        condition: service_healthy
     image: ${DOCKER_REGISTRY-}shoppingcartapi
     container_name: shoppingcartapi
     build:
       context: .
       dockerfile: Capstone.ECommerceApp.ShoppingCart.API/Dockerfile
-    depends_on: 
-      tga.mysql: 
-          condition: service_healthy
     ports:
       - "7003:8080"
     environment:
@@ -118,7 +151,8 @@ services:
       - ApiSettings__Secret=This is used to Sign and verify JWT tokens, Replace it with your own secret
       - ApiSettings__Issuer=TGA-Auth-API
       - ApiSettings__Audience=TGA-Client
-      - ServiceUrls__ProductAPI=https://capstone.ecommerceapp.productapi:7000/
+      - ServiceUrls__ProductAPI=http://capstone.ecommerceapp.productapi:8080/
+      - Redis__ConnectionString=tga.redis:6379,abortConnect=false
     networks:
       - ecommnetwork
   

@@ -23,34 +23,38 @@ namespace Capstone.ECommerceApp.Product.API.Controllers
         [HttpPost("releaseinventory")]
         public IActionResult ReleaseInventory([FromBody] OrderHeaderDto order)
         {
+            var responseDto = new ResponseDto();
             try
             {
                 var releseInventory = _productService.ReleaseInventory(order);
                 responseDto.Result = true;
                 responseDto.Result = releseInventory;
+                responseDto.IsSuccess = true;
                 responseDto.Message = $"Order has been released Successfullty";
             }
             catch (Exception ex)
             {
                 responseDto.IsSuccess = false;
                 responseDto.Message = ex.Message;
+                return StatusCode(500, responseDto);
             }
             return Ok(responseDto);
         }
         [HttpPost("reserveinventory")]
         public IActionResult ReserveInventory([FromBody] OrderHeaderDto order)
         {
+            var responseDto = new ReserveInventoryResponseDto();
             try
             {
                 var reserveInventory = _productService.ReserveInventory(order);
-                responseDto.Result = true;
-                responseDto.Result = reserveInventory;
+                responseDto.IsSuccess=true;
                 responseDto.Message = $"Order has been reserved Successfullty";
             }
             catch (Exception ex)
             {
                 responseDto.IsSuccess = false;
                 responseDto.Message = ex.Message;
+                return StatusCode(500, responseDto);
             }
             return Ok(responseDto);
         }

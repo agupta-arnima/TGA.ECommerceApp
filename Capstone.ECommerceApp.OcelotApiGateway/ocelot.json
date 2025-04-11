@@ -19,7 +19,7 @@
       "DownstreamHostAndPorts": [
         {
           "Host": "capstone.ecommerceapp.authapi",
-          "Port": 7002
+          "Port": 443
         }
       ],
       "UpstreamPathTemplate": "/api/auth/register",
@@ -33,7 +33,7 @@
       "DownstreamHostAndPorts": [
         {
           "Host": "capstone.ecommerceapp.authapi",
-          "Port": 7002
+          "Port": 443
         }
       ],
       "UpstreamPathTemplate": "/api/auth/login",
@@ -47,7 +47,7 @@
       "DownstreamHostAndPorts": [
         {
           "Host": "capstone.ecommerceapp.authapi",
-          "Port": 7002
+          "Port": 443
         }
       ],
       "UpstreamPathTemplate": "/api/auth/RefreshToken",

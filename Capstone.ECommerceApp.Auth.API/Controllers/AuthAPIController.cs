@@ -57,7 +57,7 @@ public class AuthAPIController : ControllerBase
     }
 
     [HttpPost("login")]
-    [RequireCertificate]
+    //[RequireCertificate]
     public async Task<IActionResult> Login(LoginRequestDto userDTO)
     {
         var result = await authService.Login(userDTO);
@@ -79,7 +79,7 @@ public class AuthAPIController : ControllerBase
 
     [HttpPost]
     [Route("RefreshToken")]
-    [RequireCertificate]
+    //[RequireCertificate]
     public async Task<AuthResult> RefreshToken([FromBody] TokenRequest tokenRequest)
     {
         var jwtTokenHandler = new JwtSecurityTokenHandler();

@@ -1,8 +1,4 @@
 using AutoMapper;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.OpenApi.Models;
-using System.Reflection;
 using Capstone.ECommerceApp.Domain.Core.Bus;
 using Capstone.ECommerceApp.Infra.Bus;
 using Capstone.ECommerceApp.Order.API.Extensions;
@@ -14,8 +10,19 @@ using Capstone.ECommerceApp.Order.Application.Services;
 using Capstone.ECommerceApp.Order.Data.Context;
 using Capstone.ECommerceApp.Order.Data.Repository;
 using Capstone.ECommerceApp.Order.Domain.Interfaces;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
+using Polly;
+using Polly.Extensions.Http;
+
 
 var builder = WebApplication.CreateBuilder(args);
+
+//Define Polly retry Policy
+var retryPolicy = HttpPolicyExtensions
+                    .HandleTransientHttpError()
+                    .WaitAndRetryAsync(3, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2,
+                    retryAttempt)));
 
 var orderDbConnectionStr = builder.Configuration.GetConnectionString("OrderDbConnection");
 builder.Services.AddDbContextPool<OrderDbContext>(options =>
@@ -29,15 +36,24 @@ builder.Services.AddSingleton(mapper);
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 // Add services to the container.
-builder.Services.AddScoped<IProductService, ProductService>();
+builder.Services.AddSingleton<IProductService, ProductService>();
+builder.Services.AddSingleton<IInventoryService,InventoryService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 builder.Services.AddSingleton<IOrderProcessingService, OrderProcessingService>();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<BackendApiAuthenticationHttpClientHandler>();
 
-builder.Services.AddHttpClient("Product", c => c.BaseAddress = new Uri(builder.Configuration["ServiceUrls:ProductAPI"]))
-    .AddHttpMessageHandler<BackendApiAuthenticationHttpClientHandler>();
+
+// Add HttpClient services using the extension method
+builder.Services.AddHttpClientService("Product",builder.Configuration["ServiceUrls:ProductAPI"],
+                    sp => sp.GetRequiredService<BackendApiAuthenticationHttpClientHandler>(), retryPolicy);
+builder.Services.AddHttpClientService("Inventory", builder.Configuration["ServiceUrls:InventoryAPI"],
+                    sp => sp.GetRequiredService<BackendApiAuthenticationHttpClientHandler>(), retryPolicy);
+//builder.Services.AddHttpClientService("Payment", builder.Configuration["ServiceUrls:PaymentAPI"],
+//                    sp => sp.GetRequiredService<BackendApiAuthenticationHttpClientHandler>(), retryPolicy);
+
+
 
 //Rabbit MQ
 
@@ -83,7 +99,6 @@ builder.Services.AddSwaggerGen(options =>
     });
 });
 
-
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -113,3 +128,4 @@ void ApplyMigration()
     if (_db.Database.GetPendingMigrations().Any())
         _db.Database.Migrate();
 }
+

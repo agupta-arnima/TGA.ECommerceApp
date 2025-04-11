@@ -14,8 +14,8 @@ public class BackendApiAuthenticationHttpClientHandler : DelegatingHandler
 
     protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
     {
-        var accessToken = await _httpContextAccessor.HttpContext.GetTokenAsync("access_token");
-        request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+        //var accessToken = await _httpContextAccessor.HttpContext.GetTokenAsync("access_token");
+        //request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
         return await base.SendAsync(request, cancellationToken); //continue the pipeline
     }
 }

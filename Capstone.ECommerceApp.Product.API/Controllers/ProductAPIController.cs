@@ -20,6 +20,7 @@ namespace Capstone.ECommerceApp.Product.API.Controllers
         [HttpGet]
         public IActionResult Get()
         {
+            var responseDto = new ResponseDto();
             try
             {
                 responseDto.Result = productService.GetProducts();

@@ -1,26 +1,22 @@
 using AutoMapper;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
-using Microsoft.OpenApi.Models;
-using Polly;
-using System.Reflection;
 using Capstone.ECommerceApp.ShoppingCart.API.Extensions;
 using Capstone.ECommerceApp.ShoppingCart.API.Utility;
 using Capstone.ECommerceApp.ShoppingCart.Application;
 using Capstone.ECommerceApp.ShoppingCart.Application.Interfaces;
 using Capstone.ECommerceApp.ShoppingCart.Application.Services;
-using Capstone.ECommerceApp.ShoppingCart.Data.Context;
-using Capstone.ECommerceApp.ShoppingCart.Data.Repository;
-using Capstone.ECommerceApp.ShoppingCart.Domain.Interfaces;
+using Microsoft.OpenApi.Models;
+using Polly;
+using StackExchange.Redis;
+using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
 
-var productDbConnectionStr = builder.Configuration.GetConnectionString("CartDbConnection");
-builder.Services.AddDbContextPool<CartDbContext>(options =>
-{
-    options.UseMySql(productDbConnectionStr, ServerVersion.AutoDetect(productDbConnectionStr));
-});
+//var productDbConnectionStr = builder.Configuration.GetConnectionString("CartDbConnection");
+//builder.Services.AddDbContextPool<CartDbContext>(options =>
+//{
+//    options.UseMySql(productDbConnectionStr, ServerVersion.AutoDetect(productDbConnectionStr));
+//});
 
 //automapper
 IMapper mapper = MappingConfig.RegisterMaps().CreateMapper();
@@ -29,10 +25,16 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 // Add services to the container.
 builder.Services.AddScoped<IProductService, ProductService>();
-builder.Services.AddScoped<ICartService, CartService>();
-builder.Services.AddScoped<ICartRepository, CartRepository>();
+builder.Services.AddScoped<ICartService, CartCacheService>();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<BackendApiAuthenticationHttpClientHandler>();
+
+// Add Redis configuration
+var redisConfiguration = builder.Configuration.GetSection("Redis")["ConnectionString"];
+var redis = ConnectionMultiplexer.Connect(redisConfiguration);
+//builder.Services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect("localhost"));
+builder.Services.AddSingleton<IConnectionMultiplexer>(redis);
+builder.Services.AddSingleton<IRedisCacheService, RedisCacheService>();
 
 builder.Services.AddHttpClient("Product", c => c.BaseAddress = new Uri(builder.Configuration["ServiceUrls:ProductAPI"]))
     .AddHttpMessageHandler<BackendApiAuthenticationHttpClientHandler>()
@@ -67,14 +69,14 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-ApplyMigration();
+//ApplyMigration();
 
 app.Run();
 
-void ApplyMigration()
-{
-    using var scope = app.Services.CreateScope();
-    var _db = scope.ServiceProvider.GetRequiredService<CartDbContext>();
-    if (_db.Database.GetPendingMigrations().Any())
-        _db.Database.Migrate();
-}
+//void ApplyMigration()
+//{
+//    using var scope = app.Services.CreateScope();
+//    var _db = scope.ServiceProvider.GetRequiredService<CartDbContext>();
+//    if (_db.Database.GetPendingMigrations().Any())
+//        _db.Database.Migrate();
+//}
