@@ -144,7 +144,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Capstone.ECommerceApp.Auth.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Capstone.ECommerceApp.ShoppingCart.API", "Capstone.ECommerceApp.ShoppingCart.API\Capstone.ECommerceApp.ShoppingCart.API.csproj", "{86F28C57-91EF-4DAB-8E9A-D32B1439492B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Capstone.ECommerceApp.Infra.RedisCache", "..\Capstone.ECommerceApp.Infra.Redis\Capstone.ECommerceApp.Infra.RedisCache.csproj", "{58068C73-49A8-4C13-905E-742677298F30}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Capstone.ECommerceApp.Infra.RedisCache", "Capstone.ECommerceApp.Infra.Redis\Capstone.ECommerceApp.Infra.RedisCache.csproj", "{01F28C21-EF9C-4CDD-994B-BA04AD1C99DF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -264,10 +264,10 @@ Global
 		{86F28C57-91EF-4DAB-8E9A-D32B1439492B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{86F28C57-91EF-4DAB-8E9A-D32B1439492B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{86F28C57-91EF-4DAB-8E9A-D32B1439492B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{58068C73-49A8-4C13-905E-742677298F30}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{58068C73-49A8-4C13-905E-742677298F30}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{58068C73-49A8-4C13-905E-742677298F30}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{58068C73-49A8-4C13-905E-742677298F30}.Release|Any CPU.Build.0 = Release|Any CPU
+		{01F28C21-EF9C-4CDD-994B-BA04AD1C99DF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{01F28C21-EF9C-4CDD-994B-BA04AD1C99DF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{01F28C21-EF9C-4CDD-994B-BA04AD1C99DF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{01F28C21-EF9C-4CDD-994B-BA04AD1C99DF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -335,7 +335,7 @@ Global
 		{D17353E1-89B7-4546-9C32-5A2FB710B14F} = {40F1D00B-D6D6-4893-8A42-BDFB9C5F356D}
 		{B75BB0CF-5CE6-41E7-9278-4D03BC86AF85} = {D57A32B2-DAC7-4037-AA02-F7C05717A637}
 		{86F28C57-91EF-4DAB-8E9A-D32B1439492B} = {F2E2EBEF-E4C4-48D4-8217-96F3B6BAB53D}
-		{58068C73-49A8-4C13-905E-742677298F30} = {26A3E23D-A200-4E36-9B1C-1712AED9FA4B}
+		{01F28C21-EF9C-4CDD-994B-BA04AD1C99DF} = {26A3E23D-A200-4E36-9B1C-1712AED9FA4B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {C0F4B8B2-DB68-4F11-BB5D-382D3013F70C}

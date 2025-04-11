@@ -13,7 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Capstone.ECommerceApp.Infra.Redis\Capstone.ECommerceApp.Infra.RedisCache.csproj" />
+    <ProjectReference Include="..\Capstone.ECommerceApp.Infra.Redis\Capstone.ECommerceApp.Infra.RedisCache.csproj" />
     <ProjectReference Include="..\Capstone.ECommerceApp.ShoppingCart.Data\Capstone.ECommerceApp.ShoppingCart.Data.csproj" />
     <ProjectReference Include="..\Capstone.ECommerceApp.ShoppingCart.Domain\Capstone.ECommerceApp.ShoppingCart.Domain.csproj" />
   </ItemGroup>
