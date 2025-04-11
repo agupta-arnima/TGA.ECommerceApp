@@ -10,10 +10,10 @@
     <PackageReference Include="AutoMapper" Version="14.0.0" />
     <PackageReference Include="Microsoft.Extensions.Http.Polly" Version="9.0.3" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-	 <PackageReference Include="StackExchange.Redis" Version="2.8.31" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Capstone.ECommerceApp.Infra.Redis\Capstone.ECommerceApp.Infra.RedisCache.csproj" />
     <ProjectReference Include="..\Capstone.ECommerceApp.ShoppingCart.Data\Capstone.ECommerceApp.ShoppingCart.Data.csproj" />
     <ProjectReference Include="..\Capstone.ECommerceApp.ShoppingCart.Domain\Capstone.ECommerceApp.ShoppingCart.Domain.csproj" />
   </ItemGroup>

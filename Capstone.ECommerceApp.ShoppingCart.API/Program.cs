@@ -1,4 +1,6 @@
 using AutoMapper;
+using Capstone.ECommerceApp.Domain.Core.Cache;
+using Capstone.ECommerceApp.Infra.RedisCache;
 using Capstone.ECommerceApp.ShoppingCart.API.Extensions;
 using Capstone.ECommerceApp.ShoppingCart.API.Utility;
 using Capstone.ECommerceApp.ShoppingCart.Application;

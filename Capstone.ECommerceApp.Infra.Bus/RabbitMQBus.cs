@@ -31,9 +31,10 @@ public sealed class RabbitMQBus : IEventBus
 
             var properties = new BasicProperties
             {
-                Headers = new Dictionary<string, object> {{ "Authorization", $"Bearer {token}"  } }
+                Headers = new Dictionary<string, object> { { "Authorization", $"Bearer {token}" } },
+                Persistent = true
             };
-            await channel.BasicPublishAsync(exchange: "", routingKey: queueName,true,basicProperties: properties, body: body);
+            await channel.BasicPublishAsync(exchange: "", routingKey: queueName, true, basicProperties: properties, body: body);
             //In the case of Default Exchange, the binding key will be the same as the name of the queue.
             //So, the messages will also have the same routing-key as the Queue name.
         }
