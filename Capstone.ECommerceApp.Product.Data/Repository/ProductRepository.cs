@@ -14,11 +14,11 @@ namespace Capstone.ECommerceApp.Product.Data.Repository
             this.productDbContext = productDbContext;
         }
 
-        public IEnumerable<ProductInfo> GetProducts()
+        public async Task<IEnumerable<ProductInfo>> GetProducts()
         {
-            return productDbContext.Products
+            return await productDbContext.Products
                 .Include(p => p.Category)
-                .ToList();
+                .ToListAsync();
         }
 
         public ProductInfo GetProductById(int id)

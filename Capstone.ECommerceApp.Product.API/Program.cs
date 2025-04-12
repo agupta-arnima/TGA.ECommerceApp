@@ -1,16 +1,16 @@
 using AutoMapper;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi.Models;
-using System.Reflection;
-using System.Text;
 using Capstone.ECommerceApp.Product.Application;
 using Capstone.ECommerceApp.Product.Application.Interfaces;
 using Capstone.ECommerceApp.Product.Application.Services;
 using Capstone.ECommerceApp.Product.Data.Context;
 using Capstone.ECommerceApp.Product.Data.Repository;
 using Capstone.ECommerceApp.Product.Domain.Interfaces;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
+using System.Reflection;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -29,9 +29,9 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 
+builder.Services.AddApplicationDI();
+
 builder.Services.AddControllers();
-
-
 
 // Add CORS services
 var allowedOrigins = builder.Configuration["CORS_ALLOWED_ORIGINS"]?.Split(';') ?? new string[] { };

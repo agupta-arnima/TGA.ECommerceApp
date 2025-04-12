@@ -4,7 +4,7 @@ namespace Capstone.ECommerceApp.Product.Domain.Interfaces;
 
 public interface IProductRepository
 {
-    IEnumerable<ProductInfo> GetProducts();
+    Task<IEnumerable<ProductInfo>> GetProducts();
     ProductInfo GetProductById(int id);
     ProductInfo CreateProduct(ProductInfo productInfo);
     Task UpdateProduct(ProductInfo product);
@@ -17,5 +17,4 @@ public interface IProductRepository
     Supplier CreateSupplier(Supplier supplier);
     Supplier UpdateSupplier(Supplier supplier);
     Supplier DeleteSupplier(int id);
-
 }
