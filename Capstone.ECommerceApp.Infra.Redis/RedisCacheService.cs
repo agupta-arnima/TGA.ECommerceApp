@@ -1,8 +1,8 @@
-﻿using Capstone.ECommerceApp.ShoppingCart.Application.Interfaces;
+﻿using Capstone.ECommerceApp.Domain.Core.Cache;
 using StackExchange.Redis;
 using System.Text.Json;
 
-namespace Capstone.ECommerceApp.ShoppingCart.Application.Services;
+namespace Capstone.ECommerceApp.Infra.RedisCache;
 
 public class RedisCacheService : IRedisCacheService
 {

@@ -15,4 +15,8 @@
 		<ProjectReference Include="..\Capstone.ECommerceApp.Product.Data\Capstone.ECommerceApp.Product.Data.csproj" />
 	</ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Commands\" />
+  </ItemGroup>
+
 </Project>

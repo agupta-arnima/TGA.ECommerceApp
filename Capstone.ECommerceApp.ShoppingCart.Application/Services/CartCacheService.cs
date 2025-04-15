@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Capstone.ECommerceApp.Domain.Core.Cache;
 using Capstone.ECommerceApp.ShoppingCart.Application.Dto;
 using Capstone.ECommerceApp.ShoppingCart.Application.Interfaces;
 using Capstone.ECommerceApp.ShoppingCart.Domain.Models;

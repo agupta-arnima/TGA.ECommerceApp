@@ -1,4 +1,4 @@
-﻿namespace Capstone.ECommerceApp.ShoppingCart.Application.Interfaces;
+﻿namespace Capstone.ECommerceApp.Domain.Core.Cache;
 
 public interface IRedisCacheService
 {
