@@ -14,11 +14,27 @@ namespace Capstone.ECommerceApp.Product.Data.Repository
             this.productDbContext = productDbContext;
         }
 
-        public IEnumerable<ProductInfo> GetProducts()
+        public async Task<IEnumerable<ProductInfo>> GetProducts()
         {
-            return productDbContext.Products
+            return await productDbContext.Products
                 .Include(p => p.Category)
-                .ToList();
+                .ToListAsync();
+        }
+
+
+        public async Task<PagedResult<ProductInfo>> GetPagedProductsAsync(int pageNumber, int pageSize)
+        {
+            var query = productDbContext.Products.AsQueryable();
+            var totalCount = await query.CountAsync();
+            var items = await query.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToListAsync();
+
+            return new PagedResult<ProductInfo>
+            {
+                Items = items,
+                TotalCount = totalCount,
+                PageNumber = pageNumber,
+                PageSize = pageSize
+            };
         }
 
         public ProductInfo GetProductById(int id)

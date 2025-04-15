@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Capstone.ECommerceApp.Product.Application.Dto;
 using Capstone.ECommerceApp.Product.Application.Interfaces;
+using Capstone.ECommerceApp.Product.Application.Queries;
+using MediatR;
 
 namespace Capstone.ECommerceApp.Product.API.Controllers
 {
@@ -10,20 +12,23 @@ namespace Capstone.ECommerceApp.Product.API.Controllers
     {
         private readonly IProductService productService;
         private ResponseDto responseDto;
+        private readonly ISender sender;
 
-        public ProductAPIController(IProductService productService)
+        public ProductAPIController(IProductService productService,
+                                    ISender sender)
         {
             this.productService = productService;
             responseDto = new ResponseDto();
+            this.sender = sender;
         }
         //Get all the products
         [HttpGet]
-        public IActionResult Get()
+        public async Task<IActionResult> Get(int pageNumber = 1, int pageSize = 10)
         {
             var responseDto = new ResponseDto();
             try
             {
-                responseDto.Result = productService.GetProducts();
+                responseDto.Result = await sender.Send(new GetProductsQuery(pageNumber,pageSize));
             }
             catch (Exception ex)
             {

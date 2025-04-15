@@ -1,4 +1,5 @@
 ﻿using Capstone.ECommerceApp.Product.Application.Dto;
+using Capstone.ECommerceApp.Product.Domain.Models;
 
 namespace Capstone.ECommerceApp.Product.Application.Interfaces;
 

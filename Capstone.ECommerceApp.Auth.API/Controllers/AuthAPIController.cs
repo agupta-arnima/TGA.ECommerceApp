@@ -6,6 +6,9 @@ using Capstone.ECommerceApp.Auth.Application.Dto;
 using Capstone.ECommerceApp.Auth.Application.Interfaces;
 using Capstone.ECommerceApp.Auth.Domain.Events;
 using Capstone.ECommerceApp.Domain.Core.Bus;
+using Capstone.ECommerceApp.Domain.Core.Events;
+using Newtonsoft.Json;
+using System.Text;
 
 namespace Capstone.ECommerceApp.Auth.API.Controllers;
 
@@ -41,9 +44,15 @@ public class AuthAPIController : ControllerBase
         var result = await authService.Register(userDTO);
         if (result != null && result.IsSuccess)
         {
-            //
-            await messageBus.PublishMessageAsync(new UserRegistrationEvent(userDTO.Email), 
-                configuration.GetValue<string>("ApiSettings:RabbitMQ:TopicAndQueueNames:UserRegistrationQueue"));
+
+            var userRegistrationEvent = new UserRegistrationEvent(userDTO.Email);
+            var notificationMessage = new NotificationMessage<UserRegistrationEvent>();
+            notificationMessage.Message = userRegistrationEvent;
+            notificationMessage.EventType = EventTypes.UserRegistration;
+
+            await messageBus.PublishMessageAsync(notificationMessage,
+             configuration.GetValue<string>("ApiSettings:RabbitMQ:TopicAndQueueNames:UserRegistrationQueue"));
+
             registrationCounter.Add(1); // Increment the counter
             return Ok(result);
         }

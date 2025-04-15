@@ -38,6 +38,8 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 // Add services to the container.
 builder.Services.AddSingleton<IProductService, ProductService>();
 builder.Services.AddSingleton<IInventoryService,InventoryService>();
+builder.Services.AddSingleton<IPaymentService,PaymentService>();
+builder.Services.AddSingleton<IShippingService, ShippingService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 builder.Services.AddSingleton<IOrderProcessingService, OrderProcessingService>();
@@ -50,15 +52,15 @@ builder.Services.AddHttpClientService("Product",builder.Configuration["ServiceUr
                     sp => sp.GetRequiredService<BackendApiAuthenticationHttpClientHandler>(), retryPolicy);
 builder.Services.AddHttpClientService("Inventory", builder.Configuration["ServiceUrls:InventoryAPI"],
                     sp => sp.GetRequiredService<BackendApiAuthenticationHttpClientHandler>(), retryPolicy);
-//builder.Services.AddHttpClientService("Payment", builder.Configuration["ServiceUrls:PaymentAPI"],
-//                    sp => sp.GetRequiredService<BackendApiAuthenticationHttpClientHandler>(), retryPolicy);
+builder.Services.AddHttpClientService("Payment", builder.Configuration["ServiceUrls:PaymentAPI"],
+                    sp => sp.GetRequiredService<BackendApiAuthenticationHttpClientHandler>(), retryPolicy);
 
 
 
 //Rabbit MQ
 
 builder.Services.Configure<RabbitMQSetting>(builder.Configuration.GetSection("ApiSettings:RabbitMQ"));
-builder.Services.AddScoped(typeof(IEventBus), typeof(RabbitMQBus));
+builder.Services.AddSingleton(typeof(IEventBus), typeof(RabbitMQBus));
 // Register the consumer service as a hosted service only
 builder.Services.AddHostedService<OrderSagaOrchestrator>();
 
