@@ -16,4 +16,3 @@ namespace Capstone.ECommerceApp.Product.Application;
             return services;
         }
     }
-}

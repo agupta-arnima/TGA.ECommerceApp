@@ -11,12 +11,12 @@
 		<PackageReference Include="MediatR" Version="12.5.0" />
 	</ItemGroup>
 
-	<ItemGroup>
-		<ProjectReference Include="..\Capstone.ECommerceApp.Product.Data\Capstone.ECommerceApp.Product.Data.csproj" />
-	</ItemGroup>
-
   <ItemGroup>
     <Folder Include="Commands\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Capstone.ECommerceApp.Product.Data\Capstone.ECommerceApp.Product.Data.csproj" />
   </ItemGroup>
 
 </Project>
