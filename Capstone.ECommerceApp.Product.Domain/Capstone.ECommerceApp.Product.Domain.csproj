@@ -7,9 +7,15 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Events\" />
-    <Folder Include="Commands\" />
-    <Folder Include="CommandHandlers\" />
+    <Compile Remove="CommandHandlers\**" />
+    <Compile Remove="Commands\**" />
+    <Compile Remove="Events\**" />
+    <EmbeddedResource Remove="CommandHandlers\**" />
+    <EmbeddedResource Remove="Commands\**" />
+    <EmbeddedResource Remove="Events\**" />
+    <None Remove="CommandHandlers\**" />
+    <None Remove="Commands\**" />
+    <None Remove="Events\**" />
   </ItemGroup>
 
 </Project>

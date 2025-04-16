@@ -22,6 +22,8 @@ using System.Security.Cryptography.X509Certificates;
 using Microsoft.Extensions.Configuration;
 using Capstone.ECommerceApp.Infra.Bus;
 using Capstone.ECommerceApp.Domain.Core.Bus;
+using FluentValidation;
+using Capstone.ECommerceApp.Auth.Application.Dto;
 
 // Variable for Aspire DashBoard
 var registrationMeterCounter = new Meter("OTel.Tempest", "1.0.0");
@@ -70,6 +72,9 @@ builder.Services.AddSingleton(registrationMeterCounter);
 //Rabbit MQ
 builder.Services.Configure<RabbitMQSetting>(builder.Configuration.GetSection("ApiSettings:RabbitMQ"));
 builder.Services.AddScoped(typeof(IEventBus), typeof(RabbitMQBus));
+
+//Fluent Validation
+builder.Services.AddScoped<IValidator<RegistrationRequestDto>, RegistrationRequestValidator>();
 
 builder.Services.AddControllers();
 

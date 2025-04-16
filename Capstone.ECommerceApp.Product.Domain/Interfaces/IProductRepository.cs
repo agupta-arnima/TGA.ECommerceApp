@@ -17,4 +17,5 @@ public interface IProductRepository
     Supplier CreateSupplier(Supplier supplier);
     Supplier UpdateSupplier(Supplier supplier);
     Supplier DeleteSupplier(int id);
+    Task UpdateStock(int productId, int count);
 }

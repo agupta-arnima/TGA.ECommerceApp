@@ -19,6 +19,4 @@ public interface IProductService
 
     Task<bool> ReserveInventory(OrderHeaderDto order);
     Task<bool> ReleaseInventory(OrderHeaderDto order);
-
-
 }

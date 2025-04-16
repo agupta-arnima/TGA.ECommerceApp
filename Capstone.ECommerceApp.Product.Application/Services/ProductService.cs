@@ -27,8 +27,9 @@ public class ProductService : IProductService
         return mapper.Map<ProductDto>(productRepository.GetProductById(id));
     }
 
-    public bool DeleteProduct(int id) { 
-       return productRepository.DeleteProduct(id);
+    public bool DeleteProduct(int id)
+    {
+        return productRepository.DeleteProduct(id);
     }
 
     public ProductDto AddProduct(ProductDto product)
@@ -107,13 +108,7 @@ public class ProductService : IProductService
     {
         foreach (var item in order.OrderDetails)
         {
-            var product = productRepository.GetProductById(item.ProductId);
-            if (product == null || product.Stock < item.Count)
-            {
-                return false; // Not enough stock
-            }
-            product.Stock += item.Count;
-            await productRepository.UpdateProduct(product);
+            await productRepository.UpdateStock(item.ProductId, item.Count * -1);
         }
         return true;
     }
@@ -122,13 +117,7 @@ public class ProductService : IProductService
     {
         foreach (var item in order.OrderDetails)
         {
-            var product = productRepository.GetProductById(item.ProductId);
-            if (product == null || product.Stock < item.Count)
-            {
-                return false; // Not enough stock
-            }
-            product.Stock -= item.Count;
-            await productRepository.UpdateProduct(product);
+            await productRepository.UpdateStock(item.ProductId, item.Count);
         }
         return true;
     }

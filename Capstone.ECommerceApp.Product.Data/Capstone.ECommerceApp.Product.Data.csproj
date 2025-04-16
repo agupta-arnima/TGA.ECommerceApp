@@ -19,4 +19,8 @@
     <ProjectReference Include="..\Capstone.ECommerceApp.Product.Domain\Capstone.ECommerceApp.Product.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Migrations\" />
+  </ItemGroup>
+
 </Project>

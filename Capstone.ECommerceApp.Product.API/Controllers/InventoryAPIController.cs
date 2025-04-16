@@ -21,12 +21,12 @@ namespace Capstone.ECommerceApp.Product.API.Controllers
         }
 
         [HttpPost("releaseinventory")]
-        public IActionResult ReleaseInventory([FromBody] OrderHeaderDto order)
+        public async Task<IActionResult> ReleaseInventory([FromBody] OrderHeaderDto order)
         {
             var responseDto = new ResponseDto();
             try
             {
-                var releseInventory = _productService.ReleaseInventory(order);
+                var releseInventory = await _productService.ReleaseInventory(order);
                 responseDto.Result = true;
                 responseDto.Result = releseInventory;
                 responseDto.IsSuccess = true;
@@ -40,14 +40,15 @@ namespace Capstone.ECommerceApp.Product.API.Controllers
             }
             return Ok(responseDto);
         }
+
         [HttpPost("reserveinventory")]
-        public IActionResult ReserveInventory([FromBody] OrderHeaderDto order)
+        public async Task<IActionResult> ReserveInventory([FromBody] OrderHeaderDto order)
         {
             var responseDto = new ReserveInventoryResponseDto();
             try
             {
-                var reserveInventory = _productService.ReserveInventory(order);
-                responseDto.IsSuccess=true;
+                var reserveInventory = await _productService.ReserveInventory(order);
+                responseDto.IsSuccess = true;
                 responseDto.Message = $"Order has been reserved Successfullty";
             }
             catch (Exception ex)
@@ -132,7 +133,8 @@ namespace Capstone.ECommerceApp.Product.API.Controllers
             try
             {
                 var supplier = _productService.AddSupplier(supplierDto);
-                if (supplier == null) { 
+                if (supplier == null)
+                {
                     responseDto.IsSuccess = false;
                 }
                 responseDto.Result = supplier;

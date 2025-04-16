@@ -103,5 +103,25 @@ namespace Capstone.ECommerceApp.Product.Data.Repository
                 await productDbContext.SaveChangesAsync();
             }
         }
+
+        public async Task UpdateStock(int productId, int count)
+        {
+            try
+            {
+                var existingProduct = await productDbContext.Products.FindAsync(productId);
+                if (existingProduct != null)
+                {
+                    if (existingProduct.Stock > count)
+                    {
+                        existingProduct.Stock -= count;
+                        await productDbContext.SaveChangesAsync();
+                    }
+                }
+            }
+            catch (DbUpdateException ex)
+            {
+
+            }
+        }
     }
 }

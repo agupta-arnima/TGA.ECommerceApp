@@ -19,5 +19,9 @@ namespace Capstone.ECommerceApp.Product.Domain.Models
         public Supplier Supplier { get; set; }
         public int Stock { get; set; }
         public string ImageUrl { get; set; }
+
+
+        [Timestamp]
+        public byte[] RowVersion { get; set; }
     }
 }
