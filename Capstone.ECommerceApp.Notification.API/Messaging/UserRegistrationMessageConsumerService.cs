@@ -5,6 +5,10 @@ using System.Text;
 using Capstone.ECommerceApp.Infra.Bus;
 using Capstone.ECommerceApp.Notification.Application.Interfaces;
 using Capstone.ECommerceApp.Notification.Domain.Events;
+using Capstone.ECommerceApp.Domain.Core.Events;
+using System.Text.Json.Serialization;
+using System.Text.Json;
+using Newtonsoft.Json;
 
 namespace Capstone.ECommerceApp.Notification.API.Messaging
 {
@@ -57,7 +61,30 @@ namespace Capstone.ECommerceApp.Notification.API.Messaging
                 bool processedSuccessfully = false;
                 try
                 {
-                    processedSuccessfully = await OnUserRegistrationReceived(message);
+                    var notificationMessage = JsonConvert.DeserializeObject<NotificationMessage<object>>(message, new JsonSerializerSettings
+                    {
+                        TypeNameHandling = TypeNameHandling.Auto,
+                        MissingMemberHandling = MissingMemberHandling.Error
+                    });
+
+                    switch (notificationMessage.EventType)
+                    {
+                        case EventTypes.UserRegistration:
+                            var userRegistrationEvent = JsonConvert.DeserializeObject<UserRegistrationEvent>(notificationMessage.Message.ToString());
+                            Console.WriteLine($"User Registered: {userRegistrationEvent.Email}");
+                            processedSuccessfully = await UserRegistrationNotification(userRegistrationEvent);
+                            break;
+
+                        case EventTypes.OrderCreated:
+                            //var orderCreatedEvent = JsonConvert.DeserializeObject<Order>
+                            break;
+
+                        default:
+                            logger.LogWarning($"Unknown event type: {notificationMessage.EventType}");
+                            break;
+                    }
+
+
                 }
                 catch (Exception ex)
                 {
@@ -76,15 +103,15 @@ namespace Capstone.ECommerceApp.Notification.API.Messaging
             await channel.BasicConsumeAsync(queue: queueName, autoAck: false, consumer: consumer);
         }
 
-        private async Task<bool> OnUserRegistrationReceived(string message)
+        private async Task<bool> UserRegistrationNotification(UserRegistrationEvent message)
         {
             try
             {
                 using (var scope = serviceProvider.CreateScope())
                 {
-                    var userRegistration = System.Text.Json.JsonSerializer.Deserialize<UserRegistrationEvent>(message);
+                    //var userRegistration = System.Text.Json.JsonSerializer.Deserialize<UserRegistrationEvent>(message);
                     var notificationService = scope.ServiceProvider.GetRequiredService<INotificationService>();
-                    await notificationService.RegisterUserEmailAndLog(userRegistration.Email);
+                    await notificationService.RegisterUserEmailAndLog(message.Email);
                     return true;
                 }
             }

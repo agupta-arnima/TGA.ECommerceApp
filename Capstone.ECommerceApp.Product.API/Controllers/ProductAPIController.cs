@@ -14,7 +14,8 @@ namespace Capstone.ECommerceApp.Product.API.Controllers
         private ResponseDto responseDto;
         private readonly ISender sender;
 
-        public ProductAPIController(IProductService productService, ISender sender)
+        public ProductAPIController(IProductService productService,
+                                    ISender sender)
         {
             this.productService = productService;
             responseDto = new ResponseDto();
@@ -22,12 +23,12 @@ namespace Capstone.ECommerceApp.Product.API.Controllers
         }
         //Get all the products
         [HttpGet]
-        public async Task<IActionResult> Get()
+        public async Task<IActionResult> Get(int pageNumber = 1, int pageSize = 10)
         {
             var responseDto = new ResponseDto();
             try
             {
-                responseDto.Result = await sender.Send(new GetProductsQuery());
+                responseDto.Result = await sender.Send(new GetProductsQuery(pageNumber,pageSize));
             }
             catch (Exception ex)
             {

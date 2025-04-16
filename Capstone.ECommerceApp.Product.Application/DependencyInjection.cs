@@ -1,8 +1,8 @@
 ﻿using MediatR.NotificationPublishers;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Capstone.ECommerceApp.Product.Application
-{
+namespace Capstone.ECommerceApp.Product.Application;
+
     public static class DependencyInjection
     {
         public static IServiceCollection AddApplicationDI(this IServiceCollection services)
@@ -16,4 +16,3 @@ namespace Capstone.ECommerceApp.Product.Application
             return services;
         }
     }
-}

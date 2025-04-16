@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Capstone.ECommerceApp.Domain.Core.Events
+﻿namespace Capstone.ECommerceApp.Domain.Core.Events
 {
     public abstract class Event
     {

@@ -5,6 +5,7 @@ namespace Capstone.ECommerceApp.Product.Domain.Interfaces;
 public interface IProductRepository
 {
     Task<IEnumerable<ProductInfo>> GetProducts();
+    Task<PagedResult<ProductInfo>> GetPagedProductsAsync(int pageNumber, int pageSize);
     ProductInfo GetProductById(int id);
     ProductInfo CreateProduct(ProductInfo productInfo);
     Task UpdateProduct(ProductInfo product);

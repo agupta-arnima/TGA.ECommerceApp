@@ -30,7 +30,6 @@ builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 
 builder.Services.AddApplicationDI();
-
 builder.Services.AddControllers();
 
 // Add CORS services
