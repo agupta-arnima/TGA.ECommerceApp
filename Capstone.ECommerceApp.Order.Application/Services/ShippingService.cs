@@ -12,6 +12,6 @@ public class ShippingService : IShippingService
 
     public Task<bool> ShippedOrder(OrderHeaderDto order, string token)
     {
-        throw new NotImplementedException();
+        return Task.FromResult(true);
     }
 }

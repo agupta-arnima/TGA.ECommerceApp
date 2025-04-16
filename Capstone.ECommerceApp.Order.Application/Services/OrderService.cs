@@ -11,19 +11,23 @@ public class OrderService : IOrderService
 {
     private readonly IOrderRepository orderRepository;
     private readonly IMapper mapper;
-    public OrderService(IOrderRepository orderRepository, IMapper mapper)
+    private readonly IProductService productService;
+    public OrderService(IOrderRepository orderRepository,
+                        IMapper mapper,
+                        IProductService productService)
     {
         this.orderRepository = orderRepository;
         this.mapper = mapper;
+        this.productService = productService;
     }
 
     public async Task<bool> CancelOrder(OrderHeaderDto cartDto)
     {
-        var orderHeaderDto = mapper.Map<OrderHeaderDto>(cartDto);//mapping from CartHeaderDto to OrderHeaderDto
-        orderHeaderDto.Status = SD.Status_Canceled;
-        orderHeaderDto.OrderDetails = mapper.Map<IEnumerable<OrderDetailsDto>>(cartDto);//mapping from CartDetailsDto to OrderDetailsDto
-
-        var orderCancel = await orderRepository.CancelOrder(mapper.Map<OrderHeader>(orderHeaderDto));
+        //var orderHeaderDto = mapper.Map<OrderHeaderDto>(cartDto);//mapping from CartHeaderDto to OrderHeaderDto
+        //orderHeaderDto.Status = SD.Status_Canceled;
+        //orderHeaderDto.OrderDetails = mapper.Map<IEnumerable<OrderDetailsDto>>(cartDto);//mapping from CartDetailsDto to OrderDetailsDto
+        cartDto.Status = SD.Status_Canceled;
+        var orderCancel = await orderRepository.UpdateOrderStatus(mapper.Map<OrderHeader>(cartDto));
         return orderCancel;
     }
 
@@ -74,5 +78,27 @@ public class OrderService : IOrderService
 
         await orderRepository.CreateStripeSession(stripeRequestDto.OrderHeader.OrderHeaderId, session.Id);
         return stripeRequestDto;
+    }
+
+    public async Task<List<string>> CheckProductAvailability(CartDto cartDto)
+    {
+        var unavailableProducts = new List<string>();
+
+        foreach (var cartDetail in cartDto.CartDetails)
+        {
+            var product = await productService.GetProductsById(cartDetail.ProductId);
+            if (product == null || product.Stock < cartDetail.Count)
+            {
+                unavailableProducts.Add(cartDetail.Product?.Name);
+            }
+        }
+
+        return unavailableProducts;
+    }
+
+    public async Task<bool> UpdateOrderStatus(OrderHeaderDto order)
+    {
+        var orderCancel = await orderRepository.UpdateOrderStatus(mapper.Map<OrderHeader>(order));
+        return orderCancel;
     }
 }

@@ -76,7 +76,6 @@ namespace Capstone.ECommerceApp.Notification.API.Messaging
                             break;
 
                         case EventTypes.OrderCreated:
-                            //var orderCreatedEvent = JsonConvert.DeserializeObject<Order>
                             break;
 
                         default:

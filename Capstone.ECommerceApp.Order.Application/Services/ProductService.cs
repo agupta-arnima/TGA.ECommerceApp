@@ -12,16 +12,23 @@ public class ProductService : IProductService
         _httpClientFactory = httpClientFactory;
     }
 
-    public async Task<IEnumerable<ProductDto>> GetProducts()
+    public async Task<ProductDto> GetProductsById(int id)
     {
-        var client = _httpClientFactory.CreateClient("Product"); //this is the name of the client we have defined in the program.cs and pick base address from there
-        var response = await client.GetAsync("api/product");
-        var apiContent = await response.Content.ReadAsStringAsync();
-        var resp = JsonConvert.DeserializeObject<ResponseDto>(apiContent);
-        if (resp.IsSuccess)
+        try
         {
-            return JsonConvert.DeserializeObject<IEnumerable<ProductDto>>(Convert.ToString(resp.Result));
+            var client = _httpClientFactory.CreateClient("Product"); //this is the name of the client we have defined in the program.cs and pick base address from there
+            var response = await client.GetAsync($"api/product/{id}");
+            var apiContent = await response.Content.ReadAsStringAsync();
+            var resp = JsonConvert.DeserializeObject<ResponseDto>(apiContent);
+            if (resp.IsSuccess)
+            {
+                return JsonConvert.DeserializeObject<ProductDto>(Convert.ToString(resp.Result));
+            }
         }
-        return new List<ProductDto>();
+        catch (HttpRequestException httpEx)
+        {
+            Console.WriteLine($"Request failed. StatusCode={httpEx.StatusCode} Message={httpEx.Message}");
+        }
+        return new ProductDto();
     }
 }

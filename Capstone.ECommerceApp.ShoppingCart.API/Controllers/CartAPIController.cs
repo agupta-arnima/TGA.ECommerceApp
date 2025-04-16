@@ -50,7 +50,7 @@ namespace Capstone.ECommerceApp.ShoppingCart.API.Controllers
             return responseDto;
         }
 
-        [HttpPost("RemoveCart/{userId}")]
+        [HttpDelete("RemoveCart/{userId}")]
         public async Task<ResponseDto> RemoveCart(string userId)
         {
             try

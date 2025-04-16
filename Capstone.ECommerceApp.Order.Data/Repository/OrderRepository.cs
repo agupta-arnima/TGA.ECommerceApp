@@ -31,7 +31,7 @@ public class OrderRepository : IOrderRepository
         orderDbContext.SaveChanges();
     }
 
-    public async Task<bool> CancelOrder(OrderHeader orderHeader)
+    public async Task<bool> UpdateOrderStatus(OrderHeader orderHeader)
     {
         OrderHeader order = await orderDbContext.OrderHeaders.FirstAsync(u=> u.OrderHeaderId == orderHeader.OrderHeaderId);
         order.Status = orderHeader.Status;

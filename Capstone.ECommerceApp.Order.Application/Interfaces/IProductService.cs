@@ -4,5 +4,5 @@ namespace Capstone.ECommerceApp.Order.Application.Interfaces;
 
 public interface IProductService
 {
-    Task<IEnumerable<ProductDto>> GetProducts();
+    Task<ProductDto> GetProductsById(int id);
 }

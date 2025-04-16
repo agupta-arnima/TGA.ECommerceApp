@@ -81,7 +81,7 @@ services:
       - ApiSettings__RabbitMQ__HostName=rabbitmq
       - ApiSettings__RabbitMQ__UserName=guest
       - ApiSettings__RabbitMQ__Password=guest
-      - ApiSettings__RabbitMQ__TopicAndQueueNames__OrderQueue=userregistration
+      - ApiSettings__RabbitMQ__TopicAndQueueNames__UserRegistrationQueue=userregistration
     networks:
       - ecommnetwork
 
@@ -130,7 +130,12 @@ services:
       - ApiSettings__Audience=TGA-Client
       - ServiceUrls__ProductAPI=http://capstone.ecommerceapp.productapi:8080/
       - ServiceUrls__InventoryAPI=http://capstone.ecommerceapp.productapi:8080/
+      - ServiceUrls__PaymentAPI=http://capstone.ecommerceapp.paymentapi:8080/
       - Stripe__SecretKey=sk_test_51QiGz5CQ7mJfnXMskjXynI3SYDC8L68EXwvj6mkKy3tXKBYCpxFfEJvjOTfJKxCx7XuhKKEpYyqP0Qj4hc7MFFSV00SRq4yB7H
+      - ApiSettings__RabbitMQ__HostName=rabbitmq
+      - ApiSettings__RabbitMQ__UserName=guest
+      - ApiSettings__RabbitMQ__Password=guest
+      - ApiSettings__RabbitMQ__TopicAndQueueNames__OrderQueue=order
     networks:
       - ecommnetwork
   
@@ -179,6 +184,22 @@ services:
       - ApiSettings__RabbitMQ__TopicAndQueueNames__OrderQueue=userregistration
     networks:
       - ecommnetwork 
+  
+  capstone.ecommerceapp.paymentapi:
+    image: ${DOCKER_REGISTRY-}paymentapi
+    container_name: paymentapi
+    build:
+      context: .
+      dockerfile: Capstone.ECommerceApp.Payment.API/Dockerfile
+    ports:
+      - "7006:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ApiSettings__Secret=This is used to Sign and verify JWT tokens, Replace it with your own secret
+      - ApiSettings__Issuer=TGA-Auth-API
+      - ApiSettings__Audience=TGA-Client
+    networks:
+      - ecommnetwork
 
   capstone.ecommerceapp.ocelotapigateway:
     image: ${DOCKER_REGISTRY-}ocelotapigateway

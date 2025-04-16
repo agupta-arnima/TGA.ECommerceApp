@@ -34,13 +34,11 @@ namespace Capstone.ECommerceApp.ShoppingCart.Application.Services
             };
             cartDto.CartDetails = mapper.Map<IEnumerable<CartDetailsDto>>(cartHeader.CartDetails);
 
-            var productDtos = await productService.GetProducts();
-            //cartDto.CartDetails.ToList().ForEach(u => u.Product = productDtos.FirstOrDefault(p => p.ProductId == u.ProductId));
-            //cartDto.CartDetails.ToList().ForEach(u => cartDto.CartHeader.CartTotal += u.Product.Price * u.Count);
             cartDto.CartHeader.CartTotal = 0;
             foreach (var item in cartDto.CartDetails)
             {
-                item.Product = productDtos.FirstOrDefault(p => p.ProductId == item.ProductId);
+                var productDtos = await productService.GetProductsById(item.ProductId);
+                item.Product = productDtos;
                 cartDto.CartHeader.CartTotal += item.Product.Price * item.Count;
             }
             return cartDto;

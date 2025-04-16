@@ -4,6 +4,6 @@ namespace Capstone.ECommerceApp.ShoppingCart.Application.Interfaces
 {
     public interface IProductService
     {
-        Task<IEnumerable<ProductDto>> GetProducts();
+        Task<ProductDto> GetProductsById(int id);
     }
 }

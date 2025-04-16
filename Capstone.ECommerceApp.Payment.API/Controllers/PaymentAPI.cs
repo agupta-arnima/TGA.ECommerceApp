@@ -8,7 +8,7 @@ namespace Capstone.ECommerceApp.Payment.API.Controllers
 {
     [Route("api/payment")]
     [ApiController]
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "admin, ADMIN")]
+    [Authorize]
     public class PaymentAPI : ControllerBase
     {
         private ResponseDto responseDto;

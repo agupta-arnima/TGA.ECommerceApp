@@ -1,12 +1,12 @@
 ﻿
+using Capstone.ECommerceApp.Infra.Bus;
+using Capstone.ECommerceApp.Order.Application.Dto;
+using Capstone.ECommerceApp.Order.Application.Interfaces;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using System.Text;
-using Capstone.ECommerceApp.Infra.Bus;
-using Capstone.ECommerceApp.Order.Application.Dto;
-using Capstone.ECommerceApp.Order.Application.Interfaces;
 
 namespace Capstone.ECommerceApp.Order.API.Messaging;
 
@@ -18,19 +18,16 @@ public class OrderSagaOrchestrator : BackgroundService
     private IChannel _channel;
     private IConfiguration _configuration;
     private readonly IServiceProvider _serviceProvider;
-    private IOrderProcessingService _orderProcessingService;
 
     public OrderSagaOrchestrator(ILogger<OrderSagaOrchestrator> logger,
                                     IOptions<RabbitMQSetting> rabbitMqSetting,
                                     IConfiguration configuration,
-                                    IServiceProvider serviceProvider,
-                                    IOrderProcessingService orderProcessingService)
+                                    IServiceProvider serviceProvider)
     {
         _logger = logger;
         _rabbitMqSetting = rabbitMqSetting.Value;
         _configuration = configuration;
         _serviceProvider = serviceProvider;
-        _orderProcessingService = orderProcessingService;
 
         var factory = new ConnectionFactory
         {
@@ -63,19 +60,20 @@ public class OrderSagaOrchestrator : BackgroundService
             {
                 var orderDeatils = JsonConvert.DeserializeObject<RabbitMqOrderMessage>(message);
                 //Extract Token
-
-                var token = string.Empty;
-                if (ea.BasicProperties.Headers.ContainsKey("Authorization"))
+                using (var scope = _serviceProvider.CreateScope())
                 {
-                    var tokenBytes = ea.BasicProperties.Headers["Authorization"] as byte[];
-                    if (tokenBytes != null)
+                    var token = string.Empty;
+                    if (ea.BasicProperties.Headers.ContainsKey("Authorization"))
                     {
-                        token = Encoding.UTF8.GetString(tokenBytes).Replace("Bearer ", "");
+                        var tokenBytes = ea.BasicProperties.Headers["Authorization"] as byte[];
+                        if (tokenBytes != null)
+                        {
+                            token = Encoding.UTF8.GetString(tokenBytes).Replace("Bearer ", "");
+                        }
                     }
+                    var orderProcessingService = scope.ServiceProvider.GetRequiredService<IOrderProcessingService>();
+                    processedSuccessfully = await orderProcessingService.ProcessOrder(orderDeatils.order, token);
                 }
-                //TODO
-                processedSuccessfully = true;
-                await _orderProcessingService.ProcessOrder(orderDeatils.order, token);
             }
             catch (Exception ex)
             {

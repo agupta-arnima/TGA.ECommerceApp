@@ -30,6 +30,16 @@ namespace Capstone.ECommerceApp.Order.API.Controllers
         {
             try
             {
+
+                // Check product availability
+                var unavailableProducts = await orderService.CheckProductAvailability(cartDto);
+                if (unavailableProducts.Any())
+                {
+                    response.Result = false;
+                    response.Message = $"The following products are unavailable or insufficient in stock: {string.Join(", ", unavailableProducts)}";
+                    return BadRequest(response);
+                }
+
                 var orderHeaderDto = await orderService.CreateOrder(cartDto);
                 response.Result = orderHeaderDto;
                 response.Message = "Order was created successfully";

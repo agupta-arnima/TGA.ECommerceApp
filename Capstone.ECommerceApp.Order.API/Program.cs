@@ -36,13 +36,13 @@ builder.Services.AddSingleton(mapper);
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 // Add services to the container.
-builder.Services.AddSingleton<IProductService, ProductService>();
-builder.Services.AddSingleton<IInventoryService,InventoryService>();
-builder.Services.AddSingleton<IPaymentService,PaymentService>();
-builder.Services.AddSingleton<IShippingService, ShippingService>();
+builder.Services.AddScoped<IProductService, ProductService>();
+builder.Services.AddScoped<IInventoryService,InventoryService>();
+builder.Services.AddScoped<IPaymentService,PaymentService>();
+builder.Services.AddScoped<IShippingService, ShippingService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
-builder.Services.AddSingleton<IOrderProcessingService, OrderProcessingService>();
+builder.Services.AddScoped<IOrderProcessingService, OrderProcessingService>();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<BackendApiAuthenticationHttpClientHandler>();
 
