@@ -114,7 +114,7 @@
       }
     },
     {
-      "DownstreamPathTemplate": "/api/cart/ApplyCoupon",
+      "DownstreamPathTemplate": "/api/cart/RemoveCart/{id}",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
@@ -122,38 +122,8 @@
           "Port": 8080
         }
       ],
-      "UpstreamPathTemplate": "/api/cart/ApplyCoupon",
-      "UpstreamHttpMethod": [ "POST" ],
-      "AuthenticationOptions": {
-        "AuthenticationProviderKey": "Bearer"
-      }
-    },
-    {
-      "DownstreamPathTemplate": "/api/cart/EmailCartRequest",
-      "DownstreamScheme": "http",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "capstone.ecommerceapp.shoppingcartapi",
-          "Port": 8080
-        }
-      ],
-      "UpstreamPathTemplate": "/api/cart/EmailCartRequest",
-      "UpstreamHttpMethod": [ "POST" ],
-      "AuthenticationOptions": {
-        "AuthenticationProviderKey": "Bearer"
-      }
-    },
-    {
-      "DownstreamPathTemplate": "/api/cart/RemoveCart",
-      "DownstreamScheme": "http",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "capstone.ecommerceapp.shoppingcartapi",
-          "Port": 8080
-        }
-      ],
-      "UpstreamPathTemplate": "/api/cart/RemoveCart",
-      "UpstreamHttpMethod": [ "POST" ],
+      "UpstreamPathTemplate": "/api/cart/RemoveCart/{id}",
+      "UpstreamHttpMethod": [ "DELETE" ],
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Bearer"
       }

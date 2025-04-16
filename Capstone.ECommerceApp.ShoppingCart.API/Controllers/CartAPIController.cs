@@ -1,7 +1,7 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Capstone.ECommerceApp.ShoppingCart.Application.Dto;
+﻿using Capstone.ECommerceApp.ShoppingCart.Application.Dto;
 using Capstone.ECommerceApp.ShoppingCart.Application.Interfaces;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Capstone.ECommerceApp.ShoppingCart.API.Controllers
 {
@@ -19,6 +19,7 @@ namespace Capstone.ECommerceApp.ShoppingCart.API.Controllers
         }
 
         [HttpGet("GetCart/{userId}")]
+        [Authorize]
         public async Task<IActionResult> GetCart(string userId)
         {
             try
@@ -35,6 +36,7 @@ namespace Capstone.ECommerceApp.ShoppingCart.API.Controllers
 
 
         [HttpPost("CartUpsert")]
+        [Authorize]
         public async Task<ResponseDto> CartUpsert([FromBody] CartDto cartDto)
         {
             try
@@ -51,6 +53,7 @@ namespace Capstone.ECommerceApp.ShoppingCart.API.Controllers
         }
 
         [HttpDelete("RemoveCart/{userId}")]
+        [Authorize]
         public async Task<ResponseDto> RemoveCart(string userId)
         {
             try
