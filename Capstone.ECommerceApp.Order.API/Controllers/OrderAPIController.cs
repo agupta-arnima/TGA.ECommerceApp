@@ -39,7 +39,6 @@ namespace Capstone.ECommerceApp.Order.API.Controllers
                     response.Message = $"The following products are unavailable or insufficient in stock: {string.Join(", ", unavailableProducts)}";
                     return BadRequest(response);
                 }
-
                 var orderHeaderDto = await orderService.CreateOrder(cartDto);
                 response.Result = orderHeaderDto;
                 response.Message = "Order was created successfully";

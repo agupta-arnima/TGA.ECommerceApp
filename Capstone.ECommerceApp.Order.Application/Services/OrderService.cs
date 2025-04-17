@@ -91,6 +91,7 @@ public class OrderService : IOrderService
             {
                 unavailableProducts.Add(cartDetail.Product?.Name);
             }
+            cartDetail.Product = product;
         }
 
         return unavailableProducts;
