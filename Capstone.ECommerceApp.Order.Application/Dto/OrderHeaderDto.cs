@@ -1,4 +1,6 @@
-﻿namespace Capstone.ECommerceApp.Order.Application.Dto;
+﻿using System.Text.Json.Serialization;
+
+namespace Capstone.ECommerceApp.Order.Application.Dto;
 
 public class OrderHeaderDto
 {
@@ -7,8 +9,11 @@ public class OrderHeaderDto
     public string? CouponCode { get; set; }
     public double Discount { get; set; }
     public double OrderTotal { get; set; }
+    [JsonIgnore]
     public string? Name { get; set; }
+    [JsonIgnore]
     public string? Phone { get; set; }
+    [JsonIgnore]
     public string? Email { get; set; }
     public DateTime OrderTime { get; set; }
     public string? Status { get; set; } //Order Status like Pending, Approved

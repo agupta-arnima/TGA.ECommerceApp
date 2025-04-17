@@ -82,7 +82,7 @@ public class AuthAPIController : ControllerBase
         }
         response.IsSuccess = true;
         response.Message = "Login Successful";
-        response.Result = result;
+        response.Result = result.Token;
         return Ok(response);
     }
 
