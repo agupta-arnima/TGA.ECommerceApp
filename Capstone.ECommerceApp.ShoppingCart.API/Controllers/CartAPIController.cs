@@ -59,8 +59,16 @@ namespace Capstone.ECommerceApp.ShoppingCart.API.Controllers
             try
             {
                 var isDeleted = await cartService.ClearCart(userId);
-                responseDto.Result = isDeleted;
-                responseDto.Message = "Key deleted";
+                if (!isDeleted)
+                {
+                    responseDto.Result = isDeleted;
+                    responseDto.Message = "Key does not exist!";
+                }
+                else
+                {
+                    responseDto.Result = isDeleted;
+                    responseDto.Message = "Key deleted successfully!";
+                }
             }
             catch (Exception ex)
             {

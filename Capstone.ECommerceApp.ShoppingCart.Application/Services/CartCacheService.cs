@@ -55,6 +55,10 @@ namespace Capstone.ECommerceApp.ShoppingCart.Application.Services
         public async Task<bool> ClearCart(string userId)
         {
             var cartCacheKey = $"Cart:{userId}";
+            if (!await cacheService.CheckKeyExistsAsync(cartCacheKey))
+            {
+                return false;
+            }
             return await cacheService.DeleteKeyAsync(cartCacheKey);
         }
     }

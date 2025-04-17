@@ -32,4 +32,10 @@ public class RedisCacheService : IRedisCacheService
         var db = _redis.GetDatabase();
         return await db.KeyDeleteAsync(key);
     }
+
+    public async Task<bool> CheckKeyExistsAsync(string key)
+    {
+        var db = _redis.GetDatabase();
+        return await db.KeyExistsAsync(key);
+    }
 }
