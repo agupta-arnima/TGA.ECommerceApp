@@ -53,7 +53,7 @@ public class OrderSagaOrchestrator : BackgroundService
         {
             var body = ea.Body.ToArray();
             var message = Encoding.UTF8.GetString(body);
-            Console.WriteLine("Received message {0}", message);
+            _logger.LogInformation("Received message {0}", message);
 
             bool processedSuccessfully = false;
             try
