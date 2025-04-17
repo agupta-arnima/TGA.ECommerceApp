@@ -92,7 +92,7 @@ public class AuthService : IAuthService
         var (token, jwtId) = await _jwtTokenGenerator.GenerateJwtToken(userDto, roles);
         UpdateRefreshToken(userDto, token, jwtId);
 
-        return new LoginResponseDto { User = userDto, Token = token };
+        return new LoginResponseDto { User = null, Token = token };
     }
 
     public bool UpdateRefreshToken(UserDto user, TokenRequest token, string jwtId)
