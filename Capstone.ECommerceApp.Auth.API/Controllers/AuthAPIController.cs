@@ -46,9 +46,11 @@ public class AuthAPIController : ControllerBase
         {
 
             var userRegistrationEvent = new UserRegistrationEvent(userDTO.Email);
-            var notificationMessage = new NotificationMessage<UserRegistrationEvent>();
-            notificationMessage.Message = userRegistrationEvent;
-            notificationMessage.EventType = EventTypes.UserRegistration;
+            var notificationMessage = new NotificationMessage<UserRegistrationEvent>
+            {
+                Message = userRegistrationEvent,
+                EventType = EventTypes.UserRegistration
+            };
 
             await messageBus.PublishMessageAsync(notificationMessage,
              configuration.GetValue<string>("ApiSettings:RabbitMQ:TopicAndQueueNames:UserRegistrationQueue"));

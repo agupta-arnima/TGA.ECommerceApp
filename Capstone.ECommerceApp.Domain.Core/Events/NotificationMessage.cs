@@ -4,7 +4,7 @@
 public class NotificationMessage<T>:Event
 {
     public EventTypes EventType { get; set; }
-    public T Message { get; set; }
+    public required T Message { get; set; }
 
     public NotificationMessage() { }
 
@@ -13,5 +13,11 @@ public class NotificationMessage<T>:Event
         EventType = eventType;
         Message = message;
     }
+
+    public override string ToString()
+    {
+        return $"EventType: {EventType}, Message: {Message}";
+    }
+
 }
 
