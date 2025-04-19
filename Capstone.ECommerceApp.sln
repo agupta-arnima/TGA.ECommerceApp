@@ -144,7 +144,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Capstone.ECommerceApp.Shopp
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Capstone.ECommerceApp.Infra.RedisCache", "Capstone.ECommerceApp.Infra.Redis\Capstone.ECommerceApp.Infra.RedisCache.csproj", "{01F28C21-EF9C-4CDD-994B-BA04AD1C99DF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Capstone.ECommerceApp.Infra.Bus", "Capstone.ECommerceApp.Infra.Bus\Capstone.ECommerceApp.Infra.Bus.csproj", "{8B6B59F8-B5BC-48E7-935F-B8AF1F31806D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Capstone.ECommerceApp.Infra.Bus", "Capstone.ECommerceApp.Infra.Bus\Capstone.ECommerceApp.Infra.Bus.csproj", "{DB177401-2B07-4A02-B04E-FC443DD682A5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -264,10 +264,10 @@ Global
 		{01F28C21-EF9C-4CDD-994B-BA04AD1C99DF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{01F28C21-EF9C-4CDD-994B-BA04AD1C99DF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{01F28C21-EF9C-4CDD-994B-BA04AD1C99DF}.Release|Any CPU.Build.0 = Release|Any CPU
-		{8B6B59F8-B5BC-48E7-935F-B8AF1F31806D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8B6B59F8-B5BC-48E7-935F-B8AF1F31806D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8B6B59F8-B5BC-48E7-935F-B8AF1F31806D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8B6B59F8-B5BC-48E7-935F-B8AF1F31806D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DB177401-2B07-4A02-B04E-FC443DD682A5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DB177401-2B07-4A02-B04E-FC443DD682A5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DB177401-2B07-4A02-B04E-FC443DD682A5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DB177401-2B07-4A02-B04E-FC443DD682A5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -335,7 +335,7 @@ Global
 		{B75BB0CF-5CE6-41E7-9278-4D03BC86AF85} = {D57A32B2-DAC7-4037-AA02-F7C05717A637}
 		{86F28C57-91EF-4DAB-8E9A-D32B1439492B} = {F2E2EBEF-E4C4-48D4-8217-96F3B6BAB53D}
 		{01F28C21-EF9C-4CDD-994B-BA04AD1C99DF} = {26A3E23D-A200-4E36-9B1C-1712AED9FA4B}
-		{8B6B59F8-B5BC-48E7-935F-B8AF1F31806D} = {26A3E23D-A200-4E36-9B1C-1712AED9FA4B}
+		{DB177401-2B07-4A02-B04E-FC443DD682A5} = {26A3E23D-A200-4E36-9B1C-1712AED9FA4B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {C0F4B8B2-DB68-4F11-BB5D-382D3013F70C}
