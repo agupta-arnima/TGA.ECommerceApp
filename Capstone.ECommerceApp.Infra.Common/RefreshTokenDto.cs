@@ -1,4 +1,4 @@
-﻿namespace Capstone.ECommerceApp.Auth.Application.Dto;
+﻿namespace Capstone.ECommerceApp.Infra.Common;
 
 public class RefreshTokenDto
 {

@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Capstone.ECommerceApp.Payment.Application.Dto;
+using Capstone.ECommerceApp.Infra.Common;
 
 
 namespace Capstone.ECommerceApp.Payment.API.Controllers

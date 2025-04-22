@@ -13,6 +13,7 @@ ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY ["Capstone.ECommerceApp.Payment.API/Capstone.ECommerceApp.Payment.API.csproj", "Capstone.ECommerceApp.Payment.API/"]
 COPY ["Capstone.ECommerceApp.Payment.Application/Capstone.ECommerceApp.Payment.Application.csproj", "Capstone.ECommerceApp.Payment.Application/"]
+COPY ["Capstone.ECommerceApp.Infra.Common/Capstone.ECommerceApp.Infra.Common.csproj", "Capstone.ECommerceApp.Infra.Common/"]
 RUN dotnet restore "./Capstone.ECommerceApp.Payment.API/Capstone.ECommerceApp.Payment.API.csproj"
 COPY . .
 WORKDIR "/src/Capstone.ECommerceApp.Payment.API"

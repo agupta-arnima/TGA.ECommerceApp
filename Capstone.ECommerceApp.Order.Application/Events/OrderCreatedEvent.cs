@@ -1,5 +1,5 @@
 ﻿using Capstone.ECommerceApp.Domain.Core.Events;
-using Capstone.ECommerceApp.Order.Application.Dto;
+using Capstone.ECommerceApp.Infra.Common;
 
 namespace Capstone.ECommerceApp.Order.Application.Events;
 

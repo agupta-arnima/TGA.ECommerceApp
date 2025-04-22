@@ -2,7 +2,7 @@
 using Microsoft.IdentityModel.Tokens;
 using System.Diagnostics.Metrics;
 using System.IdentityModel.Tokens.Jwt;
-using Capstone.ECommerceApp.Auth.Application.Dto;
+using Capstone.ECommerceApp.Infra.Common;
 using Capstone.ECommerceApp.Auth.Application.Interfaces;
 using Capstone.ECommerceApp.Auth.Domain.Events;
 using Capstone.ECommerceApp.Domain.Core.Bus;
@@ -46,9 +46,11 @@ public class AuthAPIController : ControllerBase
         {
 
             var userRegistrationEvent = new UserRegistrationEvent(userDTO.Email);
-            var notificationMessage = new NotificationMessage<UserRegistrationEvent>();
-            notificationMessage.Message = userRegistrationEvent;
-            notificationMessage.EventType = EventTypes.UserRegistration;
+            var notificationMessage = new NotificationMessage<UserRegistrationEvent>
+            {
+                Message = userRegistrationEvent,
+                EventType = EventTypes.UserRegistration
+            };
 
             await messageBus.PublishMessageAsync(notificationMessage,
              configuration.GetValue<string>("ApiSettings:RabbitMQ:TopicAndQueueNames:UserRegistrationQueue"));

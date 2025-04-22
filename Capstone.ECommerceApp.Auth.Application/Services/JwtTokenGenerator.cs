@@ -4,7 +4,7 @@ using System.Data;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using Capstone.ECommerceApp.Auth.Application.Dto;
+using Capstone.ECommerceApp.Infra.Common;
 using Capstone.ECommerceApp.Auth.Application.Interfaces;
 using Capstone.ECommerceApp.Auth.Domain.Models;
 

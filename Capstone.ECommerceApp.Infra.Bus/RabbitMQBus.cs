@@ -29,11 +29,17 @@ public sealed class RabbitMQBus : IEventBus
             var messageJson = System.Text.Json.JsonSerializer.Serialize(@event);
             var body = System.Text.Encoding.UTF8.GetBytes(messageJson);
 
+
+#pragma warning disable CS8619
+
             var properties = new BasicProperties
             {
                 Headers = new Dictionary<string, object> { { "Authorization", $"Bearer {token}" } },
                 Persistent = true
             };
+
+#pragma warning restore CS8619
+
             await channel.BasicPublishAsync(exchange: "", routingKey: queueName, true, basicProperties: properties, body: body);
             //In the case of Default Exchange, the binding key will be the same as the name of the queue.
             //So, the messages will also have the same routing-key as the Queue name.

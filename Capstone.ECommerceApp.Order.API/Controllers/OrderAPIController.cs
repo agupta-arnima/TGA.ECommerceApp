@@ -1,5 +1,5 @@
 ﻿using Capstone.ECommerceApp.Domain.Core.Bus;
-using Capstone.ECommerceApp.Order.Application.Dto;
+using Capstone.ECommerceApp.Infra.Common;
 using Capstone.ECommerceApp.Order.Application.Interfaces;
 using Capstone.ECommerceApp.Order.Application.Events;
 using Microsoft.AspNetCore.Authorization;

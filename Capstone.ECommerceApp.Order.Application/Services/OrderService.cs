@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using Stripe.Checkout;
-using Capstone.ECommerceApp.Order.Application.Dto;
+using Capstone.ECommerceApp.Infra.Common;
 using Capstone.ECommerceApp.Order.Application.Interfaces;
 using Capstone.ECommerceApp.Order.Domain.Interfaces;
 using Capstone.ECommerceApp.Order.Domain.Models;

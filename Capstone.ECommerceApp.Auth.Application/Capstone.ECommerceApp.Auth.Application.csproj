@@ -7,13 +7,14 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="FluentValidation" Version="11.11.0" />
+	  <PackageReference Include="FluentValidation" Version="11.11.0" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.5.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Capstone.ECommerceApp.Auth.data\Capstone.ECommerceApp.Auth.Data.csproj" />
     <ProjectReference Include="..\Capstone.ECommerceApp.Auth.Domain\Capstone.ECommerceApp.Auth.Domain.csproj" />
+    <ProjectReference Include="..\Capstone.ECommerceApp.Infra.Common\Capstone.ECommerceApp.Infra.Common.csproj" />
   </ItemGroup>
 
 </Project>

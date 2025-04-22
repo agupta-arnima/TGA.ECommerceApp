@@ -22,7 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Capstone.ECommerceApp.Infra.Bus\Capstone.ECommerceApp.Infra.Bus.csproj" />
+	<ProjectReference Include="..\Capstone.ECommerceApp.Infra.Bus\Capstone.ECommerceApp.Infra.Bus.csproj" />
     <ProjectReference Include="..\Capstone.ECommerceApp.Notification.Application\Capstone.ECommerceApp.Notification.Application.csproj" />
   </ItemGroup>
 

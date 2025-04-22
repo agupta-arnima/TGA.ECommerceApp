@@ -1,4 +1,4 @@
-﻿using Capstone.ECommerceApp.Product.Application.Dto;
+﻿using Capstone.ECommerceApp.Infra.Common;
 using Capstone.ECommerceApp.Product.Domain.Models;
 using MediatR;
 
