@@ -1,4 +1,4 @@
-﻿using Capstone.ECommerceApp.ShoppingCart.Application.Dto;
+﻿using Capstone.ECommerceApp.Infra.Common;
 using Capstone.ECommerceApp.ShoppingCart.Application.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

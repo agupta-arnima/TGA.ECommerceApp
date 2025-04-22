@@ -17,6 +17,7 @@ COPY ["Capstone.ECommerceApp.Domain.Core/Capstone.ECommerceApp.Domain.Core.cspro
 COPY ["Capstone.ECommerceApp.Order.Application/Capstone.ECommerceApp.Order.Application.csproj", "Capstone.ECommerceApp.Order.Application/"]
 COPY ["Capstone.ECommerceApp.Order.Data/Capstone.ECommerceApp.Order.Data.csproj", "Capstone.ECommerceApp.Order.Data/"]
 COPY ["Capstone.ECommerceApp.Order.Domain/Capstone.ECommerceApp.Order.Domain.csproj", "Capstone.ECommerceApp.Order.Domain/"]
+COPY ["Capstone.ECommerceApp.Infra.Common/Capstone.ECommerceApp.Infra.Common.csproj", "Capstone.ECommerceApp.Infra.Common/"]
 RUN dotnet restore "./Capstone.ECommerceApp.Order.API/Capstone.ECommerceApp.Order.API.csproj"
 COPY . .
 WORKDIR "/src/Capstone.ECommerceApp.Order.API"

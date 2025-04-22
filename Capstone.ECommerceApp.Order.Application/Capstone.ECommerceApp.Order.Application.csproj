@@ -13,6 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Capstone.ECommerceApp.Infra.Common\Capstone.ECommerceApp.Infra.Common.csproj" />
     <ProjectReference Include="..\Capstone.ECommerceApp.Order.Data\Capstone.ECommerceApp.Order.Data.csproj" />
   </ItemGroup>
 

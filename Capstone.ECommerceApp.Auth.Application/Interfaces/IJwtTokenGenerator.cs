@@ -1,4 +1,4 @@
-﻿using Capstone.ECommerceApp.Auth.Application.Dto;
+﻿using Capstone.ECommerceApp.Infra.Common;
 
 namespace Capstone.ECommerceApp.Auth.Application.Interfaces
 {

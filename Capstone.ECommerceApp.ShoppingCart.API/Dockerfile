@@ -15,6 +15,7 @@ COPY ["Capstone.ECommerceApp.ShoppingCart.API/Capstone.ECommerceApp.ShoppingCart
 COPY ["Capstone.ECommerceApp.ShoppingCart.Application/Capstone.ECommerceApp.ShoppingCart.Application.csproj", "Capstone.ECommerceApp.ShoppingCart.Application/"]
 COPY ["Capstone.ECommerceApp.ShoppingCart.Data/Capstone.ECommerceApp.ShoppingCart.Data.csproj", "Capstone.ECommerceApp.ShoppingCart.Data/"]
 COPY ["Capstone.ECommerceApp.ShoppingCart.Domain/Capstone.ECommerceApp.ShoppingCart.Domain.csproj", "Capstone.ECommerceApp.ShoppingCart.Domain/"]
+COPY ["Capstone.ECommerceApp.Infra.Common/Capstone.ECommerceApp.Infra.Common.csproj", "Capstone.ECommerceApp.Infra.Common/"]
 RUN dotnet restore "./Capstone.ECommerceApp.ShoppingCart.API/Capstone.ECommerceApp.ShoppingCart.API.csproj"
 COPY . .
 WORKDIR "/src/Capstone.ECommerceApp.ShoppingCart.API"

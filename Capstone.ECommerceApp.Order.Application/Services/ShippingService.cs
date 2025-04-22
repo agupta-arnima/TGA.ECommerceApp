@@ -1,4 +1,4 @@
-﻿using Capstone.ECommerceApp.Order.Application.Dto;
+﻿using Capstone.ECommerceApp.Infra.Common;
 using Capstone.ECommerceApp.Order.Application.Interfaces;
 
 namespace Capstone.ECommerceApp.Order.Application.Services;

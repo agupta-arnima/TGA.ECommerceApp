@@ -1,4 +1,4 @@
-﻿using Capstone.ECommerceApp.ShoppingCart.Application.Dto;
+﻿using Capstone.ECommerceApp.Infra.Common;
 
 namespace Capstone.ECommerceApp.ShoppingCart.Application.Interfaces
 {

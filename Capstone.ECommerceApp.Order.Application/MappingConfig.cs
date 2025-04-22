@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Capstone.ECommerceApp.Order.Application.Dto;
+using Capstone.ECommerceApp.Infra.Common;
 using Capstone.ECommerceApp.Order.Domain.Models;
 
 namespace Capstone.ECommerceApp.Order.Application;

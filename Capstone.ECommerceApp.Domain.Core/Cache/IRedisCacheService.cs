@@ -2,7 +2,8 @@
 
 public interface IRedisCacheService
 {
-    Task SetCacheValueAsync<T>(string key, T value, TimeSpan expiration);
-    Task<T> GetCacheValueAsync<T>(string key);
+    Task SetCacheValueAsync<T>(string key, string hashField, T value);
+    Task<T> GetCacheValueAsync<T>(string key, string hashField);
     Task<bool> DeleteKeyAsync(string key);
+    Task<bool> DeleteHashFieldAsync(string key, string hashField);
 }

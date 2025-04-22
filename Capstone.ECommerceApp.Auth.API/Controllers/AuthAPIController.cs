@@ -2,7 +2,7 @@
 using Microsoft.IdentityModel.Tokens;
 using System.Diagnostics.Metrics;
 using System.IdentityModel.Tokens.Jwt;
-using Capstone.ECommerceApp.Auth.Application.Dto;
+using Capstone.ECommerceApp.Infra.Common;
 using Capstone.ECommerceApp.Auth.Application.Interfaces;
 using Capstone.ECommerceApp.Auth.Domain.Events;
 using Capstone.ECommerceApp.Domain.Core.Bus;

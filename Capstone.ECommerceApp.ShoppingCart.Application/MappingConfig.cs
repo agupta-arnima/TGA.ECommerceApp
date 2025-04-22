@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using Capstone.ECommerceApp.ShoppingCart.Application.Dto;
+using Capstone.ECommerceApp.Infra.Common;
 using Capstone.ECommerceApp.ShoppingCart.Domain.Models;
 
 namespace Capstone.ECommerceApp.ShoppingCart.Application

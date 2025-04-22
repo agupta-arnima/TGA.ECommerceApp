@@ -11,11 +11,12 @@ FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY ["Capstone.ECommerceApp.Auth.API/Capstone.ECommerceApp.Auth.API.csproj", "Capstone.ECommerceApp.Auth.API/"]
+COPY ["Capstone.ECommerceApp.Infra.Bus/Capstone.ECommerceApp.Infra.Bus.csproj", "Capstone.ECommerceApp.Infra.Bus/"]
+COPY ["Capstone.ECommerceApp.Domain.Core/Capstone.ECommerceApp.Domain.Core.csproj", "Capstone.ECommerceApp.Domain.Core/"]
 COPY ["Capstone.ECommerceApp.Auth.Application/Capstone.ECommerceApp.Auth.Application.csproj", "Capstone.ECommerceApp.Auth.Application/"]
 COPY ["Capstone.ECommerceApp.Auth.data/Capstone.ECommerceApp.Auth.Data.csproj", "Capstone.ECommerceApp.Auth.data/"]
 COPY ["Capstone.ECommerceApp.Auth.Domain/Capstone.ECommerceApp.Auth.Domain.csproj", "Capstone.ECommerceApp.Auth.Domain/"]
-COPY ["Capstone.ECommerceApp.Domain.Core/Capstone.ECommerceApp.Domain.Core.csproj", "Capstone.ECommerceApp.Domain.Core/"]
-COPY ["Capstone.ECommerceApp.Infra.Bus/Capstone.ECommerceApp.Infra.Bus.csproj", "Capstone.ECommerceApp.Infra.Bus/"]
+COPY ["Capstone.ECommerceApp.Infra.Common/Capstone.ECommerceApp.Infra.Common.csproj", "Capstone.ECommerceApp.Infra.Common/"]
 RUN dotnet restore "./Capstone.ECommerceApp.Auth.API/Capstone.ECommerceApp.Auth.API.csproj"
 COPY . .
 WORKDIR "/src/Capstone.ECommerceApp.Auth.API"

@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Capstone.ECommerceApp.Product.Application.Dto;
+using Capstone.ECommerceApp.Infra.Common;
 using Capstone.ECommerceApp.Product.Application.Interfaces;
 using Capstone.ECommerceApp.Product.Application.Queries;
 using MediatR;

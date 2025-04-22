@@ -1,4 +1,4 @@
-﻿namespace Capstone.ECommerceApp.Product.Application.Dto;
+﻿namespace Capstone.ECommerceApp.Infra.Common;
 
 
 public class ReserveInventoryResponseDto

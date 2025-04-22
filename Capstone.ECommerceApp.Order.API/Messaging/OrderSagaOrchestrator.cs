@@ -1,6 +1,6 @@
 ﻿
 using Capstone.ECommerceApp.Infra.Bus;
-using Capstone.ECommerceApp.Order.Application.Dto;
+using Capstone.ECommerceApp.Infra.Common;
 using Capstone.ECommerceApp.Order.Application.Interfaces;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;

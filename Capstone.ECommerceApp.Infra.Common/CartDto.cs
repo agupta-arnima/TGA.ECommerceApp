@@ -1,4 +1,4 @@
-﻿namespace Capstone.ECommerceApp.Order.Application.Dto;
+﻿namespace Capstone.ECommerceApp.Infra.Common;
 
 public class CartDto
 {

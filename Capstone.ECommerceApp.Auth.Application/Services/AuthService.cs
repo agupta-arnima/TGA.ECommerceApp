@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
-using Capstone.ECommerceApp.Auth.Application.Dto;
+using Capstone.ECommerceApp.Infra.Common;
 using Capstone.ECommerceApp.Auth.Application.Interfaces;
 using Capstone.ECommerceApp.Auth.Domain.Interfaces;
 using Capstone.ECommerceApp.Auth.Domain.Models;

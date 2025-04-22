@@ -146,6 +146,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Capstone.ECommerceApp.Infra
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Capstone.ECommerceApp.Infra.Bus", "Capstone.ECommerceApp.Infra.Bus\Capstone.ECommerceApp.Infra.Bus.csproj", "{DB177401-2B07-4A02-B04E-FC443DD682A5}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Capstone.ECommerceApp.Infra.Common", "Capstone.ECommerceApp.Infra.Common\Capstone.ECommerceApp.Infra.Common.csproj", "{BC62C6CC-FF38-4470-B8BE-AEB129CE9E8E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -268,6 +270,10 @@ Global
 		{DB177401-2B07-4A02-B04E-FC443DD682A5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DB177401-2B07-4A02-B04E-FC443DD682A5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DB177401-2B07-4A02-B04E-FC443DD682A5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BC62C6CC-FF38-4470-B8BE-AEB129CE9E8E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BC62C6CC-FF38-4470-B8BE-AEB129CE9E8E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BC62C6CC-FF38-4470-B8BE-AEB129CE9E8E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BC62C6CC-FF38-4470-B8BE-AEB129CE9E8E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -336,6 +342,7 @@ Global
 		{86F28C57-91EF-4DAB-8E9A-D32B1439492B} = {F2E2EBEF-E4C4-48D4-8217-96F3B6BAB53D}
 		{01F28C21-EF9C-4CDD-994B-BA04AD1C99DF} = {26A3E23D-A200-4E36-9B1C-1712AED9FA4B}
 		{DB177401-2B07-4A02-B04E-FC443DD682A5} = {26A3E23D-A200-4E36-9B1C-1712AED9FA4B}
+		{BC62C6CC-FF38-4470-B8BE-AEB129CE9E8E} = {26A3E23D-A200-4E36-9B1C-1712AED9FA4B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {C0F4B8B2-DB68-4F11-BB5D-382D3013F70C}

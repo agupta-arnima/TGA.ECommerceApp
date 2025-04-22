@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 using Polly.CircuitBreaker;
-using Capstone.ECommerceApp.ShoppingCart.Application.Dto;
+using Capstone.ECommerceApp.Infra.Common;
 using Capstone.ECommerceApp.ShoppingCart.Application.Interfaces;
 
 namespace Capstone.ECommerceApp.ShoppingCart.Application.Services
@@ -36,5 +36,12 @@ namespace Capstone.ECommerceApp.ShoppingCart.Application.Services
             }
             return new ProductDto();
         }
+
+        public bool IsProductAvailable(int productId, int quantity)
+        {
+            var product = GetProductsById(productId).Result;
+            return product != null && product.Stock >= quantity;
+        }
+
     }
 }

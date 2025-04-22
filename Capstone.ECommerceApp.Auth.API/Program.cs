@@ -23,7 +23,7 @@ using Microsoft.Extensions.Configuration;
 using Capstone.ECommerceApp.Infra.Bus;
 using Capstone.ECommerceApp.Domain.Core.Bus;
 using FluentValidation;
-using Capstone.ECommerceApp.Auth.Application.Dto;
+using Capstone.ECommerceApp.Infra.Common;
 
 // Variable for Aspire DashBoard
 var registrationMeterCounter = new Meter("OTel.Tempest", "1.0.0");
