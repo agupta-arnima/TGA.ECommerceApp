@@ -93,10 +93,9 @@ public class CartCacheService : ICartService
         await cacheService.SetCacheValueAsync(cartCacheKey, "CartHeader", cartHeader);
     }
 
-        public async Task<bool> ClearCart(string userId)
-        {
-            var cartCacheKey = $"Cart:{userId}";
-            return await cacheService.DeleteKeyAsync(cartCacheKey);
-        }
+    public async Task<bool> ClearCart(string userId)
+    {
+        var cartCacheKey = $"Cart:{userId}";
+        return await cacheService.DeleteKeyAsync(cartCacheKey);
     }
 }
