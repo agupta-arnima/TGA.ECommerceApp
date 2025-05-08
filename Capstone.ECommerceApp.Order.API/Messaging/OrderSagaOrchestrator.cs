@@ -1,107 +1,36 @@
 ﻿
-using Capstone.ECommerceApp.Infra.Bus;
+using Capstone.ECommerceApp.Domain.Core.Bus;
 using Capstone.ECommerceApp.Infra.Common;
-using Capstone.ECommerceApp.Order.Application.Interfaces;
-using Microsoft.Extensions.Options;
-using Newtonsoft.Json;
-using RabbitMQ.Client;
-using RabbitMQ.Client.Events;
-using System.Text;
 
 namespace Capstone.ECommerceApp.Order.API.Messaging;
 
 public class OrderSagaOrchestrator : BackgroundService
 {
-    private readonly ILogger<OrderSagaOrchestrator> _logger;
-    private readonly RabbitMQSetting _rabbitMqSetting;
-    private IConnection _connection;
-    private IChannel _channel;
-    private IConfiguration _configuration;
-    private readonly IServiceProvider _serviceProvider;
+
+    private readonly IConfiguration _configuration;
+    private readonly MessageConsumerFactory _consumerFactory;
+    private IMessageConsumer _consumer;
 
     public OrderSagaOrchestrator(ILogger<OrderSagaOrchestrator> logger,
-                                    IOptions<RabbitMQSetting> rabbitMqSetting,
-                                    IConfiguration configuration,
-                                    IServiceProvider serviceProvider)
+                                 IConfiguration configuration,
+                                 IServiceProvider serviceProvider,
+                                 MessageConsumerFactory consumerFactory)
     {
-        _logger = logger;
-        _rabbitMqSetting = rabbitMqSetting.Value;
         _configuration = configuration;
-        _serviceProvider = serviceProvider;
-
-        var factory = new ConnectionFactory
-        {
-            HostName = _rabbitMqSetting.HostName,
-            UserName = _rabbitMqSetting.UserName,
-            Password = _rabbitMqSetting.Password
-        };
-        _connection = factory.CreateConnectionAsync().Result;
-        _channel = _connection.CreateChannelAsync().Result;
+        _consumerFactory = consumerFactory;
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        var orderProcessingQueue = _configuration.GetValue<string>("ApiSettings:RabbitMQ:TopicAndQueueNames:OrderQueue");
-        await StartConsuming(orderProcessingQueue, stoppingToken);
-    }
+        var brokerType = _configuration.GetValue<string>("MessageBrokerType");
+        var queueName = _configuration.GetValue<string>("ApiSettings:TopicAndQueueNames:OrderQueue");
 
-    private async Task StartConsuming(string queueName, CancellationToken cancellationToken)
-    {
-        await _channel.QueueDeclareAsync(queue: queueName, durable: true, exclusive: false, autoDelete: false, arguments: null);
-        var consumer = new AsyncEventingBasicConsumer(_channel);
-        consumer.ReceivedAsync += async (model, ea) =>
-        {
-            var body = ea.Body.ToArray();
-            var message = Encoding.UTF8.GetString(body);
-            _logger.LogInformation("Received message {0}", message);
-
-            bool processedSuccessfully = false;
-            try
-            {
-                var orderDeatils = JsonConvert.DeserializeObject<RabbitMqOrderMessage>(message);
-                //Extract Token
-                using (var scope = _serviceProvider.CreateScope())
-                {
-                    var token = string.Empty;
-                    if (ea.BasicProperties.Headers.ContainsKey("Authorization"))
-                    {
-                        var tokenBytes = ea.BasicProperties.Headers["Authorization"] as byte[];
-                        if (tokenBytes != null)
-                        {
-                            token = Encoding.UTF8.GetString(tokenBytes).Replace("Bearer ", "");
-                        }
-                    }
-                    var orderProcessingService = scope.ServiceProvider.GetRequiredService<IOrderProcessingService>();
-                    processedSuccessfully = await orderProcessingService.ProcessOrder(orderDeatils.order, token);
-                }
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"Exception occurred while processing message from queue {queueName}: {ex}");
-            }
-
-            if (processedSuccessfully)
-            {
-                await _channel.BasicAckAsync(deliveryTag: ea.DeliveryTag, multiple: false);
-            }
-            else
-            {
-                await _channel.BasicRejectAsync(deliveryTag: ea.DeliveryTag, requeue: true);
-            }
-        };
-        await _channel.BasicConsumeAsync(queue: queueName, autoAck: false, consumer: consumer);
+        _consumer = _consumerFactory.CreateConsumer(brokerType);
+        await _consumer.StartConsuming(queueName, stoppingToken);
     }
 
     public override async void Dispose()
     {
-        await _channel.CloseAsync();
-        await _connection.CloseAsync();
         base.Dispose();
-    }
-
-    public class RabbitMqOrderMessage
-    {
-        public OrderHeaderDto? order { get; set; }
-        public DateTime Timestamp { get; set; }
     }
 }

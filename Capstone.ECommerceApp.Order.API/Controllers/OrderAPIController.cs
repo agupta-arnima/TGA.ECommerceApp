@@ -4,6 +4,7 @@ using Capstone.ECommerceApp.Order.Application.Interfaces;
 using Capstone.ECommerceApp.Order.Application.Events;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Capstone.ECommerceApp.Order.API.Messaging;
 
 namespace Capstone.ECommerceApp.Order.API.Controllers
 {
@@ -50,7 +51,7 @@ namespace Capstone.ECommerceApp.Order.API.Controllers
                         token = HttpContext.Request.Headers["Authorization"].ToString().Replace("Bearer", "").Trim();
                     }
                     await messageBus.PublishMessageAsync(new OrderCreatedEvent(orderHeaderDto),
-                        configuration.GetValue<string>("ApiSettings:RabbitMQ:TopicAndQueueNames:OrderQueue"), token);
+                        GetQueueName(configuration.GetValue<string>("MessageBrokerType")), token);
                 }
                 return Ok(response);
             }
@@ -106,6 +107,16 @@ namespace Capstone.ECommerceApp.Order.API.Controllers
                 response.Message = ex.Message;
             }
             return Ok(response);
+        }
+
+        private string? GetQueueName(string messageBroker) {
+            return messageBroker switch
+            {
+                "RabbitMQ" => configuration.GetValue<string>("ApiSettings:RabbitMQ:TopicAndQueueNames:OrderQueue"),
+                "EventHub" => configuration.GetValue<string>("ApiSettings:EventHub:EventHubName"),
+                "ServiceBus" => string.Empty,
+                _ => throw new ArgumentException("Invalid broker type")
+            };
         }
     }
 }

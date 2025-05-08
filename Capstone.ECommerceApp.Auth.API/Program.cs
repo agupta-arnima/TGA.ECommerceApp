@@ -20,10 +20,11 @@ using Capstone.ECommerceApp.Auth.Domain.Models;
 using Capstone.ECommerceApp.Product.Data.Context;
 using System.Security.Cryptography.X509Certificates;
 using Microsoft.Extensions.Configuration;
-using Capstone.ECommerceApp.Infra.Bus;
 using Capstone.ECommerceApp.Domain.Core.Bus;
 using FluentValidation;
 using Capstone.ECommerceApp.Infra.Common;
+using Capstone.ECommerceApp.Infra.Bus;
+using Microsoft.Extensions.Options;
 
 // Variable for Aspire DashBoard
 var registrationMeterCounter = new Meter("OTel.Tempest", "1.0.0");
@@ -69,9 +70,21 @@ builder.Services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
 
 builder.Services.AddSingleton(registrationMeterCounter);
 
-//Rabbit MQ
+
+// Configure message broker settings
 builder.Services.Configure<RabbitMQSetting>(builder.Configuration.GetSection("ApiSettings:RabbitMQ"));
-builder.Services.AddScoped(typeof(IEventBus), typeof(RabbitMQBus));
+builder.Services.Configure<EventHubSetting>(builder.Configuration.GetSection("ApiSettings:EventHub"));
+//builder.Services.Configure<AzureServiceBusSetting>(builder.Configuration.GetSection("ApiSettings:AzureServiceBus"));
+
+// Add the factory pattern for IEventBus
+builder.Services.AddSingleton<IEventBus>(provider =>
+{
+    var configuration = provider.GetRequiredService<IConfiguration>();
+    var brokerType = configuration.GetValue<MessageBrokerType>("MessageBrokerType");
+    return EventBusFactory.CreateEventBus(brokerType, configuration);
+});
+
+
 
 //Fluent Validation
 builder.Services.AddScoped<IValidator<RegistrationRequestDto>, RegistrationRequestValidator>();

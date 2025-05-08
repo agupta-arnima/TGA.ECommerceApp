@@ -1,6 +1,7 @@
 using AutoMapper;
 using Capstone.ECommerceApp.Domain.Core.Bus;
 using Capstone.ECommerceApp.Infra.Bus;
+using Capstone.ECommerceApp.Order.API;
 using Capstone.ECommerceApp.Order.API.Extensions;
 using Capstone.ECommerceApp.Order.API.Messaging;
 using Capstone.ECommerceApp.Order.API.Utility;
@@ -61,12 +62,26 @@ builder.Services.AddHttpClientService("Payment", builder.Configuration["ServiceU
 
 
 
-//Rabbit MQ
-
+// Configure message broker settings
 builder.Services.Configure<RabbitMQSetting>(builder.Configuration.GetSection("ApiSettings:RabbitMQ"));
-builder.Services.AddSingleton(typeof(IEventBus), typeof(RabbitMQBus));
+builder.Services.Configure<EventHubSetting>(builder.Configuration.GetSection("ApiSettings:EventHub"));
+//builder.Services.Configure<AzureServiceBusSetting>(builder.Configuration.GetSection("ApiSettings:AzureServiceBus"));
+
+// Add the factory pattern for IEventBus
+builder.Services.AddSingleton<IEventBus>(provider =>
+{
+    var configuration = provider.GetRequiredService<IConfiguration>();
+    var brokerType = configuration.GetValue<MessageBrokerType>("MessageBrokerType");
+    return EventBusFactory.CreateEventBus(brokerType, configuration);
+});
+
 // Register the consumer service as a hosted service only
+builder.Services.AddSingleton<RabbitMqConsumer>();
+builder.Services.AddSingleton<EventHubConsumer>();
+builder.Services.AddSingleton<ServiceBusConsumer>();
+builder.Services.AddSingleton<MessageConsumerFactory>();
 builder.Services.AddHostedService<OrderSagaOrchestrator>();
+
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
