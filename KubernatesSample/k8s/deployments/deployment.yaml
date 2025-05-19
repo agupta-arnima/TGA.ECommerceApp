@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kubernetesample-webapi
+  labels:
+    apps: nginx
+    tier: frontend
+spec:
+  selector:
+    matchLabels:
+      app: kubernetesample-webapi
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: kubernetesample-webapi
+    spec:
+      containers:
+        - name: kubernetesample-webapi
+          image: nginx
+
+    
