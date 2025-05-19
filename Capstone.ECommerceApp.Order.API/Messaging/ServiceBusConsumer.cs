@@ -20,7 +20,7 @@ namespace Capstone.ECommerceApp.Order.API.Messaging
         {
             _logger = logger;
             _configuration = configuration;
-            _serviceBusConnectionString = _configuration.GetValue<string>("ServiceBusConnectionString");
+            _serviceBusConnectionString = _configuration.GetValue<string>("ApiSettings:AzureServiceBus:ConnectionString");
             var client = new ServiceBusClient(_serviceBusConnectionString);
             _orderProcessor = client.CreateProcessor(_configuration.GetValue<string>("TopicAndQueueNames:OrderQueue"));
             _serviceProvider = serviceProvider;
