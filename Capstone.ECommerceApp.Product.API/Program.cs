@@ -1,4 +1,10 @@
 using AutoMapper;
+using Azure;
+using Azure.Extensions.AspNetCore.Configuration.Secrets;
+using Azure.Identity;
+using Azure.Search.Documents;
+using Azure.Search.Documents.Indexes;
+using Azure.Security.KeyVault.Secrets;
 using Capstone.ECommerceApp.Product.Application;
 using Capstone.ECommerceApp.Product.Application.Interfaces;
 using Capstone.ECommerceApp.Product.Application.Services;
@@ -12,6 +18,7 @@ using Microsoft.OpenApi.Models;
 using System.Reflection;
 using System.Text;
 
+
 var builder = WebApplication.CreateBuilder(args);
 
 var productDbConnectionStr = builder.Configuration.GetConnectionString("ProductDbConnection");
@@ -19,6 +26,21 @@ builder.Services.AddDbContextPool<ProductDbContext>(options =>
 {
     options.UseMySql(productDbConnectionStr, ServerVersion.AutoDetect(productDbConnectionStr));
 });
+
+
+// Add Azure Key Vault to configuration
+builder.Host.ConfigureAppConfiguration((context, config) =>
+{
+    var builtConfig = config.Build(); // Build to access existing config values
+    var keyVaultUri = builtConfig["AzureConfiguration:AzureKeyVault:VaultUri"];
+
+    if (!string.IsNullOrEmpty(keyVaultUri))
+    {
+        var secretClient = new SecretClient(new Uri(keyVaultUri), new DefaultAzureCredential());
+        config.AddAzureKeyVault(secretClient, new KeyVaultSecretManager());
+    }
+});
+
 
 //automapper
 IMapper mapper = MappingConfig.RegisterMaps().CreateMapper();
@@ -40,6 +62,28 @@ builder.Services.AddCors(options =>
     builder => builder.WithOrigins(allowedOrigins)
     .AllowAnyHeader()
     .AllowAnyMethod());
+});
+
+
+//AI-Search
+var apiKey      = builder.Configuration["sackumar6-ai-search-apikey"];
+var serviceName = builder.Configuration["sackumar6-ai-search-service"];
+var indexName   = builder.Configuration["sackumar6-ai-search-index"];
+
+builder.Services.AddSingleton(serviceProvider =>
+{
+    Uri endpoint = new Uri($"https://{serviceName}.search.windows.net/");
+    AzureKeyCredential credential = new AzureKeyCredential(apiKey);
+
+    return new SearchClient(endpoint, indexName, credential);
+});
+
+builder.Services.AddSingleton(serviceProvider =>
+{
+    Uri endpoint = new Uri($"https://{serviceName}.search.windows.net/");
+    AzureKeyCredential credential = new AzureKeyCredential(apiKey);
+
+    return new SearchIndexClient(endpoint, credential);
 });
 
 
