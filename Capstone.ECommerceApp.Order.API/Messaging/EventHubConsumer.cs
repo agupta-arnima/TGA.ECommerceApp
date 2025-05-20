@@ -12,7 +12,7 @@ using System.Text;
 
 namespace Capstone.ECommerceApp.Order.API.Messaging
 {
-    public class EventHubConsumer : IMessageConsumer, IDisposable
+    public class EventHubConsumer : IMessageConsumer
     {
         private readonly ILogger<EventHubConsumer> _logger;
         private readonly EventHubSetting _eventHubSetting;
@@ -27,28 +27,18 @@ namespace Capstone.ECommerceApp.Order.API.Messaging
             _eventHubSetting = eventHubSetting.Value;
             _serviceProvider = serviceProvider;
 
-
             var storageConnectionString = _eventHubSetting.StorageConnectionString;
             var blobContainerName = _eventHubSetting.BlobContainerName;
             var eventHubConnectionString = _eventHubSetting.ConnectionString;
             var eventHubName = _eventHubSetting.EventHubName;
             var consumerGroup = EventHubConsumerClient.DefaultConsumerGroupName;
 
-
             var storageClient = new BlobContainerClient(storageConnectionString, blobContainerName);
             _processorClient = new EventProcessorClient(storageClient, consumerGroup, eventHubConnectionString, eventHubName);
-
         }
-
-        public void Dispose()
-        {
-            throw new NotImplementedException();
-        }
-
 
         private async Task ProcessEventHandler(ProcessEventArgs eventArgs)
         {
-
             var message = Encoding.UTF8.GetString(eventArgs.Data.Body.ToArray());
             _logger.LogInformation("Received message {0}", message);
 
@@ -80,18 +70,15 @@ namespace Capstone.ECommerceApp.Order.API.Messaging
             {
                 await eventArgs.UpdateCheckpointAsync(eventArgs.CancellationToken);
             }
-
         }
+
         public async Task StartConsuming(string queueName, CancellationToken cancellationToken)
         {
-
             _processorClient.ProcessEventAsync += ProcessEventHandler;
             _processorClient.ProcessErrorAsync += ProcessErrorHandler;
 
             await _processorClient.StartProcessingAsync(cancellationToken);
-
         }
-
 
         private Task ProcessErrorHandler(ProcessErrorEventArgs eventArgs)
         {
@@ -99,5 +86,9 @@ namespace Capstone.ECommerceApp.Order.API.Messaging
             return Task.CompletedTask;
         }
 
+        public async Task Stop()
+        {
+            await _processorClient.StopProcessingAsync();            
+        }
     }
 }

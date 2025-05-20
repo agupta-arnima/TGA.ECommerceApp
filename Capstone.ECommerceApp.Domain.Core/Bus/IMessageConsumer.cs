@@ -3,5 +3,5 @@
 public interface IMessageConsumer
 {
     Task StartConsuming(string queueName, CancellationToken cancellationToken);
-    void Dispose();
+    Task Stop();
 }

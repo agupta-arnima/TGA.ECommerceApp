@@ -87,4 +87,9 @@ public class RabbitMqConsumer : IMessageConsumer, IDisposable
         await _channel.CloseAsync();
         await _connection.CloseAsync();
     }
+
+    public Task Stop()
+    {
+        throw new NotImplementedException();
+    }
 }
