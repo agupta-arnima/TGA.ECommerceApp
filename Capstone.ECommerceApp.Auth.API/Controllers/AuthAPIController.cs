@@ -21,21 +21,23 @@ public class AuthAPIController : ControllerBase
     private readonly IConfiguration configuration;
     private readonly TokenValidationParameters tokenValidationParams;
     private readonly IEventBus messageBus;
-
-    private readonly Counter<int> registrationCounter; // Counter for token generation
+    private readonly LoggedInUsersMetrics loggedInUsersMetrics;
+    //private readonly Counter<int> registrationCounter; // Counter for token generation
     public AuthAPIController(IAuthService authService,
         IConfiguration configuration,
         TokenValidationParameters tokenValidationParams,
         IEventBus messageBus,
-        Meter registrationMeterCounter)
+        LoggedInUsersMetrics loggedInUsersMetrics)
+        //Meter registrationMeterCounter)
     {
         this.authService = authService;
         this.configuration = configuration;
         this.response = new();
         this.tokenValidationParams = tokenValidationParams;
         this.messageBus = messageBus;
-        registrationCounter = registrationMeterCounter.CreateCounter<int>("registrations.count",
-            description: "Counts the number of registrations");
+        this.loggedInUsersMetrics = loggedInUsersMetrics;
+        //registrationCounter = registrationMeterCounter.CreateCounter<int>("registrations.count",
+        //    description: "Counts the number of registrations");
     }
 
     [HttpPost("register")]
@@ -55,7 +57,7 @@ public class AuthAPIController : ControllerBase
             await messageBus.PublishMessageAsync(notificationMessage,
              configuration.GetValue<string>("ApiSettings:RabbitMQ:TopicAndQueueNames:UserRegistrationQueue"));
 
-            registrationCounter.Add(1); // Increment the counter
+            //registrationCounter.Add(1); // Increment the counter
             return Ok(result);
         }
         else
@@ -78,10 +80,7 @@ public class AuthAPIController : ControllerBase
             response.Message = "Login Failed";
             return BadRequest(response);
         }
-        else
-        {
-
-        }
+        loggedInUsersMetrics.IncreaseLoggedinUsers();
         response.IsSuccess = true;
         response.Message = "Login Successful";
         response.Result = result.Token;

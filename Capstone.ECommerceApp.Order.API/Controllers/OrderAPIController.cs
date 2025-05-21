@@ -1,10 +1,9 @@
 ﻿using Capstone.ECommerceApp.Domain.Core.Bus;
 using Capstone.ECommerceApp.Infra.Common;
-using Capstone.ECommerceApp.Order.Application.Interfaces;
 using Capstone.ECommerceApp.Order.Application.Events;
+using Capstone.ECommerceApp.Order.Application.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Capstone.ECommerceApp.Order.API.Messaging;
 
 namespace Capstone.ECommerceApp.Order.API.Controllers
 {
@@ -16,13 +15,15 @@ namespace Capstone.ECommerceApp.Order.API.Controllers
         private ResponseDto response;
         private readonly IEventBus messageBus;
         private readonly IConfiguration configuration;
+        private readonly CheckoutsMetrics checkoutsMetrics;
 
-        public OrderAPIController(IOrderService orderService, IEventBus messageBus, IConfiguration configuration)
+        public OrderAPIController(IOrderService orderService, IEventBus messageBus, IConfiguration configuration, CheckoutsMetrics checkoutsMetrics)
         {
             this.orderService = orderService;
             this.response = new ResponseDto();
             this.messageBus = messageBus;
             this.configuration = configuration;
+            this.checkoutsMetrics = checkoutsMetrics;
         }
 
         [Authorize]
@@ -53,6 +54,7 @@ namespace Capstone.ECommerceApp.Order.API.Controllers
                     await messageBus.PublishMessageAsync(new OrderCreatedEvent(orderHeaderDto),
                         GetQueueName(configuration.GetValue<string>("MessageBrokerType")), token);
                 }
+                cartDto.CartDetails?.ToList().ForEach(cartDetail => checkoutsMetrics.IncreaseCheckouts(cartDetail.Product?.Name, cartDetail.Count));
                 return Ok(response);
             }
             catch (Exception e)
@@ -109,7 +111,8 @@ namespace Capstone.ECommerceApp.Order.API.Controllers
             return Ok(response);
         }
 
-        private string? GetQueueName(string messageBroker) {
+        private string? GetQueueName(string messageBroker)
+        {
             return messageBroker switch
             {
                 "RabbitMQ" => configuration.GetValue<string>("ApiSettings:RabbitMQ:TopicAndQueueNames:OrderQueue"),

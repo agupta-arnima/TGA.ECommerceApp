@@ -1,12 +1,14 @@
 using AutoMapper;
 using Capstone.ECommerceApp.Domain.Core.Cache;
 using Capstone.ECommerceApp.Infra.RedisCache;
+using Capstone.ECommerceApp.ShoppingCart.API;
 using Capstone.ECommerceApp.ShoppingCart.API.Extensions;
 using Capstone.ECommerceApp.ShoppingCart.API.Utility;
 using Capstone.ECommerceApp.ShoppingCart.Application;
 using Capstone.ECommerceApp.ShoppingCart.Application.Interfaces;
 using Capstone.ECommerceApp.ShoppingCart.Application.Services;
 using Microsoft.OpenApi.Models;
+using OpenTelemetry.Metrics;
 using Polly;
 using StackExchange.Redis;
 using System.Reflection;
@@ -42,6 +44,18 @@ builder.Services.AddHttpClient("Product", c => c.BaseAddress = new Uri(builder.C
     .AddHttpMessageHandler<BackendApiAuthenticationHttpClientHandler>()
     .AddTransientHttpErrorPolicy(policy => policy.CircuitBreakerAsync(3, TimeSpan.FromMilliseconds(120000)));
 
+builder.Services.AddSingleton<CartsMetrics>();
+
+builder.Services.AddOpenTelemetry()
+    .WithMetrics(builder => builder
+    //.AddConsoleExporter()
+    .AddAspNetCoreInstrumentation()
+    .AddHttpClientInstrumentation()
+    .AddRuntimeInstrumentation()
+    .AddPrometheusExporter()
+    .AddMeter("capstone.carts.meter")
+);
+
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -54,6 +68,8 @@ builder.Services.AddSwaggerGen(c =>
 builder.AddAppAuthentication();
 
 var app = builder.Build();
+
+app.UseOpenTelemetryPrometheusScrapingEndpoint();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

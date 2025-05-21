@@ -81,7 +81,21 @@ services:
     networks:
        - ecommnetwork
 
-
+  prometheus:
+    image: prom/prometheus
+    container_name: prometheus
+    restart: always
+    ports:
+      - 9090:9090
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    healthcheck:
+        test: wget -q --tries=1 -O- http://localhost:9090/
+        interval: 3s
+        timeout: 3s
+        retries: 10
+        start_period: 10s
+        
   capstone.ecommerceapp.authapi:
     image: ${DOCKER_REGISTRY-}authapi
     container_name: authapi
@@ -92,7 +106,8 @@ services:
       tga.mysql:
         condition: service_healthy
     ports:
-      - "7002:443" 
+      - "5000:8080"
+      - "7002:8081"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - CERT_THUMBPRINT=b404c48e0254dca183079a0c5ec8e58bf8b11015
@@ -102,7 +117,7 @@ services:
       - ConnectionStrings__AuthDbConnection=Server=tga.mysql;port=3306;Database=TGA_Auth;User=root;Password=password;
       - ApiSettings__JwtOptions__Secret=This is used to Sign and verify JWT tokens, Replace it with your own secret
       - ApiSettings__JwtOptions__Issuer=TGA-Auth-API
-      - ApiSettings__JwtOptions__Audience=TGA-Client
+      - ApiSettings__JwtOptions__Aud]ience=TGA-Client
       - ApiSettings__JwtOptions__ExpiryInHours=7
       - ApiSettings__RabbitMQ__HostName=rabbitmq
       - ApiSettings__RabbitMQ__UserName=guest
