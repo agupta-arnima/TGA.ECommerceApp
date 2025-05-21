@@ -1,7 +1,7 @@
 using AutoMapper;
+using Capstone.ECommerceApp.Order.API;
 using Capstone.ECommerceApp.Domain.Core.Bus;
 using Capstone.ECommerceApp.Infra.Bus;
-using Capstone.ECommerceApp.Order.API;
 using Capstone.ECommerceApp.Order.API.Extensions;
 using Capstone.ECommerceApp.Order.API.Messaging;
 using Capstone.ECommerceApp.Order.API.Utility;
@@ -13,6 +13,7 @@ using Capstone.ECommerceApp.Order.Data.Repository;
 using Capstone.ECommerceApp.Order.Domain.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using OpenTelemetry.Metrics;
 using Polly;
 using Polly.Extensions.Http;
 using Serilog;
@@ -83,6 +84,18 @@ builder.Services.AddSingleton<MessageConsumerFactory>();
 builder.Services.AddHostedService<OrderSagaOrchestrator>();
 
 
+builder.Services.AddSingleton<CheckoutsMetrics>();
+
+builder.Services.AddOpenTelemetry()
+    .WithMetrics(builder => builder
+    //.AddConsoleExporter()
+    .AddAspNetCoreInstrumentation()
+    .AddHttpClientInstrumentation()
+    .AddRuntimeInstrumentation()
+    .AddPrometheusExporter()
+    .AddMeter("capstone.checkouts.meter")
+);
+
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -124,6 +137,8 @@ ConfigureLogging(builder.Configuration);
 builder.Host.UseSerilog();
 
 var app = builder.Build();
+
+app.UseOpenTelemetryPrometheusScrapingEndpoint();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

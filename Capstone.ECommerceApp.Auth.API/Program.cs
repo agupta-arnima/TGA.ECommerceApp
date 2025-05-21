@@ -25,10 +25,11 @@ using FluentValidation;
 using Capstone.ECommerceApp.Infra.Common;
 using Capstone.ECommerceApp.Infra.Bus;
 using Microsoft.Extensions.Options;
+using Capstone.ECommerceApp.Auth.API;
 
 // Variable for Aspire DashBoard
-var registrationMeterCounter = new Meter("OTel.Tempest", "1.0.0");
-var registrationCounter = registrationMeterCounter.CreateCounter<int>("registrations.count", description: "Counts the number of registrations");
+//var registrationMeterCounter = new Meter("OTel.Tempest", "1.0.0");
+//var registrationCounter = registrationMeterCounter.CreateCounter<int>("registrations.count", description: "Counts the number of registrations");
 // Custom ActivitySource for the application
 var checkoutActivitySource = new ActivitySource("OTel.Example");
 
@@ -68,7 +69,7 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IAuthRepository, AuthRepository>();
 builder.Services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
 
-builder.Services.AddSingleton(registrationMeterCounter);
+//builder.Services.AddSingleton(registrationMeterCounter);
 
 
 // Configure message broker settings
@@ -84,10 +85,20 @@ builder.Services.AddSingleton<IEventBus>(provider =>
     return EventBusFactory.CreateEventBus(brokerType, configuration);
 });
 
-
-
 //Fluent Validation
 builder.Services.AddScoped<IValidator<RegistrationRequestDto>, RegistrationRequestValidator>();
+
+builder.Services.AddSingleton<LoggedInUsersMetrics>();
+
+builder.Services.AddOpenTelemetry()
+    .WithMetrics(builder => builder
+    //.AddConsoleExporter()
+    .AddAspNetCoreInstrumentation()
+    .AddHttpClientInstrumentation()
+    .AddRuntimeInstrumentation()
+    .AddPrometheusExporter()
+    .AddMeter("capstone.loggedin.users.meter")
+);
 
 builder.Services.AddControllers();
 
@@ -124,7 +135,6 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
 
 var key = Encoding.ASCII.GetBytes(builder.Configuration["ApiSettings:JwtOptions:Secret"]);
 
@@ -192,45 +202,47 @@ builder.Services.AddAuthentication(options =>
 
 //Otel config
 // Setup logging to be exported via OpenTelemetry
-builder.Logging.AddOpenTelemetry(logging =>
-{
-    logging.IncludeFormattedMessage = true;
-    logging.IncludeScopes = true;
-});
+//builder.Logging.AddOpenTelemetry(logging =>
+//{
+//    logging.IncludeFormattedMessage = true;
+//    logging.IncludeScopes = true;
+//});
 
-var otel = builder.Services.AddOpenTelemetry();
+//var otel = builder.Services.AddOpenTelemetry();
 
 // Add Metrics for ASP.NET Core and our custom metrics and export via OTLP
-otel.WithMetrics(metrics =>
-{
-    // Metrics provider from OpenTelemetry
-    metrics.AddAspNetCoreInstrumentation();
-    //Our custom metrics
-    metrics.AddMeter(registrationMeterCounter.Name);
-    // Metrics provides by ASP.NET Core in .NET 8
-    metrics.AddMeter("Microsoft.AspNetCore.Hosting");
-    metrics.AddMeter("Microsoft.AspNetCore.Server.Kestrel");
-});
+//otel.WithMetrics(metrics =>
+//{
+//    // Metrics provider from OpenTelemetry
+//    metrics.AddAspNetCoreInstrumentation();
+//    //Our custom metrics
+//    metrics.AddMeter(registrationMeterCounter.Name);
+//    // Metrics provides by ASP.NET Core in .NET 8
+//    metrics.AddMeter("Microsoft.AspNetCore.Hosting");
+//    metrics.AddMeter("Microsoft.AspNetCore.Server.Kestrel");
+//});
 
 // Add Tracing for ASP.NET Core and our custom ActivitySource and export via OTLP
-otel.WithTracing(tracing =>
-{
-    tracing.AddAspNetCoreInstrumentation();
-    tracing.AddHttpClientInstrumentation();
-    //tracing.AddGrpcCoreInstrumentation();
-    tracing.AddSource(checkoutActivitySource.Name);
-});
+//otel.WithTracing(tracing =>
+//{
+//    tracing.AddAspNetCoreInstrumentation();
+//    tracing.AddHttpClientInstrumentation();
+//    //tracing.AddGrpcCoreInstrumentation();
+//    tracing.AddSource(checkoutActivitySource.Name);
+//});
 
 // Export OpenTelemetry data via OTLP, using env vars for the configuration
-var OtlpEndpoint = builder.Configuration["OTEL_EXPORTER_OTLP_ENDPOINT"];
-if (OtlpEndpoint != null)
-{
-    otel.UseOtlpExporter();
-}
+//var OtlpEndpoint = builder.Configuration["OTEL_EXPORTER_OTLP_ENDPOINT"];
+//if (OtlpEndpoint != null)
+//{
+//    otel.UseOtlpExporter();
+//}
 
 //end of otel config
 
 var app = builder.Build();
+
+app.UseOpenTelemetryPrometheusScrapingEndpoint();
 
 /*
 app.MapGet("/", SimulatedCheckout);

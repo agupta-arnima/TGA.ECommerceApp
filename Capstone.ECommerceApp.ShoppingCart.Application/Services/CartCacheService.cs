@@ -71,10 +71,18 @@ public class CartCacheService : ICartService
                 throw new ArgumentException("Count must be greater than zero.");
             }
 
-            if (!productService.IsProductAvailable(item.ProductId, item.Count))
+            var product = await productService.GetProductsById(item.ProductId);
+            item.Product = product;
+
+            if (product == null || product.Stock < item.Count)
             {
                 throw new InvalidOperationException("Product is not available in the requested quantity.");
             }
+
+            //if (!productService.IsProductAvailable(item.ProductId, item.Count))
+            //{
+            //    throw new InvalidOperationException("Product is not available in the requested quantity.");
+            //}
 
             // Check if the product already exists in the cart
             var existingItem = await cacheService.GetCacheValueAsync<CartDetailsDto>(cartCacheKey, item.ProductId.ToString());

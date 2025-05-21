@@ -1,5 +1,6 @@
 ﻿using Capstone.ECommerceApp.Infra.Common;
 using Capstone.ECommerceApp.ShoppingCart.Application.Interfaces;
+using Capstone.ECommerceApp.ShoppingCart.Domain.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,11 +12,13 @@ namespace Capstone.ECommerceApp.ShoppingCart.API.Controllers
     {
         private readonly ICartService cartService;
         private ResponseDto responseDto;
+        private readonly CartsMetrics cartsMetrics;
 
-        public CartAPIController(ICartService cartService)
+        public CartAPIController(ICartService cartService, CartsMetrics cartsMetrics)
         {
             this.cartService = cartService;
             this.responseDto = new ResponseDto();
+            this.cartsMetrics = cartsMetrics;
         }
 
         [HttpGet("GetCart/{userId}")]
@@ -41,7 +44,9 @@ namespace Capstone.ECommerceApp.ShoppingCart.API.Controllers
         {
             try
             {
+                cartDto.CartDetails?.ToList().ForEach(CartDetail => CartDetail.OriginalCount = CartDetail.Count); //Preserve Original Count
                 await cartService.CartUpsert(cartDto);
+                cartDto.CartDetails?.ToList().ForEach(cartDetail => cartsMetrics.IncreaseCarts(cartDetail.Product?.Name, cartDetail.OriginalCount));                
                 responseDto.Result = cartDto;
             }
             catch (Exception ex)
