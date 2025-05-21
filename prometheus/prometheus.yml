@@ -14,5 +14,12 @@ scrape_configs:
     static_configs:
     # replace the IP with your local IP for development
     # localhost is not it, as that is w/in the container :)
-    - targets:
-       - host.docker.internal:5000       
+    - targets: ['host.docker.internal:5000']
+      labels:
+        group: 'auth-metrics-endpoint'
+    - targets: ['host.docker.internal:7004']
+      labels:
+        group: 'order-metrics-endpoint'
+    - targets: ['host.docker.internal:7003']
+      labels:
+        group: 'cart-metrics-endpoint'
