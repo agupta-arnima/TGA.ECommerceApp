@@ -1,0 +1,237 @@
+﻿@page
+@model Capstone.ECommerce.OllamaChatApp.Pages.Index1Model
+@{
+    ViewData["Title"] = "Capstone Chat App";
+}
+
+<link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/6.0.1/signalr.min.js"></script>
+
+
+<style>
+    body {
+        font-family: 'Roboto', sans-serif;
+        background: #222831; /* Dark slate gray background */
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        overflow: hidden;
+        color: #EEEEEE; /* Default light text color */
+    }
+
+    .chat-container {
+        width: 100%;
+        max-width: 80%; /* Changed to 80% dynamic width */
+        height: 90vh;
+        background: #393E46; /* Dark charcoal container background */
+        border-radius: 10px;
+        box-shadow: 0 6px 20px rgba(0,0,0,0.4); /* More pronounced shadow for dark theme */
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+    }
+
+    .chat-header {
+        background: #00ADB5; /* Teal header - a pop of color */
+        color: white;
+        padding: 15px;
+        text-align: center;
+        font-size: 1.2rem;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.2); /* Shadow for header */
+    }
+
+    .chat-messages {
+        flex: 1;
+        overflow-y: auto;
+        padding: 20px;
+        background: #2D3748; /* Darker background for message area */
+        display: flex;
+        flex-direction: column;
+    }
+
+    .message {
+        margin-bottom: 15px;
+        padding: 12px 18px;
+        border-radius: 22px;
+        max-width: 75%;
+        word-wrap: break-word;
+        white-space: pre-wrap;
+        font-size: 0.95rem;
+        line-height: 1.4;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.2); /* Subtle shadow for depth */
+        transition: transform 0.2s ease-in-out;
+    }
+
+        .message:hover {
+            transform: translateY(-2px);
+        }
+
+        .message.user {
+            background: linear-gradient(135deg, #4A5568, #2D3748); /* Dark gray to darker gray gradient */
+            align-self: flex-end;
+            text-align: right;
+            color: #EEEEEE; /* Light text */
+            border: none;
+            border-bottom-right-radius: 5px;
+        }
+
+        .message.assistant {
+            background: linear-gradient(135deg, #5A6270, #3C424D); /* Slightly lighter dark gray gradient */
+            align-self: flex-start;
+            text-align: left;
+            color: #EEEEEE; /* Light text */
+            border: none;
+            border-bottom-left-radius: 5px;
+        }
+
+    .chat-input {
+        display: flex;
+        padding: 15px;
+        border-top: 1px solid #4A5568; /* Darker border for input area */
+        background: #393E46; /* Match container background */
+    }
+
+        .chat-input input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #5A6270; /* Lighter border for input */
+            border-radius: 20px;
+            outline: none;
+            font-size: 1rem;
+            background: #2D3748; /* Dark input background */
+            color: #EEEEEE; /* Light input text */
+        }
+
+            .chat-input input::placeholder {
+                color: #A0AEC0; /* Lighter placeholder text */
+            }
+
+        .chat-input button {
+            margin-left: 10px;
+            padding: 10px 20px;
+            background: #00ADB5; /* Teal button */
+            color: white;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+            font-size: 1rem;
+        }
+
+            .chat-input button:hover {
+                background: #007B80; /* Darker teal on hover */
+            }
+</style>
+
+<div class="chat-container">
+    <div class="chat-header">Ollama Chat</div>
+    <div class="chat-messages" id="notificationsList">
+      
+    </div>
+    <div class="chat-input">
+        <input type="text" id="notificationInput" placeholder="AI Assistant..." />
+        <button id="sendNotificationButton">Send</button>
+    </div>
+</div>
+
+<script>
+    const notificationInput = document.getElementById('notificationInput');
+    const sendNotificationButton = document.getElementById('sendNotificationButton');
+    const notificationsList = document.getElementById('notificationsList');
+
+    // Function to scroll chat messages to the bottom
+    function scrollToBottom() {
+        notificationsList.scrollTop = notificationsList.scrollHeight;
+    }
+
+    // Function to add a message to the chat
+    function addMessage(text, senderClass) {
+        const messageDiv = document.createElement('div');
+        messageDiv.classList.add('message', senderClass);
+        messageDiv.textContent = text;
+        notificationsList.appendChild(messageDiv);
+        scrollToBottom();
+        return messageDiv; // Return the created div for potential updates
+    }
+
+    // --- SignalR Setup ---
+    const connection = new signalR.HubConnectionBuilder()
+        .withUrl("/notificationsHub") // Make sure this matches your Hub's route
+        .withAutomaticReconnect() // Optional: Automatically reconnect on disconnect
+        .build();
+
+    let currentAssistantMessageDiv = null; // To hold the reference to the current assistant message bubble
+    let isFirstChunk = true; // Flag to check if it's the first chunk for the current response
+
+    // Receive notification from the Hub
+    connection.on("ReceiveNotification", function (message) {
+        if (!currentAssistantMessageDiv) {
+            currentAssistantMessageDiv = addMessage("", "assistant");
+            isFirstChunk = true;
+        }
+
+        if (isFirstChunk) {
+            currentAssistantMessageDiv.textContent = message;
+            isFirstChunk = false;
+        } else {
+            currentAssistantMessageDiv.textContent += message;
+        }
+        scrollToBottom();
+    });
+
+    // New event to signal completion of assistant's response
+    connection.on("ReceiveNotificationComplete", function () {
+        console.log("Assistant response complete.");
+        currentAssistantMessageDiv = null;
+        isFirstChunk = true;
+    });
+
+
+    // Start the connection
+    connection.start().then(function () {
+        console.log("SignalR Connected!");
+        sendNotificationButton.disabled = false;
+        notificationInput.disabled = false;
+    }).catch(function (err) {
+        console.error("SignalR Connection Error: ", err.toString());
+    });
+
+    // --- Send Message Logic ---
+    function sendMessage() {
+        const message = notificationInput.value.trim();
+        if (message) {
+            sendNotificationButton.disabled = true;
+            notificationInput.disabled = true;
+
+            addMessage(message, "user");
+
+            notificationInput.value = '';
+
+            currentAssistantMessageDiv = addMessage("AI is thinking...", "assistant");
+            isFirstChunk = true;
+
+            connection.invoke("SendNotification", message).catch(function (err) {
+                console.error("Error invoking SendNotification: ", err.toString());
+                if (currentAssistantMessageDiv) {
+                    currentAssistantMessageDiv.textContent = "Error: Could not get response.";
+                }
+                currentAssistantMessageDiv = null;
+                isFirstChunk = true;
+            });
+        }
+    }
+
+    // Event listeners
+    sendNotificationButton.addEventListener('click', sendMessage);
+    notificationInput.addEventListener('keypress', function (e) {
+        if (e.key === 'Enter') {
+            sendMessage();
+        }
+    });
+
+    // Initial scroll to bottom in case there are many pre-existing messages
+    window.onload = scrollToBottom;
+</script>
