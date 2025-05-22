@@ -1,0 +1,232 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Capstone Chat App";
+}
+
+<link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/6.0.1/signalr.min.js"></script>
+
+
+<style>
+    body {
+        font-family: 'Roboto', sans-serif;
+        background: #f0f2f5;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        overflow: hidden; /* Prevent body scroll */
+    }
+
+    .chat-container {
+        width: 100%;
+        max-width: 600px;
+        height: 90vh; /* Adjust height to fit viewport */
+        background: #fff;
+        border-radius: 10px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+    }
+
+    .chat-header {
+        background: #4a90e2;
+        color: white;
+        padding: 15px;
+        text-align: center;
+        font-size: 1.2rem;
+    }
+
+    .chat-messages {
+        flex: 1;
+        overflow-y: auto; /* Enable scrolling for messages */
+        padding: 20px;
+        background: #f9f9f9;
+        display: flex; /* Use flexbox for messages */
+        flex-direction: column; /* Stack messages vertically */
+    }
+
+    .message {
+        margin-bottom: 15px;
+        padding: 12px 18px; /* Increased padding for better bubble look */
+        border-radius: 22px; /* More rounded corners */
+        max-width: 75%;
+        word-wrap: break-word; /* Ensure long words wrap */
+        white-space: pre-wrap; /* Preserve whitespace and line breaks */
+        font-size: 0.95rem; /* Slightly adjusted font size */
+        line-height: 1.4; /* Improved line spacing */
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Subtle shadow for depth */
+        transition: transform 0.2s ease-in-out; /* Smooth transition on hover (optional) */
+    }
+
+        .message:hover {
+            transform: translateY(-2px); /* Slight lift on hover */
+        }
+
+        .message.user {
+            background: linear-gradient(135deg, #e0f7fa, #b2ebf2); /* Gradient for user messages */
+            align-self: flex-end; /* Align to the right */
+            text-align: right;
+            color: #333; /* Darker text for better contrast */
+            border: none; /* Remove border, shadow handles depth */
+            border-bottom-right-radius: 5px; /* Sharpen one corner for a chat bubble effect */
+        }
+
+        .message.assistant {
+            background: linear-gradient(135deg, #e8f5e9, #c8e6c9); /* Gradient for assistant messages */
+            align-self: flex-start; /* Align to the left */
+            text-align: left;
+            color: #333; /* Darker text for better contrast */
+            border: none; /* Remove border, shadow handles depth */
+            border-bottom-left-radius: 5px; /* Sharpen one corner for a chat bubble effect */
+        }
+
+    .chat-input {
+        display: flex;
+        padding: 15px;
+        border-top: 1px solid #ddd;
+        background: #fff;
+    }
+
+        .chat-input input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 20px;
+            outline: none;
+            font-size: 1rem; /* Consistent font size */
+        }
+
+        .chat-input button {
+            margin-left: 10px;
+            padding: 10px 20px;
+            background: #4a90e2;
+            color: white;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+            font-size: 1rem; /* Consistent font size */
+        }
+
+            .chat-input button:hover {
+                background: #357ab8;
+            }
+</style>
+
+<div class="chat-container">
+    <div class="chat-header">Capstone Chat</div>
+    <div class="chat-messages" id="notificationsList">
+        <div class="message user">Hello, AI!</div>
+        <div class="message assistant">Hey there, human! What's on your mind? 😊</div>
+    </div>
+    <div class="chat-input">
+        <input type="text" id="notificationInput" placeholder="Ask AI Assistant..." />
+        <button id="sendNotificationButton">Send</button>
+    </div>
+</div>
+
+<script>
+    const notificationInput = document.getElementById('notificationInput');
+    const sendNotificationButton = document.getElementById('sendNotificationButton');
+    const notificationsList = document.getElementById('notificationsList');
+
+    // Function to scroll chat messages to the bottom
+    function scrollToBottom() {
+        notificationsList.scrollTop = notificationsList.scrollHeight;
+    }
+
+    // Function to add a message to the chat
+    function addMessage(text, senderClass) {
+        const messageDiv = document.createElement('div');
+        messageDiv.classList.add('message', senderClass);
+        messageDiv.textContent = text;
+        notificationsList.appendChild(messageDiv);
+        scrollToBottom();
+        return messageDiv; // Return the created div for potential updates
+    }
+
+    // --- SignalR Setup ---
+    const connection = new signalR.HubConnectionBuilder()
+        .withUrl("/notificationsHub") // Make sure this matches your Hub's route
+        .withAutomaticReconnect() // Optional: Automatically reconnect on disconnect
+        .build();
+
+    let currentAssistantMessageDiv = null; // To hold the reference to the current assistant message bubble
+    let isFirstChunk = true; // Flag to check if it's the first chunk for the current response
+
+    // Receive notification from the Hub
+    connection.on("ReceiveNotification", function (message) {
+        if (!currentAssistantMessageDiv) {
+            // Fallback: If for some reason currentAssistantMessageDiv is null, create a new one.
+            // This should ideally be handled by sendMessage.
+            currentAssistantMessageDiv = addMessage("", "assistant");
+            isFirstChunk = true; // Reset flag for this new message
+        }
+
+        if (isFirstChunk) {
+            currentAssistantMessageDiv.textContent = message; // Replace "AI is thinking..." with the first chunk
+            isFirstChunk = false;
+        } else {
+            currentAssistantMessageDiv.textContent += message; // Append streamed text
+        }
+        scrollToBottom();
+    });
+
+    // New event to signal completion of assistant's response
+    connection.on("ReceiveNotificationComplete", function () {
+        console.log("Assistant response complete.");
+        currentAssistantMessageDiv = null; // Reset for the next turn
+        isFirstChunk = true; // Reset flag for the next response
+    });
+
+
+    // Start the connection
+    connection.start().then(function () {
+        console.log("SignalR Connected!");
+    }).catch(function (err) {
+        console.error("SignalR Connection Error: ", err.toString());
+    });
+
+    // --- Send Message Logic ---
+    function sendMessage() {
+        const message = notificationInput.value.trim();
+        if (message) {
+
+            // 1. Add user's message to the chat
+            addMessage(message, "user");
+
+            // 2. Clear input field
+            notificationInput.value = '';
+
+            // 3. Add a placeholder for assistant's response (e.g., "AI is thinking...")
+            currentAssistantMessageDiv = addMessage("AI is thinking...", "assistant"); // Store reference
+            isFirstChunk = true; // Ensure first chunk flag is set for this new message
+
+            // 4. Send message to SignalR Hub
+            connection.invoke("SendNotification", message).catch(function (err) {
+                console.error("Error invoking SendNotification: ", err.toString());
+                if (currentAssistantMessageDiv) {
+                    currentAssistantMessageDiv.textContent = "Error: Could not get response."; // Update placeholder on error
+                }
+                currentAssistantMessageDiv = null; // Reset
+                isFirstChunk = true; // Reset flag
+            });
+        }
+    }
+
+    // Event listeners
+    sendNotificationButton.addEventListener('click', sendMessage);
+    notificationInput.addEventListener('keypress', function (e) {
+        if (e.key === 'Enter') {
+            sendMessage();
+        }
+    });
+
+    // Initial scroll to bottom in case there are many pre-existing messages
+    window.onload = scrollToBottom;
+</script>

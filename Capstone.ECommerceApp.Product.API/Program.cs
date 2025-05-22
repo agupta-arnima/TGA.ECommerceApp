@@ -31,13 +31,22 @@ builder.Services.AddDbContextPool<ProductDbContext>(options =>
 // Add Azure Key Vault to configuration
 builder.Host.ConfigureAppConfiguration((context, config) =>
 {
-    var builtConfig = config.Build(); // Build to access existing config values
-    var keyVaultUri = builtConfig["AzureConfiguration:AzureKeyVault:VaultUri"];
+config.AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
+
+var builtConfig = config.Build(); // Build to access existing config values
+var keyVaultUri = builtConfig["AzureConfiguration:AzureKeyVault:VaultUri"];
 
     if (!string.IsNullOrEmpty(keyVaultUri))
     {
-        var secretClient = new SecretClient(new Uri(keyVaultUri), new DefaultAzureCredential());
-        config.AddAzureKeyVault(secretClient, new KeyVaultSecretManager());
+        try
+        {
+            var secretClient = new SecretClient(new Uri(keyVaultUri), new DefaultAzureCredential());
+            config.AddAzureKeyVault(secretClient, new KeyVaultSecretManager());
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Warning: Failed to load Azure Key Vault. Using local settings. Error: {ex.Message}");
+        }
     }
 });
 
@@ -66,9 +75,9 @@ builder.Services.AddCors(options =>
 
 
 //AI-Search
-var apiKey      = builder.Configuration["sackumar6-ai-search-apikey"];
+var apiKey = builder.Configuration["sackumar6-ai-search-apikey"];
 var serviceName = builder.Configuration["sackumar6-ai-search-service"];
-var indexName   = builder.Configuration["sackumar6-ai-search-index"];
+var indexName = builder.Configuration["sackumar6-ai-search-index"];
 
 builder.Services.AddSingleton(serviceProvider =>
 {
@@ -106,21 +115,21 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         });
 
 
-    builder.Services.AddSwaggerGen(c =>
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "Inventory API", Version = "v1" });
+    c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, $"{Assembly.GetExecutingAssembly().GetName().Name}.xml"));
+    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
-        c.SwaggerDoc("v1", new OpenApiInfo { Title = "Inventory API", Version = "v1" });
-        c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, $"{Assembly.GetExecutingAssembly().GetName().Name}.xml"));
-        c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
-        {
-            Name = "Authorization",
-            Type = SecuritySchemeType.Http,
-            Scheme = "Bearer",
-            BearerFormat = "JWT",
-            In = ParameterLocation.Header,
-            Description = "JWT Authorization header using the Bearer scheme."
-        });
-        c.AddSecurityRequirement(new OpenApiSecurityRequirement
-        {
+        Name = "Authorization",
+        Type = SecuritySchemeType.Http,
+        Scheme = "Bearer",
+        BearerFormat = "JWT",
+        In = ParameterLocation.Header,
+        Description = "JWT Authorization header using the Bearer scheme."
+    });
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
             {
                 new OpenApiSecurityScheme
                 {
@@ -132,8 +141,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 },
                 new string[] {}
             }
-        });
     });
+});
 
 var app = builder.Build();
 
