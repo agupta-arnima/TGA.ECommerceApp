@@ -20,9 +20,16 @@ using Serilog;
 using Serilog.Exceptions;
 using Serilog.Sinks.Elasticsearch;
 using System.Reflection;
+using Capstone.ECommerceApp.Infra.Common.Configuration.AzureKeyVault;
 
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Add Azure Key Vault to configuration
+builder.Host.ConfigureAppConfiguration((context, config) =>
+{
+    KeyVaultConfiguration.AddAzureKeyVaultIfConfigured(context, config);
+});
 
 //Define Polly retry Policy
 var retryPolicy = HttpPolicyExtensions
@@ -30,7 +37,7 @@ var retryPolicy = HttpPolicyExtensions
                     .WaitAndRetryAsync(3, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2,
                     retryAttempt)));
 
-var orderDbConnectionStr = builder.Configuration.GetConnectionString("OrderDbConnection");
+var orderDbConnectionStr = builder.Configuration["sackumar6-OrderDbConnection"];
 builder.Services.AddDbContextPool<OrderDbContext>(options =>
 {
     options.UseMySql(orderDbConnectionStr, ServerVersion.AutoDetect(orderDbConnectionStr));
@@ -54,18 +61,18 @@ builder.Services.AddScoped<BackendApiAuthenticationHttpClientHandler>();
 
 
 // Add HttpClient services using the extension method
-builder.Services.AddHttpClientService("Product",builder.Configuration["ServiceUrls:ProductAPI"],
+builder.Services.AddHttpClientService("Product",builder.Configuration["sackumar6-productapi-url"],
                     sp => sp.GetRequiredService<BackendApiAuthenticationHttpClientHandler>(), retryPolicy);
-builder.Services.AddHttpClientService("Inventory", builder.Configuration["ServiceUrls:InventoryAPI"],
+builder.Services.AddHttpClientService("Inventory", builder.Configuration["sackumar6-inventory-api"],
                     sp => sp.GetRequiredService<BackendApiAuthenticationHttpClientHandler>(), retryPolicy);
-builder.Services.AddHttpClientService("Payment", builder.Configuration["ServiceUrls:PaymentAPI"],
+builder.Services.AddHttpClientService("Payment", builder.Configuration["sackumar6-payment-api"],
                     sp => sp.GetRequiredService<BackendApiAuthenticationHttpClientHandler>(), retryPolicy);
 
 
 
 // Configure message broker settings
-builder.Services.Configure<RabbitMQSetting>(builder.Configuration.GetSection("ApiSettings:RabbitMQ"));
-builder.Services.Configure<EventHubSetting>(builder.Configuration.GetSection("ApiSettings:EventHub"));
+builder.Services.Configure<RabbitMQSetting>(builder.Configuration.GetSection("sackumar6:ApiSettings:RabbitMQ"));
+builder.Services.Configure<EventHubSetting>(builder.Configuration.GetSection("sackumar6:ApiSettings:EventHub"));
 //builder.Services.Configure<AzureServiceBusSetting>(builder.Configuration.GetSection("ApiSettings:AzureServiceBus"));
 
 // Add the factory pattern for IEventBus

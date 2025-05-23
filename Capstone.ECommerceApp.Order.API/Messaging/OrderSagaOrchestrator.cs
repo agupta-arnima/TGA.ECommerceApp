@@ -23,7 +23,7 @@ public class OrderSagaOrchestrator : BackgroundService
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         var brokerType = _configuration.GetValue<string>("MessageBrokerType");
-        var queueName = _configuration.GetValue<string>("ApiSettings:TopicAndQueueNames:OrderQueue");
+        var queueName = _configuration.GetValue<string>("sackumar6:ApiSettings:TopicAndQueueNames:OrderQueue");
 
         _consumer = _consumerFactory.CreateConsumer(brokerType);
         await _consumer.StartConsuming(queueName, stoppingToken);

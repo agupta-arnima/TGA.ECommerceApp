@@ -26,6 +26,7 @@ using Capstone.ECommerceApp.Infra.Common;
 using Capstone.ECommerceApp.Infra.Bus;
 using Microsoft.Extensions.Options;
 using Capstone.ECommerceApp.Auth.API;
+using Capstone.ECommerceApp.Infra.Common.Configuration.AzureKeyVault;
 
 // Variable for Aspire DashBoard
 //var registrationMeterCounter = new Meter("OTel.Tempest", "1.0.0");
@@ -35,6 +36,12 @@ var checkoutActivitySource = new ActivitySource("OTel.Example");
 
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Add Azure Key Vault to configuration
+builder.Host.ConfigureAppConfiguration((context, config) =>
+{
+    KeyVaultConfiguration.AddAzureKeyVaultIfConfigured(context, config);
+});
 
 //TODO mTLS implementation for Auth API only certified application can able to use it
 /* 
@@ -55,7 +62,7 @@ builder.WebHost.UseKestrel(options =>
 });
 */
 
-var authDbConnectionStr = builder.Configuration.GetConnectionString("AuthDbConnection");
+var authDbConnectionStr = builder.Configuration["sackumar6-AuthDbConnection"];
 builder.Services.AddDbContextPool<AuthDbContext>(options =>
 {
     options.UseMySql(authDbConnectionStr, ServerVersion.AutoDetect(authDbConnectionStr));
@@ -73,8 +80,8 @@ builder.Services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
 
 
 // Configure message broker settings
-builder.Services.Configure<RabbitMQSetting>(builder.Configuration.GetSection("ApiSettings:RabbitMQ"));
-builder.Services.Configure<EventHubSetting>(builder.Configuration.GetSection("ApiSettings:EventHub"));
+builder.Services.Configure<RabbitMQSetting>(builder.Configuration.GetSection("sackumar6:ApiSettings:RabbitMQ"));
+builder.Services.Configure<EventHubSetting>(builder.Configuration.GetSection("sackumar6:ApiSettings:EventHub"));
 //builder.Services.Configure<AzureServiceBusSetting>(builder.Configuration.GetSection("ApiSettings:AzureServiceBus"));
 
 // Add the factory pattern for IEventBus

@@ -115,8 +115,8 @@ namespace Capstone.ECommerceApp.Order.API.Controllers
         {
             return messageBroker switch
             {
-                "RabbitMQ" => configuration.GetValue<string>("ApiSettings:RabbitMQ:TopicAndQueueNames:OrderQueue"),
-                "EventHub" => configuration.GetValue<string>("ApiSettings:EventHub:EventHubName"),
+                "RabbitMQ" => configuration.GetValue<string>("sackumar6:ApiSettings:RabbitMQ:TopicAndQueueNames:OrderQueue"),
+                "EventHub" => configuration.GetValue<string>("sackumar6:ApiSettings:EventHub:EventHubName"),
                 "ServiceBus" => string.Empty,
                 _ => throw new ArgumentException("Invalid broker type")
             };

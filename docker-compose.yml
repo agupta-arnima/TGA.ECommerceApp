@@ -187,9 +187,9 @@ services:
       - ApiSettings__Secret=This is used to Sign and verify JWT tokens, Replace it with your own secret
       - ApiSettings__Issuer=TGA-Auth-API
       - ApiSettings__Audience=TGA-Client
-      - ServiceUrls__ProductAPI=http://capstone.ecommerceapp.productapi:8080/
-      - ServiceUrls__InventoryAPI=http://capstone.ecommerceapp.productapi:8080/
-      - ServiceUrls__PaymentAPI=http://capstone.ecommerceapp.paymentapi:8080/
+      - sackumar6-productapi-url=http://capstone.ecommerceapp.productapi:8080/
+      - sackumar6-inventory-api=http://capstone.ecommerceapp.productapi:8080/
+      - sackumar6-payment-api=http://capstone.ecommerceapp.paymentapi:8080/
       - Stripe__SecretKey=sk_test_51QiGz5CQ7mJfnXMskjXynI3SYDC8L68EXwvj6mkKy3tXKBYCpxFfEJvjOTfJKxCx7XuhKKEpYyqP0Qj4hc7MFFSV00SRq4yB7H
       - ApiSettings__RabbitMQ__HostName=rabbitmq
       - ApiSettings__RabbitMQ__UserName=guest

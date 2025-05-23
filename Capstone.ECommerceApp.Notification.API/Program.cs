@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Capstone.ECommerceApp.Infra.Bus;
+using Capstone.ECommerceApp.Infra.Common.Configuration.AzureKeyVault;
 using Capstone.ECommerceApp.Notification.API.Messaging;
 using Capstone.ECommerceApp.Notification.Application.Interfaces;
 using Capstone.ECommerceApp.Notification.Application.Services;
@@ -9,6 +10,11 @@ using Capstone.ECommerceApp.Notification.Domain.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Add Azure Key Vault to configuration
+builder.Host.ConfigureAppConfiguration((context, config) =>
+{
+    KeyVaultConfiguration.AddAzureKeyVaultIfConfigured(context, config);
+});
 var notificationDbConnectionStr = builder.Configuration.GetConnectionString("NotificationDbConnection");
 builder.Services.AddDbContextPool<NotificationDbContext>(options =>
 {

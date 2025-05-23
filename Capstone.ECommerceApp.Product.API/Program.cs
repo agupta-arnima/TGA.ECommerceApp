@@ -1,10 +1,8 @@
 using AutoMapper;
 using Azure;
-using Azure.Extensions.AspNetCore.Configuration.Secrets;
-using Azure.Identity;
 using Azure.Search.Documents;
 using Azure.Search.Documents.Indexes;
-using Azure.Security.KeyVault.Secrets;
+using Capstone.ECommerceApp.Infra.Common.Configuration.AzureKeyVault;
 using Capstone.ECommerceApp.Product.Application;
 using Capstone.ECommerceApp.Product.Application.Interfaces;
 using Capstone.ECommerceApp.Product.Application.Services;
@@ -21,33 +19,16 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var productDbConnectionStr = builder.Configuration.GetConnectionString("ProductDbConnection");
-builder.Services.AddDbContextPool<ProductDbContext>(options =>
-{
-    options.UseMySql(productDbConnectionStr, ServerVersion.AutoDetect(productDbConnectionStr));
-});
-
-
 // Add Azure Key Vault to configuration
 builder.Host.ConfigureAppConfiguration((context, config) =>
 {
-config.AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
+    KeyVaultConfiguration.AddAzureKeyVaultIfConfigured(context, config);
+});
 
-var builtConfig = config.Build(); // Build to access existing config values
-var keyVaultUri = builtConfig["AzureConfiguration:AzureKeyVault:VaultUri"];
-
-    if (!string.IsNullOrEmpty(keyVaultUri))
-    {
-        try
-        {
-            var secretClient = new SecretClient(new Uri(keyVaultUri), new DefaultAzureCredential());
-            config.AddAzureKeyVault(secretClient, new KeyVaultSecretManager());
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Warning: Failed to load Azure Key Vault. Using local settings. Error: {ex.Message}");
-        }
-    }
+var productDbConnectionStr = builder.Configuration["sackumar6-ProductDbConnection"];
+builder.Services.AddDbContextPool<ProductDbContext>(options =>
+{
+    options.UseMySql(productDbConnectionStr, ServerVersion.AutoDetect(productDbConnectionStr));
 });
 
 

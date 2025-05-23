@@ -1,5 +1,6 @@
 using AutoMapper;
 using Capstone.ECommerceApp.Domain.Core.Cache;
+using Capstone.ECommerceApp.Infra.Common.Configuration.AzureKeyVault;
 using Capstone.ECommerceApp.Infra.RedisCache;
 using Capstone.ECommerceApp.ShoppingCart.API;
 using Capstone.ECommerceApp.ShoppingCart.API.Extensions;
@@ -15,7 +16,11 @@ using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
-
+// Add Azure Key Vault to configuration
+builder.Host.ConfigureAppConfiguration((context, config) =>
+{
+    KeyVaultConfiguration.AddAzureKeyVaultIfConfigured(context, config);
+});
 //var productDbConnectionStr = builder.Configuration.GetConnectionString("CartDbConnection");
 //builder.Services.AddDbContextPool<CartDbContext>(options =>
 //{
@@ -34,7 +39,7 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<BackendApiAuthenticationHttpClientHandler>();
 
 // Add Redis configuration
-var redisConfiguration = builder.Configuration.GetSection("Redis")["ConnectionString"];
+var redisConfiguration = builder.Configuration["sackumar6:Redis:ConnectionString"];
 var redis = ConnectionMultiplexer.Connect(redisConfiguration);
 //builder.Services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect("localhost"));
 builder.Services.AddSingleton<IConnectionMultiplexer>(redis);

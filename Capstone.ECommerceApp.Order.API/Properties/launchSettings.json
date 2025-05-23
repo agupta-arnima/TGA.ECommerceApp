@@ -37,7 +37,8 @@
         "ASPNETCORE_HTTP_PORTS": "8080"
       },
       "publishAllPorts": true,
-      "useSSL": true
+      "useSSL": true,
+      "AKS_MANAGED_IDENTITY_CLIENT_ID": "276aab38-9367-4b68-82e3-160a4973976d"
     }
   },
   "$schema": "http://json.schemastore.org/launchsettings.json",
