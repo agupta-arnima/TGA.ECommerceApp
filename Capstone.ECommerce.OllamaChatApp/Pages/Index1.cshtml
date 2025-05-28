@@ -159,7 +159,7 @@
 
     // --- SignalR Setup ---
     const connection = new signalR.HubConnectionBuilder()
-        .withUrl("/notificationsHub") // Make sure this matches your Hub's route
+        .withUrl("/aiChatHub") // Make sure this matches your Hub's route
         .withAutomaticReconnect() // Optional: Automatically reconnect on disconnect
         .build();
 

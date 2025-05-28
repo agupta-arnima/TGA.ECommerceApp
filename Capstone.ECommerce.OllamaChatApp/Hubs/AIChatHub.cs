@@ -3,11 +3,11 @@ using Microsoft.Extensions.AI;
 
 namespace Capstone.ECommerce.OllamaChatApp.Hubs
 {
-    public class NotificationsHub:Hub
+    public class AIChatHub : Hub
     {
         IChatClient chatClient;
         List<ChatMessage> chatHistory = new();
-        public NotificationsHub()
+        public AIChatHub()
         {
             chatClient = new OllamaChatClient(new Uri("http://localhost:11434/"), "orca-mini");
         }

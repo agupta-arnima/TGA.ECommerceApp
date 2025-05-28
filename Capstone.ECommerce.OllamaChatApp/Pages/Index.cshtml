@@ -1,7 +1,7 @@
 ﻿@page
 @model IndexModel
 @{
-    ViewData["Title"] = "Capstone Chat App";
+    ViewData["Title"] = "TGA Capstone Ollama Chat";
 }
 
 <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
@@ -119,7 +119,7 @@
 </style>
 
 <div class="chat-container">
-    <div class="chat-header">Capstone Chat</div>
+    <div class="chat-header">TGA Capstone Ollama Chat</div>
     <div class="chat-messages" id="notificationsList">
         <div class="message user">Hello, AI!</div>
         <div class="message assistant">Hey there, human! What's on your mind? 😊</div>
@@ -152,7 +152,7 @@
 
     // --- SignalR Setup ---
     const connection = new signalR.HubConnectionBuilder()
-        .withUrl("/notificationsHub") // Make sure this matches your Hub's route
+        .withUrl("/aiChatHub") // Make sure this matches your Hub's route
         .withAutomaticReconnect() // Optional: Automatically reconnect on disconnect
         .build();
 

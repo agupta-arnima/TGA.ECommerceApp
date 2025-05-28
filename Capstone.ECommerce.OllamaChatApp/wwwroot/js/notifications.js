@@ -1,7 +1,7 @@
 ﻿"use strict";
 
-//To build the connection with this notificationsHub
-var connection = new signalR.HubConnectionBuilder().withUrl("/notificationsHub").build();
+//To build the connection with this aiChatHub
+var connection = new signalR.HubConnectionBuilder().withUrl("/aiChatHub").build();
 
 //Disable the send button until connection is established.
 document.getElementById("sendNotificationButton").disabled = true;

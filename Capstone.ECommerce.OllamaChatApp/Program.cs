@@ -29,7 +29,7 @@ namespace Capstone.ECommerce.OllamaChatApp
             app.UseAuthorization();
 
             app.MapRazorPages();
-            app.MapHub<NotificationsHub>("/notificationsHub");
+            app.MapHub<AIChatHub>("/aiChatHub");
             app.Run();
         }
     }
