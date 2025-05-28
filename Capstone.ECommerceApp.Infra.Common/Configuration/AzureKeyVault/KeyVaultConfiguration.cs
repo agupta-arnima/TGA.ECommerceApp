@@ -21,8 +21,7 @@ public static class KeyVaultConfiguration
             {
                 var credential = new DefaultAzureCredential(new DefaultAzureCredentialOptions
                 {
-                    ManagedIdentityClientId = Environment
-                                    .GetEnvironmentVariable("AKS_MANAGED_IDENTITY_CLIENT_ID")
+                    ManagedIdentityClientId = builtConfig["AKS_MANAGED_IDENTITY_CLIENT_ID"]
                 });
 
                 var secretClient = new SecretClient(new Uri(keyVaultUri), credential);

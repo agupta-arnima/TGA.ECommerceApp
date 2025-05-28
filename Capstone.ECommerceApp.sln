@@ -145,6 +145,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Capstone.ECommerceApp.Infra
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Capstone.ECommerceApp.Infra.Common", "Capstone.ECommerceApp.Infra.Common\Capstone.ECommerceApp.Infra.Common.csproj", "{BC62C6CC-FF38-4470-B8BE-AEB129CE9E8E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Capstone.ECommerce.OllamaChatApp", "Capstone.ECommerce.OllamaChatApp\Capstone.ECommerce.OllamaChatApp.csproj", "{8380B0AF-FACF-D7F3-FF87-A97D84B2247F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Capstone.ECommerceApp.LoadTesting", "Capstone.ECommerceApp.LoadTesting\Capstone.ECommerceApp.LoadTesting.csproj", "{468E83F0-F2A4-7F1B-797F-47E7B2D8BB56}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -271,6 +275,14 @@ Global
 		{BC62C6CC-FF38-4470-B8BE-AEB129CE9E8E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BC62C6CC-FF38-4470-B8BE-AEB129CE9E8E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BC62C6CC-FF38-4470-B8BE-AEB129CE9E8E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8380B0AF-FACF-D7F3-FF87-A97D84B2247F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8380B0AF-FACF-D7F3-FF87-A97D84B2247F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8380B0AF-FACF-D7F3-FF87-A97D84B2247F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8380B0AF-FACF-D7F3-FF87-A97D84B2247F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{468E83F0-F2A4-7F1B-797F-47E7B2D8BB56}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{468E83F0-F2A4-7F1B-797F-47E7B2D8BB56}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{468E83F0-F2A4-7F1B-797F-47E7B2D8BB56}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{468E83F0-F2A4-7F1B-797F-47E7B2D8BB56}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -340,6 +352,8 @@ Global
 		{01F28C21-EF9C-4CDD-994B-BA04AD1C99DF} = {26A3E23D-A200-4E36-9B1C-1712AED9FA4B}
 		{DB177401-2B07-4A02-B04E-FC443DD682A5} = {26A3E23D-A200-4E36-9B1C-1712AED9FA4B}
 		{BC62C6CC-FF38-4470-B8BE-AEB129CE9E8E} = {26A3E23D-A200-4E36-9B1C-1712AED9FA4B}
+		{8380B0AF-FACF-D7F3-FF87-A97D84B2247F} = {50C7340E-E3B3-4520-818D-609163EECB2C}
+		{468E83F0-F2A4-7F1B-797F-47E7B2D8BB56} = {50C7340E-E3B3-4520-818D-609163EECB2C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {C0F4B8B2-DB68-4F11-BB5D-382D3013F70C}
