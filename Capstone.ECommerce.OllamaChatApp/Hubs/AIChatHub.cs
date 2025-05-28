@@ -5,11 +5,22 @@ namespace Capstone.ECommerce.OllamaChatApp.Hubs
 {
     public class AIChatHub : Hub
     {
-        IChatClient chatClient;
+        private readonly IChatClient chatClient;
         List<ChatMessage> chatHistory = new();
-        public AIChatHub()
+        public AIChatHub(IConfiguration configuration)
         {
-            chatClient = new OllamaChatClient(new Uri("http://localhost:11434/"), "orca-mini");
+            var ollamaBaseUrl = configuration["OllamaSettings:BaseUrl"];
+            var ollamaModelName = configuration["OllamaSettings:ModelName"] ?? "orca-mini";
+            if (string.IsNullOrEmpty(ollamaBaseUrl))
+            {
+                throw new InvalidOperationException("OllamaSettings:BaseUrl is not configured in appsettings.json.");
+            }
+            if (ollamaBaseUrl.StartsWith("http://http://"))
+            {
+                ollamaBaseUrl = ollamaBaseUrl.Replace("http://http://", "http://");
+                Console.WriteLine($"Warning: Corrected Ollama BaseUrl typo. Using: {ollamaBaseUrl}");
+            }
+            chatClient = new OllamaChatClient(new Uri(ollamaBaseUrl), ollamaModelName);
         }
 
         //Client will call SendNotification function
