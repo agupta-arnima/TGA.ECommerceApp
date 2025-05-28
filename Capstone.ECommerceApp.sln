@@ -73,19 +73,19 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Capstone.ECommerceApp.Shopp
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Capstone.ECommerceApp.ShoppingCart.Application", "Capstone.ECommerceApp.ShoppingCart.Application\Capstone.ECommerceApp.ShoppingCart.Application.csproj", "{C535B026-601A-4E70-A8C2-EA2BE5F3D82E}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Capstone.ECommerceApp.Order.Domain", "Capstone.ECommerceApp.Order.Domain\Capstone.ECommerceApp.Order.Domain.csproj", "{7EE2F70B-4777-4DEA-80F0-8CDAEE922AAA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Capstone.ECommerceApp.Order.Domain", "Capstone.ECommerceApp.Order.Domain\Capstone.ECommerceApp.Order.Domain.csproj", "{7EE2F70B-4777-4DEA-80F0-8CDAEE922AAA}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Capstone.ECommerceApp.Order.Application", "Capstone.ECommerceApp.Order.Application\Capstone.ECommerceApp.Order.Application.csproj", "{2B00AC2B-8233-454B-8153-D2DE1215FD10}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Capstone.ECommerceApp.Order.Application", "Capstone.ECommerceApp.Order.Application\Capstone.ECommerceApp.Order.Application.csproj", "{2B00AC2B-8233-454B-8153-D2DE1215FD10}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Capstone.ECommerceApp.Order.Data", "Capstone.ECommerceApp.Order.Data\Capstone.ECommerceApp.Order.Data.csproj", "{0CBDC068-9C0F-4AB6-B836-7FCA872F689D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Capstone.ECommerceApp.Order.Data", "Capstone.ECommerceApp.Order.Data\Capstone.ECommerceApp.Order.Data.csproj", "{0CBDC068-9C0F-4AB6-B836-7FCA872F689D}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Capstone.ECommerceApp.Order.API", "Capstone.ECommerceApp.Order.API\Capstone.ECommerceApp.Order.API.csproj", "{8AB15334-614E-494E-A0DA-0ED1BD2A5D90}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Capstone.ECommerceApp.Order.API", "Capstone.ECommerceApp.Order.API\Capstone.ECommerceApp.Order.API.csproj", "{8AB15334-614E-494E-A0DA-0ED1BD2A5D90}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Capstone.ECommerceApp.OcelotApiGateway", "Capstone.ECommerceApp.OcelotApiGateway\Capstone.ECommerceApp.OcelotApiGateway.csproj", "{6AB75D04-18A5-408A-8F40-0FBB699D5F63}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Capstone.ECommerceApp.OcelotApiGateway", "Capstone.ECommerceApp.OcelotApiGateway\Capstone.ECommerceApp.OcelotApiGateway.csproj", "{6AB75D04-18A5-408A-8F40-0FBB699D5F63}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Domain", "Domain", "{926CAE8E-2051-4A58-B908-D365BB2E8706}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Capstone.ECommerceApp.Domain.Core", "Capstone.ECommerceApp.Domain.Core\Capstone.ECommerceApp.Domain.Core.csproj", "{05710D69-B0A1-48FE-94F6-F8E2FCD190C9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Capstone.ECommerceApp.Domain.Core", "Capstone.ECommerceApp.Domain.Core\Capstone.ECommerceApp.Domain.Core.csproj", "{05710D69-B0A1-48FE-94F6-F8E2FCD190C9}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "API", "API", "{D84CB18E-11E2-49D9-91A8-A03B72BDD339}"
 EndProject
@@ -95,13 +95,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Data", "Data", "{4ABFDBFC-4
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Domain", "Domain", "{229C56C3-1B44-41FA-8562-478BFDD9197C}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Capstone.ECommerceApp.Notification.Domain", "Capstone.ECommerceApp.Notification.Domain\Capstone.ECommerceApp.Notification.Domain.csproj", "{F50328F1-DCD0-4A84-9843-B9501D29BEC0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Capstone.ECommerceApp.Notification.Domain", "Capstone.ECommerceApp.Notification.Domain\Capstone.ECommerceApp.Notification.Domain.csproj", "{F50328F1-DCD0-4A84-9843-B9501D29BEC0}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Capstone.ECommerceApp.Notification.Data", "Capstone.ECommerceApp.Notification.Data\Capstone.ECommerceApp.Notification.Data.csproj", "{A8FBFAF9-BF99-440E-B02C-49EC8A5F2BAD}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Capstone.ECommerceApp.Notification.Data", "Capstone.ECommerceApp.Notification.Data\Capstone.ECommerceApp.Notification.Data.csproj", "{A8FBFAF9-BF99-440E-B02C-49EC8A5F2BAD}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Capstone.ECommerceApp.Notification.Application", "Capstone.ECommerceApp.Notification.Application\Capstone.ECommerceApp.Notification.Application.csproj", "{D7B086ED-7A1F-4977-8789-E653E9B30197}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Capstone.ECommerceApp.Notification.Application", "Capstone.ECommerceApp.Notification.Application\Capstone.ECommerceApp.Notification.Application.csproj", "{D7B086ED-7A1F-4977-8789-E653E9B30197}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Capstone.ECommerceApp.Notification.API", "Capstone.ECommerceApp.Notification.API\Capstone.ECommerceApp.Notification.API.csproj", "{8BA04C08-6540-4F8F-B583-A8B46441337F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Capstone.ECommerceApp.Notification.API", "Capstone.ECommerceApp.Notification.API\Capstone.ECommerceApp.Notification.API.csproj", "{8BA04C08-6540-4F8F-B583-A8B46441337F}"
 EndProject
 Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{B080DE20-79AE-4CAE-8F53-013560B59294}"
 EndProject
@@ -125,34 +125,25 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Data", "Data", "{2182465D-B
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Domain", "Domain", "{AC7D8915-4D4D-40A9-B69C-1BCDF1C3034A}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Capstone.ECommerceApp.Payment.API", "Capstone.ECommerceApp.Payment.API\Capstone.ECommerceApp.Payment.API.csproj", "{BD0F5F33-636F-49D3-B49C-02B3A833EF59}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Capstone.ECommerceApp.Payment.API", "Capstone.ECommerceApp.Payment.API\Capstone.ECommerceApp.Payment.API.csproj", "{BD0F5F33-636F-49D3-B49C-02B3A833EF59}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Capstone.ECommerceApp.Payment.Application", "Capstone.ECommerceApp.Payment.Application\Capstone.ECommerceApp.Payment.Application.csproj", "{0B338500-326C-4DF5-9C4B-041A7D16225F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Capstone.ECommerceApp.Payment.Application", "Capstone.ECommerceApp.Payment.Application\Capstone.ECommerceApp.Payment.Application.csproj", "{0B338500-326C-4DF5-9C4B-041A7D16225F}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Capstone.ECommerceApp.Payment.Data", "Capstone.ECommerceApp.Payment.Data\Capstone.ECommerceApp.Payment.Data.csproj", "{94DE9074-4FAA-40E4-A4E7-58A56D4247EC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Capstone.ECommerceApp.Payment.Data", "Capstone.ECommerceApp.Payment.Data\Capstone.ECommerceApp.Payment.Data.csproj", "{94DE9074-4FAA-40E4-A4E7-58A56D4247EC}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Capstone.ECommerceApp.Payment.Domain", "Capstone.ECommerceApp.Payment.Domain\Capstone.ECommerceApp.Payment.Domain.csproj", "{D17353E1-89B7-4546-9C32-5A2FB710B14F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Capstone.ECommerceApp.Payment.Domain", "Capstone.ECommerceApp.Payment.Domain\Capstone.ECommerceApp.Payment.Domain.csproj", "{D17353E1-89B7-4546-9C32-5A2FB710B14F}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UtilityApps", "UtilityApps", "{50C7340E-E3B3-4520-818D-609163EECB2C}"
-	ProjectSection(SolutionItems) = preProject
-		Readme.txt = Readme.txt
-	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Capstone.ECommerceApp.Auth.Domain", "Capstone.ECommerceApp.Auth.Domain\Capstone.ECommerceApp.Auth.Domain.csproj", "{B75BB0CF-5CE6-41E7-9278-4D03BC86AF85}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Capstone.ECommerceApp.Auth.Domain", "Capstone.ECommerceApp.Auth.Domain\Capstone.ECommerceApp.Auth.Domain.csproj", "{B75BB0CF-5CE6-41E7-9278-4D03BC86AF85}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Capstone.ECommerceApp.ShoppingCart.API", "Capstone.ECommerceApp.ShoppingCart.API\Capstone.ECommerceApp.ShoppingCart.API.csproj", "{86F28C57-91EF-4DAB-8E9A-D32B1439492B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Capstone.ECommerceApp.ShoppingCart.API", "Capstone.ECommerceApp.ShoppingCart.API\Capstone.ECommerceApp.ShoppingCart.API.csproj", "{86F28C57-91EF-4DAB-8E9A-D32B1439492B}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Capstone.ECommerceApp.Infra.RedisCache", "Capstone.ECommerceApp.Infra.Redis\Capstone.ECommerceApp.Infra.RedisCache.csproj", "{01F28C21-EF9C-4CDD-994B-BA04AD1C99DF}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Capstone.ECommerceApp.Infra.Bus", "Capstone.ECommerceApp.Infra.Bus\Capstone.ECommerceApp.Infra.Bus.csproj", "{DB177401-2B07-4A02-B04E-FC443DD682A5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Capstone.ECommerceApp.Infra.Bus", "Capstone.ECommerceApp.Infra.Bus\Capstone.ECommerceApp.Infra.Bus.csproj", "{DB177401-2B07-4A02-B04E-FC443DD682A5}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Capstone.ECommerceApp.Infra.Common", "Capstone.ECommerceApp.Infra.Common\Capstone.ECommerceApp.Infra.Common.csproj", "{BC62C6CC-FF38-4470-B8BE-AEB129CE9E8E}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Capstone.ECommerceApp.LoadTesting", "Capstone.ECommerceApp.LoadTesting\Capstone.ECommerceApp.LoadTesting.csproj", "{05CCAC29-275B-459F-9F8A-C08E2748242F}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KubernatesSample", "KubernatesSample\KubernatesSample.csproj", "{4500985C-0F2E-43E9-B982-AC07C395CEEC}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Capstone.ECommerce.OllamaChatApp", "Capstone.ECommerce.OllamaChatApp\Capstone.ECommerce.OllamaChatApp.csproj", "{45815AC6-7679-4F8C-9D4F-F9E9127B9978}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Capstone.ECommerceApp.Infra.Common", "Capstone.ECommerceApp.Infra.Common\Capstone.ECommerceApp.Infra.Common.csproj", "{BC62C6CC-FF38-4470-B8BE-AEB129CE9E8E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -280,18 +271,6 @@ Global
 		{BC62C6CC-FF38-4470-B8BE-AEB129CE9E8E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BC62C6CC-FF38-4470-B8BE-AEB129CE9E8E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BC62C6CC-FF38-4470-B8BE-AEB129CE9E8E}.Release|Any CPU.Build.0 = Release|Any CPU
-		{05CCAC29-275B-459F-9F8A-C08E2748242F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{05CCAC29-275B-459F-9F8A-C08E2748242F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{05CCAC29-275B-459F-9F8A-C08E2748242F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{05CCAC29-275B-459F-9F8A-C08E2748242F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{4500985C-0F2E-43E9-B982-AC07C395CEEC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{4500985C-0F2E-43E9-B982-AC07C395CEEC}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{4500985C-0F2E-43E9-B982-AC07C395CEEC}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{4500985C-0F2E-43E9-B982-AC07C395CEEC}.Release|Any CPU.Build.0 = Release|Any CPU
-		{45815AC6-7679-4F8C-9D4F-F9E9127B9978}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{45815AC6-7679-4F8C-9D4F-F9E9127B9978}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{45815AC6-7679-4F8C-9D4F-F9E9127B9978}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{45815AC6-7679-4F8C-9D4F-F9E9127B9978}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -361,9 +340,6 @@ Global
 		{01F28C21-EF9C-4CDD-994B-BA04AD1C99DF} = {26A3E23D-A200-4E36-9B1C-1712AED9FA4B}
 		{DB177401-2B07-4A02-B04E-FC443DD682A5} = {26A3E23D-A200-4E36-9B1C-1712AED9FA4B}
 		{BC62C6CC-FF38-4470-B8BE-AEB129CE9E8E} = {26A3E23D-A200-4E36-9B1C-1712AED9FA4B}
-		{05CCAC29-275B-459F-9F8A-C08E2748242F} = {50C7340E-E3B3-4520-818D-609163EECB2C}
-		{4500985C-0F2E-43E9-B982-AC07C395CEEC} = {50C7340E-E3B3-4520-818D-609163EECB2C}
-		{45815AC6-7679-4F8C-9D4F-F9E9127B9978} = {50C7340E-E3B3-4520-818D-609163EECB2C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {C0F4B8B2-DB68-4F11-BB5D-382D3013F70C}
