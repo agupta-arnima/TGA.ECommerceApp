@@ -2,6 +2,7 @@ using AutoMapper;
 using Azure;
 using Azure.Search.Documents;
 using Azure.Search.Documents.Indexes;
+using Capstone.ECommerceApp.Infra.Common;
 using Capstone.ECommerceApp.Infra.Common.Configuration.AzureKeyVault;
 using Capstone.ECommerceApp.Product.Application;
 using Capstone.ECommerceApp.Product.Application.Interfaces;
@@ -16,7 +17,6 @@ using Microsoft.OpenApi.Models;
 using System.Reflection;
 using System.Text;
 
-
 var builder = WebApplication.CreateBuilder(args);
 
 // Add Azure Key Vault to configuration
@@ -25,7 +25,10 @@ builder.Host.ConfigureAppConfiguration((context, config) =>
     KeyVaultConfiguration.AddAzureKeyVaultIfConfigured(context, config);
 });
 
-var productDbConnectionStr = builder.Configuration["sackumar6-ProductDbConnection"];
+KeyVaultConfig.SecretPrefix = builder.Configuration["AzureConfiguration:AzureKeyVault:SecretPrefix"] ?? string.Empty;
+
+var productDbConnectionStr = builder.Configuration[$"{KeyVaultConfig.SecretPrefix}-ProductDbConnection"];
+
 builder.Services.AddDbContextPool<ProductDbContext>(options =>
 {
     options.UseMySql(productDbConnectionStr, ServerVersion.AutoDetect(productDbConnectionStr));
@@ -56,9 +59,9 @@ builder.Services.AddCors(options =>
 
 
 //AI-Search
-var apiKey = builder.Configuration["sackumar6-ai-search-apikey"];
-var serviceName = builder.Configuration["sackumar6-ai-search-service"];
-var indexName = builder.Configuration["sackumar6-ai-search-index"];
+var apiKey = builder.Configuration[$"{KeyVaultConfig.SecretPrefix}-ai-search-apikey"];
+var serviceName = builder.Configuration[$"{KeyVaultConfig.SecretPrefix}-ai-search-service"];
+var indexName = builder.Configuration[$"{KeyVaultConfig.SecretPrefix}-ai-search-index"];
 
 builder.Services.AddSingleton(serviceProvider =>
 {

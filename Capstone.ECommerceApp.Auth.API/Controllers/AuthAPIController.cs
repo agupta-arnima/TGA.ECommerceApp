@@ -28,7 +28,7 @@ public class AuthAPIController : ControllerBase
         TokenValidationParameters tokenValidationParams,
         IEventBus messageBus,
         LoggedInUsersMetrics loggedInUsersMetrics)
-        //Meter registrationMeterCounter)
+    //Meter registrationMeterCounter)
     {
         this.authService = authService;
         this.configuration = configuration;
@@ -54,8 +54,7 @@ public class AuthAPIController : ControllerBase
                 EventType = EventTypes.UserRegistration
             };
 
-            await messageBus.PublishMessageAsync(notificationMessage,
-             configuration.GetValue<string>("sackumar6:ApiSettings:RabbitMQ:TopicAndQueueNames:UserRegistrationQueue"));
+            await messageBus.PublishMessageAsync(notificationMessage, configuration.GetValue<string>($"{KeyVaultConfig.SecretPrefix}:ApiSettings:RabbitMQ:TopicAndQueueNames:UserRegistrationQueue"));
 
             //registrationCounter.Add(1); // Increment the counter
             return Ok(result);

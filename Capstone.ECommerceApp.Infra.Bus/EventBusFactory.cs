@@ -8,14 +8,16 @@ public static class EventBusFactory
 {
     public static IEventBus CreateEventBus(MessageBrokerType brokerType, IConfiguration configuration)
     {
+        var secretPrefix = configuration["AzureConfiguration:AzureKeyVault:SecretPrefix"] ?? string.Empty;
+
         switch (brokerType)
         {
             case MessageBrokerType.RabbitMQ:
-                var rabbitMqSettings = configuration.GetSection("sackumar6:ApiSettings:RabbitMQ").Get<RabbitMQSetting>();
+                var rabbitMqSettings = configuration.GetSection($"{secretPrefix}:ApiSettings:RabbitMQ").Get<RabbitMQSetting>();
                 return new RabbitMQBus(Options.Create(rabbitMqSettings));
 
             case MessageBrokerType.EventHub:
-                var eventHubSettings = configuration.GetSection("sackumar6:ApiSettings:EventHub").Get<EventHubSetting>();
+                var eventHubSettings = configuration.GetSection($"{secretPrefix}:ApiSettings:EventHub").Get<EventHubSetting>();
                 return new EventHubBus(Options.Create(eventHubSettings));
 
             case MessageBrokerType.AzureServiceBus:

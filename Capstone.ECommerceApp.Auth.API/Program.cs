@@ -43,6 +43,8 @@ builder.Host.ConfigureAppConfiguration((context, config) =>
     KeyVaultConfiguration.AddAzureKeyVaultIfConfigured(context, config);
 });
 
+KeyVaultConfig.SecretPrefix = builder.Configuration["AzureConfiguration:AzureKeyVault:SecretPrefix"] ?? string.Empty;
+
 //TODO mTLS implementation for Auth API only certified application can able to use it
 /* 
 //Load the certificate
@@ -62,7 +64,7 @@ builder.WebHost.UseKestrel(options =>
 });
 */
 
-var authDbConnectionStr = builder.Configuration["sackumar6-AuthDbConnection"];
+var authDbConnectionStr = builder.Configuration[$"{KeyVaultConfig.SecretPrefix}-AuthDbConnection"];
 builder.Services.AddDbContextPool<AuthDbContext>(options =>
 {
     options.UseMySql(authDbConnectionStr, ServerVersion.AutoDetect(authDbConnectionStr));
@@ -80,8 +82,8 @@ builder.Services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
 
 
 // Configure message broker settings
-builder.Services.Configure<RabbitMQSetting>(builder.Configuration.GetSection("sackumar6:ApiSettings:RabbitMQ"));
-builder.Services.Configure<EventHubSetting>(builder.Configuration.GetSection("sackumar6:ApiSettings:EventHub"));
+builder.Services.Configure<RabbitMQSetting>(builder.Configuration.GetSection($"{KeyVaultConfig.SecretPrefix}:ApiSettings:RabbitMQ"));
+builder.Services.Configure<EventHubSetting>(builder.Configuration.GetSection($"{KeyVaultConfig.SecretPrefix}:ApiSettings:EventHub"));
 //builder.Services.Configure<AzureServiceBusSetting>(builder.Configuration.GetSection("ApiSettings:AzureServiceBus"));
 
 // Add the factory pattern for IEventBus

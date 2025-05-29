@@ -21,7 +21,7 @@ using Serilog.Exceptions;
 using Serilog.Sinks.Elasticsearch;
 using System.Reflection;
 using Capstone.ECommerceApp.Infra.Common.Configuration.AzureKeyVault;
-
+using Capstone.ECommerceApp.Infra.Common;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -31,13 +31,14 @@ builder.Host.ConfigureAppConfiguration((context, config) =>
     KeyVaultConfiguration.AddAzureKeyVaultIfConfigured(context, config);
 });
 
+KeyVaultConfig.SecretPrefix = builder.Configuration["AzureConfiguration:AzureKeyVault:SecretPrefix"] ?? string.Empty;
+
 //Define Polly retry Policy
 var retryPolicy = HttpPolicyExtensions
                     .HandleTransientHttpError()
-                    .WaitAndRetryAsync(3, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2,
-                    retryAttempt)));
+                    .WaitAndRetryAsync(3, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)));
 
-var orderDbConnectionStr = builder.Configuration["sackumar6-OrderDbConnection"];
+var orderDbConnectionStr = builder.Configuration[$"{KeyVaultConfig.SecretPrefix}-OrderDbConnection"];
 builder.Services.AddDbContextPool<OrderDbContext>(options =>
 {
     options.UseMySql(orderDbConnectionStr, ServerVersion.AutoDetect(orderDbConnectionStr));
@@ -50,8 +51,8 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 // Add services to the container.
 builder.Services.AddScoped<IProductService, ProductService>();
-builder.Services.AddScoped<IInventoryService,InventoryService>();
-builder.Services.AddScoped<IPaymentService,PaymentService>();
+builder.Services.AddScoped<IInventoryService, InventoryService>();
+builder.Services.AddScoped<IPaymentService, PaymentService>();
 builder.Services.AddScoped<IShippingService, ShippingService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
@@ -61,18 +62,18 @@ builder.Services.AddScoped<BackendApiAuthenticationHttpClientHandler>();
 
 
 // Add HttpClient services using the extension method
-builder.Services.AddHttpClientService("Product",builder.Configuration["sackumar6-productapi-url"],
+builder.Services.AddHttpClientService("Product", builder.Configuration[$"{KeyVaultConfig.SecretPrefix}-productapi-url"],
                     sp => sp.GetRequiredService<BackendApiAuthenticationHttpClientHandler>(), retryPolicy);
-builder.Services.AddHttpClientService("Inventory", builder.Configuration["sackumar6-inventory-api"],
+builder.Services.AddHttpClientService("Inventory", builder.Configuration[$"{KeyVaultConfig.SecretPrefix}-inventory-api"],
                     sp => sp.GetRequiredService<BackendApiAuthenticationHttpClientHandler>(), retryPolicy);
-builder.Services.AddHttpClientService("Payment", builder.Configuration["sackumar6-payment-api"],
+builder.Services.AddHttpClientService("Payment", builder.Configuration[$"{KeyVaultConfig.SecretPrefix}-payment-api"],
                     sp => sp.GetRequiredService<BackendApiAuthenticationHttpClientHandler>(), retryPolicy);
 
 
 
 // Configure message broker settings
-builder.Services.Configure<RabbitMQSetting>(builder.Configuration.GetSection("sackumar6:ApiSettings:RabbitMQ"));
-builder.Services.Configure<EventHubSetting>(builder.Configuration.GetSection("sackumar6:ApiSettings:EventHub"));
+builder.Services.Configure<RabbitMQSetting>(builder.Configuration.GetSection($"{KeyVaultConfig.SecretPrefix}:ApiSettings:RabbitMQ"));
+builder.Services.Configure<EventHubSetting>(builder.Configuration.GetSection($"{KeyVaultConfig.SecretPrefix}:ApiSettings:EventHub"));
 //builder.Services.Configure<AzureServiceBusSetting>(builder.Configuration.GetSection("ApiSettings:AzureServiceBus"));
 
 // Add the factory pattern for IEventBus
@@ -113,7 +114,7 @@ builder.Services.AddSwaggerGen(options =>
 {
     options.SwaggerDoc("v1", new OpenApiInfo { Title = "Order API", Version = "v1" });
     //options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, $"{Assembly.GetExecutingAssembly().GetName().Name}.xml"));
-    
+
     options.AddSecurityDefinition(name: "Bearer", securityScheme: new OpenApiSecurityScheme
     {
         Name = "Authorization",

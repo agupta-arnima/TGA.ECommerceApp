@@ -2,6 +2,7 @@
 using Azure.Search.Documents.Indexes;
 using Azure.Search.Documents.Indexes.Models;
 using Azure.Search.Documents.Models;
+using Capstone.ECommerceApp.Infra.Common;
 using Capstone.ECommerceApp.Product.API.Model;
 using Microsoft.AspNetCore.Mvc;
 
@@ -107,7 +108,7 @@ public class ProductAPIAIController : ControllerBase
     [HttpPost("seed")]
     public async Task<IActionResult> SeedData()
     {
-        string indexName = _configuration["sackumar6-ai-search-index"];
+        string indexName = _configuration[$"{KeyVaultConfig.SecretPrefix}-ai-search-index"];
         // Create index
         CreateIndex(indexName, _searchIndexClient);
 
