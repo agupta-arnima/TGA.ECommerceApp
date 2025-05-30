@@ -43,10 +43,10 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<BackendApiAuthenticationHttpClientHandler>();
 
 // Add Redis configuration
-var redisConfiguration = builder.Configuration[$"{KeyVaultConfig.SecretPrefix}:Redis:ConnectionString"];
+var redisHostConfiguration = builder.Configuration[$"{KeyVaultConfig.SecretPrefix}:Redis:ConnectionString"];
+var redisConfiguration = ConfigurationOptions.Parse(redisHostConfiguration);
+redisConfiguration.Password = builder.Configuration[$"{KeyVaultConfig.SecretPrefix}:Redis:ConnectionPassword"];
 var redis = ConnectionMultiplexer.Connect(redisConfiguration);
-//builder.Services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect("localhost"));
-builder.Services.AddSingleton<IConnectionMultiplexer>(redis);
 builder.Services.AddSingleton<IRedisCacheService, RedisCacheService>();
 
 builder.Services.AddHttpClient("Product", c => c.BaseAddress = new Uri(builder.Configuration["ServiceUrls:ProductAPI"]))
