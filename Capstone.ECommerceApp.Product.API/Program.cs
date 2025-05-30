@@ -63,22 +63,11 @@ var apiKey = builder.Configuration[$"{KeyVaultConfig.SecretPrefix}-ai-search-api
 var serviceName = builder.Configuration[$"{KeyVaultConfig.SecretPrefix}-ai-search-service"];
 var indexName = builder.Configuration[$"{KeyVaultConfig.SecretPrefix}-ai-search-index"];
 
-builder.Services.AddSingleton(serviceProvider =>
-{
-    Uri endpoint = new Uri($"https://{serviceName}.search.windows.net/");
-    AzureKeyCredential credential = new AzureKeyCredential(apiKey);
+Uri endpoint = new Uri($"https://{serviceName}.search.windows.net/");
+AzureKeyCredential credential = new AzureKeyCredential(apiKey);
 
-    return new SearchClient(endpoint, indexName, credential);
-});
-
-builder.Services.AddSingleton(serviceProvider =>
-{
-    Uri endpoint = new Uri($"https://{serviceName}.search.windows.net/");
-    AzureKeyCredential credential = new AzureKeyCredential(apiKey);
-
-    return new SearchIndexClient(endpoint, credential);
-});
-
+builder.Services.AddSingleton(serviceProvider => new SearchClient(endpoint, indexName, credential));
+builder.Services.AddSingleton(serviceProvider => new SearchIndexClient(endpoint, credential));
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();

@@ -34,24 +34,33 @@ public class ProductAPIAIController : ControllerBase
         options.Select.Add("ProductId");
         options.Select.Add("ProductName");
         options.Select.Add("Price");
+        options.Select.Add("Description");
         options.Select.Add("Category");
+        options.Select.Add("Tags");
 
         var response = await _searchClient.SearchAsync<AIProduct>("*", options);
         return Ok(response.Value.GetResults().Select(r => r.Document));
     }
 
     [HttpGet("search")]
-    public async Task<IActionResult> SerachFiltered([FromQuery] string filter, [FromQuery] string orderby)
+    public async Task<IActionResult> SerachByFilter([FromQuery] string filter, [FromQuery] string orderby)
     {
-        var options = new SearchOptions { Filter = filter, OrderBy = { orderby } };
+        var options = new SearchOptions 
+        { 
+            Filter = filter, 
+            OrderBy = { orderby },
+            IncludeTotalCount = true
+        };        
         options.Select.Add("ProductId");
         options.Select.Add("ProductName");
         options.Select.Add("Price");
+        options.Select.Add("Description");                
         options.Select.Add("Category");
+        options.Select.Add("Tags");
+
         var response = await _searchClient.SearchAsync<AIProduct>("*", options);
         return Ok(response.Value.GetResults().Select(r => r.Document));
     }
-
 
     [HttpGet("searchbytag")]
     public async Task<IActionResult> SearchByTag([FromQuery] string tag)
@@ -63,7 +72,9 @@ public class ProductAPIAIController : ControllerBase
         options.Select.Add("ProductId");
         options.Select.Add("ProductName");
         options.Select.Add("Price");
+        options.Select.Add("Description");
         options.Select.Add("Category");
+        options.Select.Add("Tags");
 
         var response = await _searchClient.SearchAsync<AIProduct>(tag, options);
         return Ok(response.Value.GetResults().Select(r => r.Document));
@@ -72,7 +83,7 @@ public class ProductAPIAIController : ControllerBase
     [HttpGet("suggestions")]
     public async Task<IActionResult> Suggestions([FromQuery] string query)
     {
-        var suggestOptions = new SuggestOptions { UseFuzzyMatching = false, Size = 5 };
+        var suggestOptions = new SuggestOptions { UseFuzzyMatching = true, Size = 5 };
         var suggestions = await _searchClient.SuggestAsync<AIProduct>(query, "sg", suggestOptions);
         return Ok(suggestions.Value.Results.Select(s => s.Text));
     }
@@ -91,7 +102,9 @@ public class ProductAPIAIController : ControllerBase
         options.Select.Add("ProductId");
         options.Select.Add("ProductName");
         options.Select.Add("Price");
+        options.Select.Add("Description");
         options.Select.Add("Category");
+        options.Select.Add("Tags");
 
         var response = await _searchClient.SearchAsync<AIProduct>(query, options);
 
@@ -99,11 +112,12 @@ public class ProductAPIAIController : ControllerBase
             r.Document.ProductId,
             r.Document.ProductName,
             r.Document.Price,
-            r.Document.Category
+            r.Document.Description,
+            r.Document.Category,
+            r.Document.Tags
         });
         return Ok(results);
     }
-
 
     [HttpPost("seed")]
     public async Task<IActionResult> SeedData()
@@ -164,6 +178,7 @@ public class ProductAPIAIController : ControllerBase
             adminClient.DeleteIndex(indexName);
         }
     }
+    
     // Create tga-catalog-products index
     private static void CreateIndex(string indexName, SearchIndexClient adminClient)
     {
