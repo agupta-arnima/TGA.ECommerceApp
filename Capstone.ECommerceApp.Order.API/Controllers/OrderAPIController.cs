@@ -32,7 +32,6 @@ namespace Capstone.ECommerceApp.Order.API.Controllers
         {
             try
             {
-
                 // Check product availability
                 var unavailableProducts = await orderService.CheckProductAvailability(cartDto);
                 if (unavailableProducts.Any())
@@ -115,8 +114,8 @@ namespace Capstone.ECommerceApp.Order.API.Controllers
         {
             return messageBroker switch
             {
-                "RabbitMQ" => configuration.GetValue<string>("sackumar6:ApiSettings:RabbitMQ:TopicAndQueueNames:OrderQueue"),
-                "EventHub" => configuration.GetValue<string>("sackumar6:ApiSettings:EventHub:EventHubName"),
+                "RabbitMQ" => configuration.GetValue<string>($"{KeyVaultConfig.SecretPrefix}:ApiSettings:RabbitMQ:TopicAndQueueNames:OrderQueue"),
+                "EventHub" => configuration.GetValue<string>($"{KeyVaultConfig.SecretPrefix}:ApiSettings:EventHub:EventHubName"),
                 "ServiceBus" => string.Empty,
                 _ => throw new ArgumentException("Invalid broker type")
             };
