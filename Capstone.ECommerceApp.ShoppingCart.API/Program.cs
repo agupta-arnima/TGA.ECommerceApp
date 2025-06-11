@@ -43,10 +43,17 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<BackendApiAuthenticationHttpClientHandler>();
 
 // Add Redis configuration
-var redisHostConfiguration = builder.Configuration[$"{KeyVaultConfig.SecretPrefix}:Redis:ConnectionString"];
-var redisConfiguration = ConfigurationOptions.Parse(redisHostConfiguration);
-redisConfiguration.Password = builder.Configuration[$"{KeyVaultConfig.SecretPrefix}:Redis:ConnectionPassword"];
-var redis = ConnectionMultiplexer.Connect(redisConfiguration);
+var redisConfiguration = builder.Configuration.GetSection("Redis");
+var options = ConfigurationOptions.Parse(redisConfiguration.GetValue<string>("ConnectionString")); // host1:port1, host2:port2, ...
+options.Password = redisConfiguration.GetValue<string>("Password");
+var redis = ConnectionMultiplexer.Connect(options);
+Console.WriteLine(redis.ClientName);
+Console.WriteLine(redis.Configuration);
+
+//var redisHostConfiguration = builder.Configuration[$"{KeyVaultConfig.SecretPrefix}:Redis:ConnectionString"];
+//var redisConfiguration = ConfigurationOptions.Parse(redisHostConfiguration);
+//redisConfiguration.Password = builder.Configuration[$"{KeyVaultConfig.SecretPrefix}:Redis:ConnectionPassword"];
+//var redis = ConnectionMultiplexer.Connect(redisConfiguration);
 builder.Services.AddSingleton<IRedisCacheService, RedisCacheService>();
 
 builder.Services.AddHttpClient("Product", c => c.BaseAddress = new Uri(builder.Configuration["ServiceUrls:ProductAPI"]))
